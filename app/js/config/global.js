@@ -13,7 +13,7 @@
         dashboard: {
             limit: 30
         },
-        webapi: 'http://localhost:60959/api',
+        webapi: 'http://localhost:8002/api/v1',
         signalr: 'http://localhost:14001/signalr/'
     };
 });

@@ -6,6 +6,14 @@ define(['app'], function (app) {
     app.service('myApi', function () {
         this.getMenus = function () {
             var menusData = [
+                {
+                    id: "c",
+                    text: "用户中心",
+                    item: [
+                        { id: 500, text: "用户列表", ctrl: 'user/user_list', icon: 'imoon imoon-office' },
+                        
+                    ]
+                },
                      {
                          id: "a",
                          text: "开发示例",

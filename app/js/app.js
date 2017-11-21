@@ -1,13 +1,21 @@
-﻿define(function (require) {
+﻿define(['app', 'config'], function (app, config) {
     'use strict';
  
-    var app = angular.module('chituApp', ['ngResource']);
+    var app = angular.module('chituApp', ['ngResource', "restangular"]);
 
     app.init = function () {
         angular.bootstrap(document, ['chituApp']);
     };
  
-    app.config(function ($controllerProvider, $provide, $compileProvider, $resourceProvider) {
+    app.config(function ($controllerProvider, $provide, $compileProvider,
+        $resourceProvider,RestangularProvider, $httpProvider) {
+
+        $httpProvider.interceptors.push('httpInterceptor'); //添加拦截器
+
+        RestangularProvider.setBaseUrl(config.webapi);
+        RestangularProvider.setResponseExtractor(function (response, operation) {
+            return response.data;
+        });
 
         // Save the older references.
         app._controller = app.controller;

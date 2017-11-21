@@ -333,9 +333,9 @@ dhtmlXGridObject.prototype.setQuery = function () {
         //构建请求参数
         var paging = {};
         if (this.pagingOn) 
-            paging = {page: self.currentPage,rows: self.rowsBufferOutSize};
+            paging = { pageindex: self.currentPage,pagesize: self.rowsBufferOutSize};
         else if (this._srnd) 
-            paging = {page: 1,rows: self._dpref};
+            paging = { pageindex: 1, pagesize: self._dpref };
         
         var param = $.extend({}, self.queryParams, paging, arguments[0]);
 
@@ -349,10 +349,14 @@ dhtmlXGridObject.prototype.setQuery = function () {
                     self.setSortImgState(true, state[0], state[1]);
             }catch(e){}
         }
- 
+        
         //查询数据
         self.callEvent("onXLS", [self]);
+       
         query(param, function (d) {
+            
+            d = self.convertSource(d);
+
             self.parse(d, "json");
             self.callEvent("onXLE", [self, 0, 0, d]);
         });
@@ -360,6 +364,14 @@ dhtmlXGridObject.prototype.setQuery = function () {
         self.queryParams = param;
     };
     self.query(self.queryParams);
+};
+
+dhtmlXGridObject.prototype.convertSource = function (data) {
+    return {
+        pageCount:data.PageCount,
+        rows: data.Source,
+        total:data.TotalCount
+    };
 };
 
 dhtmlXGridObject.prototype.setFields = function () {

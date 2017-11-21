@@ -33,7 +33,7 @@ define(['app'], function (app) {
                 scope.colsorting && scope.grid.setColSorting(scope.colsorting);
 
                 scope.grid.entBox.onselectstart = function () { return true; };
-
+               
                 if (scope.pagingsetting) {
                     var pagingArr = scope.pagingsetting.split(",");
                     var pageSize = parseInt(pagingArr[0]);
@@ -80,6 +80,7 @@ define(['app'], function (app) {
                 if (scope.url) {
                     var url = app.getApiUrl(scope.url);
                     var param = scope.$parent[scope.params] || {};
+
                     var api = $resource(url, {}, { query: { method: 'GET', isArray: false } });
                     scope.grid.setQuery(api.query, param);
                 }

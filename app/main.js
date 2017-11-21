@@ -19,6 +19,7 @@
         'config',
         'angular-resource',
         'service/index',
+        'factory/index',
         'directive/index',
         'controller/index'],
         function (app, config) {
