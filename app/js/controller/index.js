@@ -1056,6 +1056,10 @@ define(['app', 'config'], function (app, config) {
             setFont($.cookie('font-layout'));
         }
 
+        function handleRemoveClassFont() {
+
+        }
+
         function setFont(value) {
             var $font_layout = $('#font-layout');
             switch (value) {

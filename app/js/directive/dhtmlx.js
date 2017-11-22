@@ -2,7 +2,7 @@
  * Created by liuhuisheng on 2015/2/28.
  */
 define(['app'], function (app) {
-    app.directive('dhtmlxgrid', function ($resource) {
+    app.directive('dhtmlxgrid', function ($resource, $compile) {
         return {
             restrict: 'A',
             replace: true,
@@ -22,8 +22,9 @@ define(['app'], function (app) {
             link: function (scope, element, attrs) {
                 scope.uid = app.genStr(12);
                 element.attr("id", "dhx_grid_" + scope.uid);
-                element.css({ "width": "100%", "border-width": "1px 0 0 0"});
-                scope.grid = new dhtmlXGridObject(element.attr("id"));
+                element.css({ "width": "100%", "border-width": "1px 0 0 0" });
+
+                scope.grid = new dhtmlXGridObject(element[0]);
                 scope.header1    && scope.grid.setHeader(scope.header1);
                 scope.header2    && scope.grid.attachHeader(scope.header2);
                 scope.fields     && scope.grid.setFields(scope.fields);
@@ -82,6 +83,7 @@ define(['app'], function (app) {
                     var param = scope.$parent[scope.params] || {};
 
                     var api = $resource(url, {}, { query: { method: 'GET', isArray: false } });
+
                     scope.grid.setQuery(api.query, param);
                 }
 
@@ -102,10 +104,10 @@ define(['app'], function (app) {
             link: function (scope, element, attrs) {
                 scope.uid = app.genStr(12);
                 element.attr("id", "dhx_toolbar_" + scope.uid);
-                element.css({ "border-width": "0 0 1px 0" });
+                //element.css({ "border-width": "0 0 1px 0" });
                
 
-                scope.toolbar = new dhtmlXToolbarObject(element.attr("id"));
+                scope.toolbar = new dhtmlXToolbarObject(element[0]);
                 scope.toolbar.setIconsPath(app.getProjectRoot(scope.iconspath));
                 var items = eval("(" + scope.items + ")");
                 //scope.toolbar.loadStruct(items);
@@ -146,4 +148,25 @@ define(['app'], function (app) {
             }
         }
     });
+
+    app.directive('dhtmlxlayout', function () {
+        return {
+            restrict: 'A',
+            replace: false,
+            link: function (scope, element, attrs) {
+
+                var resizeLayout = function () {
+                    element.height(element.parent().parent().height() - 31);
+                };
+                $(window).resize(resizeLayout);
+                resizeLayout();
+
+                myLayout = new dhtmlXLayoutObject(element[0], attrs.pattern);
+                
+                myLayout.cells("a").attachObject("cell1");
+                myLayout.cells("b").attachObject("cell2");
+            }
+        }
+    });
+
 });

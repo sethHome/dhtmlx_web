@@ -11,20 +11,20 @@ define(['app'], function (app) {
                     text: "用户中心",
                     item: [
                         { id: 500, text: "用户列表", ctrl: 'user/user_list', icon: 'imoon imoon-office' },
-                        
+                        { id: 501, text: "组织部门", ctrl: 'user/origanation', icon: 'imoon imoon-office' },
                     ]
                 },
-                     {
-                         id: "a",
-                         text: "开发示例",
-                         item: [
-                             { id: 91, text: "企业信息", ctrl: 'bas/tenant_list', icon: 'imoon imoon-office' },
-                             { id: 24, text: "企业信息-虚拟分页", ctrl: 'bas/tenant_list2', icon: 'imoon imoon-office' },
-                             { id: 2, text: "应用管理", ctrl: 'bas/app_list', icon: 'imoon imoon-qrcode' },
-                             { id: 3, text: "登陆帐户", href: 'views/demo/page1.html', icon: 'glyphicons glyphicons-keys' },
-                             { id: 94, text: "平台参数", ctrl: 'bas/settings', icon: 'imoon imoon-cog2' }
-                         ]
-                     },
+                {
+                    id: "a",
+                    text: "开发示例",
+                    item: [
+                        { id: 91, text: "企业信息", ctrl: 'bas/tenant_list', icon: 'imoon imoon-office' },
+                        { id: 24, text: "企业信息-虚拟分页", ctrl: 'bas/tenant_list2', icon: 'imoon imoon-office' },
+                        { id: 2, text: "应用管理", ctrl: 'bas/app_list', icon: 'imoon imoon-qrcode' },
+                        { id: 3, text: "登陆帐户", href: 'views/demo/page1.html', icon: 'glyphicons glyphicons-keys' },
+                        { id: 94, text: "平台参数", ctrl: 'bas/settings', icon: 'imoon imoon-cog2' }
+                    ]
+                },
                     {
                         id: "b",
                         text: "测试页面",

@@ -63,8 +63,49 @@
         $resourceProvider.defaults.stripTrailingSlashes = false;
     });
 
-    app.run(function (){
-        //run some code here ...
+    app.run(function ($rootScope, $http, $compile) {
+      
+        $rootScope.openWin = function (option) {
+
+            var option = $.extend({
+                position: {
+                    x: 0,
+                    y: 0
+                },
+                size: {
+                    width: 500,
+                    height: 400
+                },
+                text: {
+                    head: '新建窗口',
+                    status: '新建窗口'
+                }
+            }, option);
+
+            var dhxWins = new dhtmlXWindows();
+            var w1 = dhxWins.createWindow(app.genStr(6), option.position.x, option.position.y, option.size.width, option.size.height);
+            w1.setText(option.text.head);
+            w1.attachStatusBar({ text: option.text.status });
+
+            $http.get(option.url).success(function (html) {
+                var id = app.genStr(6);
+                var html = $(html).attr("id", id).attr("ng-controller", option.controller);
+                var newScope = $rootScope.$new();
+                newScope.$win = w1;
+                w1.attachHTMLString($compile(html)(newScope));
+            });
+
+            w1.button("close").attachEvent("onClick", function () {
+                w1.setModal(false);
+                w1.hide();
+                return false;
+            });
+            w1.setModal(true);
+            w1.center();
+
+            return w1;
+        }
+
     });
 
     return app;

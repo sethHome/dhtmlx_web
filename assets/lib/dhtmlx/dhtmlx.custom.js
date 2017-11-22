@@ -329,6 +329,7 @@ dhtmlXGridObject.prototype.setQuery = function () {
     var self = this;
     var query = arguments[0];
     self.queryParams = arguments[1] || {};
+    var loaded = arguments[2];
     self.query = function () {
         //构建请求参数
         var paging = {};
@@ -359,6 +360,10 @@ dhtmlXGridObject.prototype.setQuery = function () {
 
             self.parse(d, "json");
             self.callEvent("onXLE", [self, 0, 0, d]);
+
+            if (loaded != undefined && typeof (loaded) === "function") {
+                loaded(self);
+            }
         });
 
         self.queryParams = param;
@@ -719,3 +724,17 @@ eXcell_roch.prototype.setValue = function (val) {
     var obj = this;
     this.setCValue("<img src='" + this.grid.imgURL + "item_chk" + val + ".gif'>",this.cell.chstate);
 }
+
+function eXcell_filter(cell) { //the eXcell name is defined here
+    if (cell) {                // the default pattern, just copy it
+        this.cell = cell;
+        this.grid = this.cell.parentNode.grid;
+    }
+    this.edit = function () { }  //read-only cell doesn't have edit method
+    // the cell is read-only, so it's always in the disabled state
+    this.isDisabled = function () { return true; }
+    this.setValue = function (val) {
+        this.setCValue(val + ":{{1+1}}", val);
+    }
+}
+eXcell_filter.prototype = new eXcell;// nests all other methods from the base class
