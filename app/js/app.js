@@ -76,6 +76,7 @@
                     width: 500,
                     height: 400
                 },
+                modal:true,
                 text: {
                     head: '新建窗口',
                     status: '新建窗口'
@@ -96,11 +97,14 @@
             });
 
             w1.button("close").attachEvent("onClick", function () {
-                w1.setModal(false);
+                if (option.modal) {
+                    w1.setModal(false);
+                }
+                
                 w1.hide();
                 return false;
             });
-            w1.setModal(true);
+            w1.setModal(option.modal);
             w1.center();
 
             return w1;

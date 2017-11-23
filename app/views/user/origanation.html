@@ -1,22 +1,38 @@
-﻿<div dhtmlxtoolbar="toolbar"
-     iconspath='assets/img/btn/'
-     items='[
-         { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick"},
+﻿<dhx-layout style="height: 100%;"
+            dhx-layout-code="2U"
+            dhx-height="500"
+            dhx-use-ems="true">
+    <dhx-layout-pane dhx-text="组织架构">
+        <div style="border-width: 0 0 1px 0px"
+             dhtmlxtoolbar="toolbar"
+             iconspath='assets/img/btn/'
+             items='[
+         { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addClick"},
          { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "test"},
          { type: "separator" },
-         { id: "reset", type: "button", img: "undo.gif", text: "重置密码", action: "resetPsw"},
-         { type: "separator" },
+
          { id: "del", type: "button", img: "cross.png", imgdis:"cross.png", text: "删除", action: "test", enabled: false},
-         { type: "separator" },
-         { id: "query", type: "button", img: "page.gif", text: "查询", action: "query"},]'></div>
+         ]'></div>
 
-<div dhtmlxlayout="mylayout" pattern="2U" style="width:100%; height:500px;">
-    
-</div>
+        <div dhtmlxtree="orgTree">
 
-<div id="cell1">
-    aaa{{1+1}}
-</div>
-<div id="cell2">
-    bbb{{2+2}}
-</div>
+        </div>
+    </dhx-layout-pane>
+    <dhx-layout-pane dhx-text="员工"
+                     dhx-collapsed-text="Pane B collapsed">
+        <div dhtmlxgrid="grid"
+             url='user'
+             params="form"
+             fields='ID|ID,Name,Account,PhotoImg'
+             header1='编号, 名称, 账号, 头像'
+             colwidth='70,180,60,80'
+             colalign='left,left,left,left'
+             coltype='ro,ro,ed,ro'
+             pagingsetting='20,5'
+             colsorting='server,server,server,server'
+             autoheight='30'>
+
+        </div>
+    </dhx-layout-pane>
+
+</dhx-layout>

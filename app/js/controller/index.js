@@ -63,6 +63,10 @@ define(['app', 'config'], function (app, config) {
         $scope.appRoot = app.getAppRoot();
     }]);
     
+    app.controller("chatController", function ($scope) {
+
+    })
+
     app.layoutCreator = function () {
         var self = this;
 
