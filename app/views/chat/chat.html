@@ -1,17 +1,24 @@
-﻿<div style="height: 100%;">
-    <dhx-layout style="height: 100%;"
-                dhx-layout-code="2U"
-                dhx-height="100"
-                dhx-use-ems="true">
+﻿<dhx-window dhx-text="Some other window"
+            dhx-height="500"
+            dhx-width="800"
+            dhx-show-inner-scroll="true"
+            dhx-btn-stick="true"
+            dhx-append-layout="3U">
 
-        <dhx-layout-pane dhx-text="组织架构">
-            aaa
-        </dhx-layout-pane>
-        <dhx-layout-pane dhx-text="员工"
-                         dhx-collapsed-text="Pane B collapsed">
-            aaa
-        </dhx-layout-pane>
+    <dhx-win-layout-cell dhx-text="dasdaf">
+        test1
+    </dhx-win-layout-cell>
+    <dhx-win-layout-cell dhx-text="VXCVXCV">
+        <dhx-grid dhx-obj="grid.obj"
+                  dhx-url="user"
+                  dhx-params="form"
+                  dhx-col-sorting="'ro,ro,ed,ro'"
+                  dhx-header="'编号,姓名,账号,头像'"
+                  dhx-fields="ID|ID,Name,Account,PhotoImg">
 
-    </dhx-layout>
-
-</div>
+        </dhx-grid>
+    </dhx-win-layout-cell>
+    <dhx-win-layout-cell dhx-text="YUTYIH">
+        test3
+    </dhx-win-layout-cell>
+</dhx-window>

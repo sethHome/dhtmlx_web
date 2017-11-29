@@ -110,6 +110,22 @@
             return w1;
         }
 
+        $rootScope.openWinNew = function (option) {
+          
+            $http.get(option.url).success(function (html) {
+
+                //var id = app.genStr(6);
+                //var html = $(html).attr("id", id).attr("ng-controller", option.controller);
+
+                var newScope = $rootScope.$new();
+                
+                $(document.body).append($compile(html)(newScope));
+                //$(document.body).appendChild(html);
+
+                
+            });
+        }
+
     });
 
     return app;

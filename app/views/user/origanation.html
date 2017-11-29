@@ -1,38 +1,40 @@
-﻿<dhx-layout style="height: 100%;"
-            dhx-layout-code="2U"
-            dhx-height="500"
-            dhx-use-ems="true">
+﻿<dhx-layout dhx-layout-code="2U">
     <dhx-layout-pane dhx-text="组织架构">
-        <div style="border-width: 0 0 1px 0px"
-             dhtmlxtoolbar="toolbar"
-             iconspath='assets/img/btn/'
-             items='[
-         { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addClick"},
-         { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "test"},
-         { type: "separator" },
 
-         { id: "del", type: "button", img: "cross.png", imgdis:"cross.png", text: "删除", action: "test", enabled: false},
-         ]'></div>
+        <dhx-tree dhx-tree="dhxTree"
+                  dhx-enable-check-boxes="true"
+                  dhx-enable-tree-images="true"
+                  dhx-enable-highlighting="true"
+                  dhx-json-data="treeData"
+                  dhx-on-data-loaded="treeDataLoaded"
+                  dhx-handlers="treeHandlers"
+                  dhx-context-menu="contextMenu"></dhx-tree>
 
-        <div dhtmlxtree="orgTree">
-
-        </div>
+        <dhx-menu dhx-load-xml-from-dom="true"
+                  dhx-on-click="alert"
+                  dhx-context-menu-mode="true"
+                  dhx-menu="contextMenu">
+            <menu>
+                <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
+                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+                </item>
+                <item id="ms1" type="separator" />
+                <item id="udf" text="UDF">
+                    <userdata name="align">left</userdata> // userdata
+                </item>
+            </menu>
+        </dhx-menu>
     </dhx-layout-pane>
     <dhx-layout-pane dhx-text="员工"
                      dhx-collapsed-text="Pane B collapsed">
-        <div dhtmlxgrid="grid"
-             url='user'
-             params="form"
-             fields='ID|ID,Name,Account,PhotoImg'
-             header1='编号, 名称, 账号, 头像'
-             colwidth='70,180,60,80'
-             colalign='left,left,left,left'
-             coltype='ro,ro,ed,ro'
-             pagingsetting='20,5'
-             colsorting='server,server,server,server'
-             autoheight='30'>
+        <dhx-grid dhx-obj="grid.obj"
+                  dhx-url="user"
+                  dhx-params="form"
+                  dhx-col-sorting="'ro,ro,ed,ro'"
+                  dhx-header="'编号,姓名,账号,头像'"
+                  dhx-fields="ID|ID,Name,Account,PhotoImg">
 
-        </div>
+        </dhx-grid>
     </dhx-layout-pane>
 
 </dhx-layout>
