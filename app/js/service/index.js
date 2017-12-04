@@ -10,8 +10,7 @@ define(['app'], function (app) {
                     id: "c",
                     text: "用户中心",
                     item: [
-                        { id: 500, text: "用户列表", ctrl: 'user/user_list', icon: 'imoon imoon-office' },
-                        { id: 501, text: "组织部门", ctrl: 'user/origanation', icon: 'imoon imoon-office' },
+                        { id: 500, text: "组织用户", ctrl: 'user/origanation', icon: 'imoon imoon-office' },
                     ]
                 },
                 {

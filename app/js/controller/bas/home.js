@@ -50,50 +50,50 @@ define(['app'], function (app) {
     });
 
     app.controller('bas/homeCtrl', ['$scope', '$element', 'homeApi', function ($scope, $element, api) {
-        var tab = app.getTab($element);
+        //var tab = app.getTab($element);
 
-        $scope.test = "hometest1";
-        $scope.data = api.getHomePageGridData();
-        var assetsRoot = app.getAssetsRoot();
-        var toolbar = new dhtmlXToolbarObject('my_toolbar');
-        toolbar.setIconsPath(assetsRoot + "img/btn/");
-        toolbar.addButton("open", 2, "打开", "open.gif", "open_dis.gif");
-        toolbar.addButton("save", 3, "保存", "save.gif", "save_dis.gif");
+        //$scope.test = "hometest1";
+        //$scope.data = api.getHomePageGridData();
+        //var assetsRoot = app.getAssetsRoot();
+        //var toolbar = new dhtmlXToolbarObject('my_toolbar');
+        //toolbar.setIconsPath(assetsRoot + "img/btn/");
+        //toolbar.addButton("open", 2, "打开", "open.gif", "open_dis.gif");
+        //toolbar.addButton("save", 3, "保存", "save.gif", "save_dis.gif");
 
-        var grid = new dhtmlXGridObject('gridbox');
-        grid.setHeader("Sales, Book Title, Author");
-        grid.setInitWidths("100,250,*")
-        grid.setColAlign("right,left,left")
-        grid.setColTypes("ro,ed,ed");
-        grid.setColSorting("int,str,str")
-        grid.enablePaging(true, 10, 5, "pagingArea", true, "recinfoArea");
-        grid.setPagingSkin("toolbar", "dhx_skyblue");
-        grid.setImagePath(assetsRoot + "lib/dhtmlx/v403_pro/skins/skyblue/imgs/");
-        grid.init();
-        grid.i18n.paging = {
-            results: "结果",
-            records: "当前",
-            to: "-",
-            page: "页",
-            perpage: "行每页",
-            first: "首页",
-            previous: "上一页",
-            found: "找到数据",
-            next: "下一页",
-            last: "末页",
-            of: " 的 ",
-            notfound: "No Records Found"
-        };
-        var resizeGrid = function () {
-            $("#gridbox").height($(tab.cell).height() - 142);
-            grid.setSizes();
-        };
-        $(window).resize(resizeGrid);
-        resizeGrid();
+        //var grid = new dhtmlXGridObject('gridbox');
+        //grid.setHeader("Sales, Book Title, Author");
+        //grid.setInitWidths("100,250,*")
+        //grid.setColAlign("right,left,left")
+        //grid.setColTypes("ro,ed,ed");
+        //grid.setColSorting("int,str,str")
+        //grid.enablePaging(true, 10, 5, "pagingArea", true, "recinfoArea");
+        //grid.setPagingSkin("toolbar", "dhx_skyblue");
+        //grid.setImagePath(assetsRoot + "lib/dhtmlx/v403_pro/skins/skyblue/imgs/");
+        //grid.init();
+        //grid.i18n.paging = {
+        //    results: "结果",
+        //    records: "当前",
+        //    to: "-",
+        //    page: "页",
+        //    perpage: "行每页",
+        //    first: "首页",
+        //    previous: "上一页",
+        //    found: "找到数据",
+        //    next: "下一页",
+        //    last: "末页",
+        //    of: " 的 ",
+        //    notfound: "No Records Found"
+        //};
+        //var resizeGrid = function () {
+        //    $("#gridbox").height($(tab.cell).height() - 142);
+        //    grid.setSizes();
+        //};
+        //$(window).resize(resizeGrid);
+        //resizeGrid();
 
-        $scope.$watch('data', function (newValue, oldValue) {
-            grid.clearAll();
-            grid.parse(newValue, "json");
-        });
+        //$scope.$watch('data', function (newValue, oldValue) {
+        //    grid.clearAll();
+        //    grid.parse(newValue, "json");
+        //});
     }]);
 });

@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration with dhtmlxGrid</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+    <link href="codebase/dhtmlx.css" rel="stylesheet" />
+    <script src="codebase/dhtmlx.js"></script>
+    <style>
+        div#layoutObj {
+            position: relative;
+            margin-top: 10px;
+            margin-left: 10px;
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+    <script>
+        var myLayout, myGrid;
+        function doOnLoad() {
+            myLayout = new dhtmlXLayoutObject({
+                parent: "layoutObj",
+                pattern: "2E",
+                cells: [{ id: "a", text: "dhtmlxGrid" }]
+            });
+            //myLayout.cells("a").attachStatusBar({ text: "Status bar text here" });
+            // first attach status bar
+           
+
+            myGrid = myLayout.cells("a").attachGrid();
+            //var pagingArea = document.createElement("div");
+            //var recinfoArea = document.createElement("div");
+           
+            //myLayout.cells("a").attachObject(pagingArea);
+            //myLayout.cells("a").attachObject(recinfoArea);
+            //document.body.appendChild(pagingArea)
+            //document.body.appendChild(recinfoArea)
+            //dhx_cell_statusbar_text
+            // then init paging in grid
+            myLayout.cells("a").attachStatusBar({
+                text: "<div id='pagingArea'></div><div id='recinfoArea'></div>",
+                height: 30,
+                paging: true
+            });
+            myGrid.enablePaging(true, 10, 5, "pagingArea", true, "recinfoArea");
+            
+
+            //myGrid.enablePaging(true, 10, 5, eles[0]);
+            myGrid.setPagingSkin("toolbar", "dhx_skyblue");
+            myGrid.setImagePath("/codebase/imgs/");
+            myGrid.load("grid.xml");
+        }
+    </script>
+</head>
+<body onload="doOnLoad();">
+    <div id="layoutObj"></div>
+
+
+</body>
+</html>

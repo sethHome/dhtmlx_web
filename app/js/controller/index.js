@@ -1,7 +1,7 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'config'], function (app, config) {
+define(['app', 'config', 'controller/chat/chat'], function (app, config) {
     app.controller('myController', ['$scope', '$compile', 'myApi', '$timeout', function ($scope, $compile, myApi, $timeout) {
         //get data from the api service
         $scope.menus = myApi.getMenus();
@@ -63,10 +63,6 @@ define(['app', 'config'], function (app, config) {
         $scope.appRoot = app.getAppRoot();
     }]);
     
-    app.controller("chatController", function ($scope) {
-
-    })
-
     app.layoutCreator = function () {
         var self = this;
 

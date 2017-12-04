@@ -1,19 +1,24 @@
 ﻿<dhx-layout dhx-layout-code="2U">
-    <dhx-layout-pane dhx-text="组织架构">
+    <dhx-layout-cell dhx-text="组织架构"
+                     dhx-status="'共3个部门'"
+                     dhx-width="300"
+                     dhx-collapsed-text="组织架构">
+
+        <dhx-toolbar dhx-items="treeToolMenus">
+        </dhx-toolbar>
 
         <dhx-tree dhx-tree="dhxTree"
-                  dhx-enable-check-boxes="true"
                   dhx-enable-tree-images="true"
                   dhx-enable-highlighting="true"
                   dhx-json-data="treeData"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
-                  dhx-context-menu="contextMenu"></dhx-tree>
+                  dhx-context-menu="contextMenu1"></dhx-tree>
 
         <dhx-menu dhx-load-xml-from-dom="true"
                   dhx-on-click="alert"
                   dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu">
+                  dhx-menu="contextMenu1">
             <menu>
                 <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
                     <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
@@ -24,17 +29,45 @@
                 </item>
             </menu>
         </dhx-menu>
-    </dhx-layout-pane>
-    <dhx-layout-pane dhx-text="员工"
-                     dhx-collapsed-text="Pane B collapsed">
+
+
+    </dhx-layout-cell>
+    <dhx-layout-cell dhx-text="员工列表">
+
+        <dhx-toolbar dhx-items="toolMenus">
+        </dhx-toolbar>
+
+
         <dhx-grid dhx-obj="grid.obj"
                   dhx-url="user"
                   dhx-params="form"
                   dhx-col-sorting="'ro,ro,ed,ro'"
                   dhx-header="'编号,姓名,账号,头像'"
-                  dhx-fields="ID|ID,Name,Account,PhotoImg">
+                  dhx-fields="ID|ID,Name,Account,PhotoImg"
+                  dhx-context-menu="contextMenu2"
+                  dhx-handlers="grid.handlers"
+                  dhx-paging="true">
 
         </dhx-grid>
-    </dhx-layout-pane>
 
+
+        <dhx-menu dhx-load-xml-from-dom="true"
+                  dhx-on-click="contextAction"
+                  dhx-context-menu-mode="true"
+                  dhx-menu="contextMenu2">
+            <menu>
+                <item id="update" text="更新用户信息" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
+                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+                </item>
+                <item id="ms1" type="separator"></item>
+                <item id="remove" text="删除用户">
+                    <userdata name="align">left</userdata> // userdata
+                </item>
+                <item id="refreshsize" text="刷新">
+                    <userdata name="align">left</userdata> // userdata
+                </item>
+            </menu>
+        </dhx-menu>
+
+    </dhx-layout-cell>
 </dhx-layout>

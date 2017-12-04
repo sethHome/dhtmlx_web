@@ -1,24 +1,53 @@
-﻿<dhx-window dhx-text="Some other window"
-            dhx-height="500"
-            dhx-width="800"
-            dhx-show-inner-scroll="true"
-            dhx-btn-stick="true"
-            dhx-append-layout="3U">
+﻿<div>
+    <dhx-window dhx-text="'Chat'"
+                dhx-center="true"
+                dhx-height="500"
+                dhx-width="800"
+                dhx-modal="true"
+                dhx-show-inner-scroll="true"
+                dhx-btn-stick="true">
 
-    <dhx-win-layout-cell dhx-text="dasdaf">
-        test1
-    </dhx-win-layout-cell>
-    <dhx-win-layout-cell dhx-text="VXCVXCV">
-        <dhx-grid dhx-obj="grid.obj"
-                  dhx-url="user"
-                  dhx-params="form"
-                  dhx-col-sorting="'ro,ro,ed,ro'"
-                  dhx-header="'编号,姓名,账号,头像'"
-                  dhx-fields="ID|ID,Name,Account,PhotoImg">
+        <dhx-layout dhx-layout-code="2U">
+            <dhx-layout-cell dhx-text="组织架构"
+                             dhx-width="200"
+                             dhx-collapsed-text="组织架构">
+                <dhx-tree dhx-tree="dhxTree"
+                          dhx-enable-check-boxes="true"
+                          dhx-enable-tree-images="true"
+                          dhx-enable-highlighting="true"
+                          dhx-json-data="treeData"
+                          dhx-on-data-loaded="treeDataLoaded"
+                          dhx-handlers="treeHandlers"
+                          dhx-context-menu="contextMenu"></dhx-tree>
 
-        </dhx-grid>
-    </dhx-win-layout-cell>
-    <dhx-win-layout-cell dhx-text="YUTYIH">
-        test3
-    </dhx-win-layout-cell>
-</dhx-window>
+                <dhx-menu dhx-load-xml-from-dom="true"
+                          dhx-on-click="alert"
+                          dhx-context-menu-mode="true"
+                          dhx-menu="contextMenu">
+                    <menu>
+                        <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
+                            <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+                        </item>
+                        <item id="ms1" type="separator" />
+                        <item id="udf" text="UDF">
+                            <userdata name="align">left</userdata> // userdata
+                        </item>
+                    </menu>
+                </dhx-menu>
+            </dhx-layout-cell>
+            <dhx-layout-cell dhx-text="员工">
+                <dhx-grid dhx-obj="grid.obj"
+                          dhx-url="user"
+                          dhx-params="form"
+                          dhx-col-sorting="'ro,ro,ed,ro'"
+                          dhx-header="'编号,姓名,账号,头像'"
+                          dhx-paging="true"
+                          dhx-fields="ID|ID,Name,Account,PhotoImg">
+
+                </dhx-grid>
+
+            </dhx-layout-cell>
+        </dhx-layout>
+
+    </dhx-window>
+</div>

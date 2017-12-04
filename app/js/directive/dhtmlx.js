@@ -360,7 +360,7 @@ define(['app'], function (app) {
     app.directive('dhxGrid', function factory(DhxUtils, $resource) {
         return {
             restrict: 'E',
-            require: ['?^^dhxLayoutPane'],
+            require: ['?^^dhxLayoutCell'],
             scope: {
                 /**
                  * Grid will be accessible in controller via this scope entry
@@ -428,11 +428,7 @@ define(['app'], function (app) {
 
                 scope.uid = app.genStr(12);
 
-                var loadStructure = function (grid,dom) {
-                    if (dom) {
-                        element[0] = dom;
-                    }
-
+                var createGrid = function () {
                     $(element).empty();
                     $('<div></div>').appendTo(element[0]);
                     var rootElem = element.children().first();
@@ -444,19 +440,36 @@ define(['app'], function (app) {
                     if (scope.dhxObj) {
                         DhxUtils.dhxDestroy(scope.dhxObj);
                     }
-                    if (grid === undefined) {
-                        grid = scope.dhxObj = new dhtmlXGridObject(rootElem[0]);
-                    } else if (scope.dhxAutoHeight) {
+
+                    if (scope.dhxAutoHeight) {
                         height = element.parent().parent().height() - scope.dhxAutoHeight + 'px';
                     }
 
                     rootElem.css('width', width);
                     rootElem.css('height', height);
 
-                    grid.setImagePath(DhxUtils.getImagePath());
+                    grid = scope.dhxObj = new dhtmlXGridObject(rootElem[0]);
 
+                    if (scope.dhxAutoHeight) {
+                        height = element.parent().parent().height() - scope.dhxAutoHeight + 'px';
+                    }
+
+                    return grid;
+                }
+
+                var setGrid = function (grid, cell) {
+                    scope.dhxObj = grid;
+
+                    grid.setImagePath(DhxUtils.getImagePath());
                     grid.enableAutoHeight(!!scope.dhxMaxHeight, scope.dhxMaxHeight, true);
                     grid.enableAutoWidth(!!scope.dhxMaxWidth, scope.dhxMaxWidth, true);
+                    scope.dhxHeader ? grid.setHeader(scope.dhxHeader) : '';
+                    scope.dhxColTypes ? grid.setColTypes(scope.dhxColTypes) : '';
+                    scope.dhxColSorting ? grid.setColSorting(scope.dhxColSorting) : '';
+                    scope.dhxColAlign ? grid.setColAlign(scope.dhxColAlign) : '';
+                    scope.dhxInitWidths ? grid.setInitWidths(scope.dhxInitWidths) : '';
+                    scope.dhxInitWidthsP ? grid.setInitWidthsP(scope.dhxInitWidthsP) : '';
+                    scope.dhxFields && grid.setFields(scope.dhxFields);
 
                     scope.dhxContextMenu ? grid.enableContextMenu(scope.dhxContextMenu) : '';
                     scope.$watch(
@@ -466,31 +479,34 @@ define(['app'], function (app) {
                       }
                     );
 
-                    scope.dhxHeader ? grid.setHeader(scope.dhxHeader) : '';
-                    scope.dhxColTypes ? grid.setColTypes(scope.dhxColTypes) : '';
-                    scope.dhxColSorting ? grid.setColSorting(scope.dhxColSorting) : '';
-                    scope.dhxColAlign ? grid.setColAlign(scope.dhxColAlign) : '';
-                    scope.dhxInitWidths ? grid.setInitWidths(scope.dhxInitWidths) : '';
-                    scope.dhxInitWidthsP ? grid.setInitWidthsP(scope.dhxInitWidthsP) : '';
-                    scope.dhxFields && grid.setFields(scope.dhxFields);
-
                     // Letting controller add configurations before data is parsed
                     if (scope.dhxConfigureFunc) {
                         scope.dhxConfigureFunc(grid);
                     }
                     grid.init();
                     if (scope.dhxPaging) {
-                        
+
                         var pageSize = 20;
                         var pagesInGrp = 5;
-                        var pagingArea = document.createElement("div");
-                        pagingArea.id = "pagingArea_" + scope.uid;
-                        pagingArea.style.borderWidth = "1px 0 0 0";
-                        var recinfoArea = document.createElement("div");
-                        recinfoArea.id = "recinfoArea_" + scope.uid;
-                        element.after(pagingArea);
-                        element.after(recinfoArea);
-                        grid.enablePaging(true, pageSize, pagesInGrp, pagingArea.id, true, recinfoArea.id);
+                        var pageAreaId = "pagingArea_" + scope.uid;
+                        var recinfoAreaId = "recinfoArea_" + scope.uid;
+                        if (cell) {
+                            cell.attachStatusBar({
+                                text: "<div id='" + pageAreaId + "'></div><div id='" + recinfoAreaId + "'></div>",
+                                height: 30,
+                                paging: true
+                            });
+                            grid.enablePaging(true, pageSize, pagesInGrp, pageAreaId, true, recinfoAreaId);
+                        } else {
+                            var pagingArea = document.createElement("div");
+                            pagingArea.id = pageAreaId;
+                            pagingArea.style.borderWidth = "1px 0 0 0";
+                            var recinfoArea = document.createElement("div");
+                            recinfoArea.id = recinfoAreaId;
+                            element.after(pagingArea);
+                            element.after(recinfoArea);
+                            grid.enablePaging(true, pageSize, pagesInGrp, pageAreaId, true, recinfoAreaId);
+                        }
                         grid.setPagingSkin("toolbar", "dhx_skyblue");
                         grid.i18n.paging = {
                             results: "结果",
@@ -509,12 +525,16 @@ define(['app'], function (app) {
                     }
 
 
-
                     if (scope.dhxAutoHeight) {
+
                         var resizeGrid = function () {
+
                             rootElem.css('height', element.parent().parent().height() - scope.dhxAutoHeight + 'px');
                             //rootElem.height();
                             grid.setSizes();
+
+                            //element.height(element.parent().parent().height() - scope.autoheight);
+                            //grid.setSizes();
                         };
                         $(window).resize(resizeGrid);
                         resizeGrid();
@@ -550,11 +570,15 @@ define(['app'], function (app) {
                 };
 
                 if (ctls[0] != null) {
-                    ctls[0].addGridCreator(loadStructure);
+                    ctls[0].addCreator(function (layout, cell) {
+                        var grid = cell.attachGrid();
+                        setGrid(grid, cell);
+                    });
                 } else {
                     scope.$watch('dhxVersionId', function (/*newVal, oldVal*/) {
-                        console.log('rebuilding...');
-                        loadStructure();
+                        var grid = createGrid();
+
+                        setGrid(grid);
                     });
                 }
             }
@@ -565,7 +589,7 @@ define(['app'], function (app) {
         var letters = "abcdefg";
         return {
             restrict: 'E',
-            require: 'dhxLayout',
+            require: ['dhxLayout', '?^^dhxWindow'],
             controller: function ($scope) {
                 $scope.panes = [];
                 this.getNextId = (function () {
@@ -592,74 +616,103 @@ define(['app'], function (app) {
                 dhxObj: '=',
                 dhxWhenDone: '='
             },
-            link: function (scope, element, attrs, layoutCtrl) {
+            link: function (scope, element, attrs, ctrls) {
+                var layoutCtrl = ctrls[0];
+                var windowCtrl = ctrls[1];
 
-                $(element).empty();
-                $('<div></div>').appendTo(element[0]);
-                var rootElem = element.children().first();
+                var setCell = function (layout) {
 
-                var dim = (scope.dhxUseEms ? 'em' : 'px');
-                //TODO: Come up with a way to do 100% height (Within current container)
-                var height = scope.dhxHeight ? (scope.dhxHeight + dim) : '100%';//console.warn('Please set dhx-layout height!');
-                var width = scope.dhxWidth ? (scope.dhxWidth + dim) : '100%';
+                    for (var i = 0; i < scope.panes.length; i++) {
+                        var cell = layout.cells(letters[i]);
+                        // 如果cell中没有可以attach的对象则直接attachdom
+                        if (!scope.panes[i].attach(layout, cell)) {
+                            var dom = scope.panes[i].jqElem[0];
+                            if (dom != null) {
+                                cell.appendObject(dom);
+                            }
+                        }
 
-                rootElem.css('width', width);
-                rootElem.css('height', height);
-                rootElem.css('padding', '0px');
-                rootElem.css('margin', '0px');
-                rootElem.css('overflow', 'hidden');
-                rootElem.css('display', 'block');
+                        if (scope.panes[i].status) {
+                            cell.attachStatusBar({
+                                text: scope.panes[i].status,
+                                height: 30
+                            });
+                        }
+                    }
 
-                //noinspection JSPotentiallyInvalidConstructorUsage
-                rootElem[0]._isParentCell = true;
-                var layout = new dhtmlXLayoutObject({
-                    parent: rootElem[0],
-                    pattern: scope.dhxLayoutCode,
-                    //offsets: { //TODO: Add them as optionals
-                    //  top: 10,
-                    //  right: 10,
-                    //  bottom: 10,
-                    //  left: 10
-                    //},
-                    cells: scope
-                      .panes
-                      .map(function (paneObj) {
-                          paneObj.cellConfig.id = layoutCtrl.getNextId();
-                          return paneObj.cellConfig;
-                      })
-                }
-                );
-                if (scope.dhxObj)
-                    scope.dhxObj = layout;
-                layout.setSizes();
-
-                for (var i = 0; i < scope.panes.length; i++) {
-                    var dom = scope.panes[i].jqElem[0];
-                    if (scope.panes[i].createGrid) {
-                        var grid = layout.cells(letters[i]).attachGrid();
-                        scope.panes[i].createGrid(grid, dom);
-                    } if (scope.panes[i].createTree) {
-                        var tree = layout.cells(letters[i]).attachTree();
-                        scope.panes[i].createTree(tree, dom);
-                    } else if (dom != null) {
-                        layout.cells(letters[i]).appendObject(dom);
+                    DhxUtils.attachDhxHandlers(layout, scope.dhxHandlers);
+                    DhxUtils.dhxUnloadOnScopeDestroy(scope, layout);
+                    if (scope.dhxWhenDone) {
+                        scope.dhxWhenDone(layout);
                     }
                 }
-                DhxUtils.attachDhxHandlers(layout, scope.dhxHandlers);
-                DhxUtils.dhxUnloadOnScopeDestroy(scope, layout);
-                if (scope.dhxWhenDone) {
-                    scope.dhxWhenDone(layout);
+
+                if (windowCtrl == null) {
+                    $(element).empty();
+                    $('<div></div>').appendTo(element[0]);
+                    var rootElem = element.children().first();
+
+                    var dim = (scope.dhxUseEms ? 'em' : 'px');
+                    //TODO: Come up with a way to do 100% height (Within current container)
+                    var height = scope.dhxHeight ? (scope.dhxHeight + dim) : '100%';//console.warn('Please set dhx-layout height!');
+                    var width = scope.dhxWidth ? (scope.dhxWidth + dim) : '100%';
+
+                    rootElem.css('width', width);
+                    rootElem.css('height', height);
+                    rootElem.css('padding', '0px');
+                    rootElem.css('margin', '0px');
+                    rootElem.css('overflow', 'hidden');
+                    rootElem.css('display', 'block');
+
+                    //noinspection JSPotentiallyInvalidConstructorUsage
+                    rootElem[0]._isParentCell = true;
+                    var layout = new dhtmlXLayoutObject({
+                        parent: rootElem[0],
+                        pattern: scope.dhxLayoutCode,
+                        //offsets: { //TODO: Add them as optionals
+                        //  top: 10,
+                        //  right: 10,
+                        //  bottom: 10,
+                        //  left: 10
+                        //},
+                        cells: scope
+                          .panes
+                          .map(function (paneObj) {
+                              paneObj.cellConfig.id = layoutCtrl.getNextId();
+                              return paneObj.cellConfig;
+                          })
+                    });
+                    if (scope.dhxObj)
+                        scope.dhxObj = layout;
+                    layout.setSizes();
+
+                    setCell(layout);
+                } else if (windowCtrl != null) {
+                    windowCtrl.registerLayoutCallbak(function (win) {
+                        var layout = win.attachLayout({
+                            pattern: scope.dhxLayoutCode,
+                            cells: scope
+                              .panes
+                              .map(function (paneObj) {
+                                  paneObj.cellConfig.id = layoutCtrl.getNextId();
+                                  return paneObj.cellConfig;
+                              })
+                        });
+
+                        setCell(layout);
+                    });
                 }
             }
         };
     });
 
-    app.directive('dhxLayoutPane', function factory() {
+    app.directive('dhxLayoutCell', function factory() {
         return {
             restrict: 'E',
             require: '^dhxLayout',
             scope: {
                 dhxText: '@',
+                dhxStatus: '=',
                 dhxCollapsedText: '@', // If this is omitted it becomes dhxText
                 dhxHeader: '=', // Expression... since it is a boolean value
                 dhxWidth: '@',  // These are optional... However when specified they
@@ -668,21 +721,25 @@ define(['app'], function (app) {
                 dhxFixSize: '='
             },
             controller: function ($scope) {
-                $scope.gridCreator = null;
-                $scope.treeCreator = null;
-                this.addGridCreator = function (creator) {
-                    $scope.gridCreator = creator;
+                $scope.creators = [];
+                $scope.attach = function (layout, cell) {
+
+                    angular.forEach($scope.creators, function (creator) {
+                        creator(layout, cell);
+                    });
+
+                    return $scope.creators.length > 0;
                 }
-                this.addTreeCreator = function (creator) {
-                    $scope.treeCreator = creator;
+                this.addCreator = function (creator) {
+                    $scope.creators.push(creator);
                 }
             },
             link: function (scope, element, attrs, layoutCtrl) {
 
                 layoutCtrl.registerPane({
                     jqElem: element.detach(),
-                    createGrid: scope.gridCreator,
-                    createTree: scope.treeCreator,
+                    attach: scope.attach,
+                    status: scope.dhxStatus,
                     cellConfig: {
                         text: scope.dhxText || "",
                         collapsed_text: scope.dhxCollapsedText || scope.dhxText || "",
@@ -693,6 +750,55 @@ define(['app'], function (app) {
                         fix_size: scope.dhxFixSize
                     }
                 });
+            }
+        };
+    });
+
+    app.directive('dhxToolbar', function factory(DhxUtils) {
+        return {
+            restrict: 'E',
+            require: ['?^^dhxLayoutCell'],
+            template: '<div></div>',
+            replace: true,
+            controller: function () {
+            },
+            scope: {
+                dhxItems: '='
+            },
+            link: function (scope, element, attrs, ctrls) {
+                var layoutCtl = ctrls[0];
+
+                var eventmap = {};
+                scope.dhxItems.map(function (item) {
+                    if (item.action) {
+                        eventmap[item.id] = item.action
+                    }
+                });
+
+                var setToolbar = function (toolbar) {
+                    toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
+                    toolbar.loadStruct(scope.dhxItems);
+                    toolbar.attachEvent("onClick", function (id) {
+                        var name = eventmap[id];
+                        if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
+                            scope.$parent[name].call(this);
+                    });
+                }
+
+                if (layoutCtl == null || layoutCtl == undefined) {
+                    scope.uid = app.genStr(12);
+                    element.attr("id", "dhx_toolbar_" + scope.uid);
+                    //element.css({ "border-width": "0 0 1px 0px" });
+
+                    var toolbar = new dhtmlXToolbarObject(element[0]);
+                    setToolbar(toolbar);
+
+                } else {
+                    layoutCtl.addCreator(function (layout, cell) {
+                        var toolbar = cell.attachToolbar();
+                        setToolbar(toolbar);
+                    })
+                }
             }
         };
     });
@@ -771,7 +877,7 @@ define(['app'], function (app) {
     app.directive('dhxTree', function factory(DhxUtils) {
         return {
             restrict: 'E',
-            require: ['dhxTree', '?^^dhxLayoutPane'],
+            require: ['dhxTree', '?^^dhxLayoutCell'],
             controller: function () {
             },
             scope: {
@@ -813,20 +919,11 @@ define(['app'], function (app) {
             },
             link: function (scope, element, attrs, ctls) {
 
-                var createTree = function (tree,dom) {
-                    //noinspection JSPotentiallyInvalidConstructorUsage
-                    if (tree == undefined) {
-                        tree = new dhtmlXTreeObject({
-                            parent: element[0],
-                            skin: "dhx_skyblue",
-                            checkbox: true,
-                            image_path: DhxUtils.getImagePath() + 'dhxtree_skyblue/'
-                        });
-                    } else {
-                        tree.setImagePath(DhxUtils.getImagePath() + 'dhxtree_skyblue/');
-                    }
+                var setTree = function (tree) {
 
-                    scope.dhxTree ? scope.dhxTree = tree : '';
+                    scope.dhxTree = tree;
+
+                    tree.setImagePath(DhxUtils.getImagePath() + 'dhxtree_skyblue/');
 
                     scope.dhxContextMenu ? tree.enableContextMenu(scope.dhxContextMenu) : '';
                     scope.$watch(
@@ -846,6 +943,7 @@ define(['app'], function (app) {
                     tree.enableTreeLines(scope.dhxEnableTreeLines);
                     // Letting controller add configurations before data is parsed
 
+
                     if (scope.dhxConfigureFunc) {
                         scope.dhxConfigureFunc(tree);
                     }
@@ -861,11 +959,19 @@ define(['app'], function (app) {
                     DhxUtils.attachDhxHandlers(tree, scope.dhxHandlers);
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, tree);
                 }
-                
+
                 if (ctls[1] != null) {
-                    ctls[1].addTreeCreator(createTree);
+                    ctls[1].addCreator(function (layout, cell) {
+                        var tree = cell.attachTree();
+                        setTree(tree);
+                    });
                 } else {
-                    createTree();
+                    var tree = new dhtmlXTreeObject({
+                        parent: element[0],
+                        skin: "dhx_skyblue",
+                        checkbox: true,
+                    });
+                    setTree(tree);
                 }
             }
         };
@@ -959,13 +1065,14 @@ define(['app'], function (app) {
                 dhxCenter: '=',
                 dhxHeight: '=',
                 dhxHeader: '=',
+                dhxModal: '@',
                 dhxKeepInViewport: '=',
                 dhxShowInnerScroll: '=',
                 dhxLeft: '=',
                 dhxMove: '=',
                 dhxPark: '=',
                 dhxResize: '=',
-                dhxText: '@',
+                dhxText: '=',
                 dhxTop: '=',
                 dhxWidth: '=',
                 dhxBtnClose: '=',
@@ -976,19 +1083,10 @@ define(['app'], function (app) {
                 dhxAppendLayout: '@'
             },
             controller: function ($scope) {
-                $scope.cells = [];
-                this.getNextId = (function () {
-                    var letters = "abcdefg";
-                    var current = -1;
-                    return function () {
-                        current++;
-                        return current < 7 ? letters[current] : console.error('Too many dhxLayout panes.');
-                    };
-                })();
-                this.registerCell = function (c) {
-                    c.id = this.getNextId();
-                    $scope.cells.push(c);
-                };
+
+                this.registerLayoutCallbak = function (initor) {
+                    $scope.layoutInitor = initor
+                }
             },
             link: function (scope, element, attrs) {
                 var elem = element.detach();
@@ -996,6 +1094,7 @@ define(['app'], function (app) {
                     center: scope.dhxCenter,
                     height: scope.dhxHeight,
                     header: scope.dhxHeader,
+                    modal: scope.dhxModal,
                     keep_in_viewport: scope.dhxKeepInViewport,
                     showInnerScroll: scope.dhxShowInnerScroll,
                     left: scope.dhxLeft,
@@ -1033,6 +1132,15 @@ define(['app'], function (app) {
                   conf.height
                 );
 
+                if (conf.modal == undefined) {
+                    conf.modal = true;
+                }
+                if (conf.center == undefined) {
+                    conf.center = true;
+                }
+
+                win.setModal(conf.modal);
+
                 conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
                 conf.center !== undefined ? (conf.center ? win.center() : '') : '';
                 conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
@@ -1048,35 +1156,11 @@ define(['app'], function (app) {
                 conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
                 conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
 
-                if (conf.appendLayout) {
-
-                    var cells = scope.cells.map(function (c) {
-                        return {
-                            id: c.id,
-                            text: c.cellConfig.text,
-                            width: c.cellConfig.width,
-                            header: true
-                        };
-                    });
-
-                    var winLayout = win.attachLayout({
-                        pattern: conf.appendLayout,
-                        cells: cells
-                    });
-
-                    for (var i = 0; i < scope.cells.length; i++) {
-                        var dom = scope.cells[i].jqElem[0];
-                        if (dom != null) {
-                            winLayout.cells(scope.cells[i].id).appendObject(dom);
-                        }
-                    }
-
-
+                if (scope.layoutInitor != undefined) {
+                    scope.layoutInitor(win);
                 } else {
-                    //var domElem = windowInfo.elem[0];
                     win.attachObject(elem[0]);
                 }
-
                 DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
                 DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
             }
@@ -1094,34 +1178,4 @@ define(['app'], function (app) {
         };
     });
 
-    app.directive('dhxWinLayoutCell', function factory() {
-        return {
-            restrict: 'E',
-            require: '^dhxWindow',
-            scope: {
-                dhxText: '@',
-                dhxCollapsedText: '@', // If this is omitted it becomes dhxText
-                dhxHeader: '=', // Expression... since it is a boolean value
-                dhxWidth: '@',  // These are optional... However when specified they
-                dhxHeight: '@', // should not conflict with the layout width and height
-                dhxCollapse: '=', // Expression... since it is a boolean value
-                dhxFixSize: '='
-            },
-            link: function (scope, element, attrs, winCtrl) {
-
-                winCtrl.registerCell({
-                    jqElem: element.detach(),
-                    cellConfig: {
-                        text: scope.dhxText || "",
-                        collapsed_text: scope.dhxCollapsedText || scope.dhxText || "",
-                        header: scope.dhxHeader,
-                        width: scope.dhxWidth,
-                        height: scope.dhxHeight,
-                        collapse: scope.dhxCollapse == undefined ? false : scope.dhxCollapse,
-                        fix_size: scope.dhxFixSize
-                    }
-                });
-            }
-        };
-    });
 });
