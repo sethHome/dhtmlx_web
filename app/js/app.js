@@ -23,6 +23,7 @@
         app._factory = app.factory;
         app._value = app.value;
         app._directive = app.directive;
+        app._provide = app.$provide;
 
         // Provider-based controller.
         app.controller = function (name, constructor) {

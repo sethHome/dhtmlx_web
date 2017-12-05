@@ -149,6 +149,13 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                     close: true
                 }, node);
                 node.title = node.title || ((node.icon ? "<i class='" + node.icon + "'></i> " : "") + node.text);
+
+                var newtab = self.tabs.cells(node.id);
+                if (newtab) {
+                    newtab.setActive();
+                    return;
+                }
+                
                 self.tabs.addTab(node.id, node.title, node.width, node.position, node.active, node.close);
 
                 //set tabid data to element
@@ -170,15 +177,22 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                         view: 'text!views/' + node.ctrl + '.html'
                     };
                     $cell.data('ctrl', ctrl).attr('ng-controller', ctrl.name);
-                    self.initPartial(tab, ctrl);
+                    self.initPartial(tab, ctrl, name, node.resolve);
                 }
             };
-            self.initPartial = function (tab, ctrl) {
+            self.initPartial = function (tab, ctrl, name, resolve) {
                 var init = function (render, html) {
                     html && tab.attachHTMLString(html);
                     render && $.isFunction(render) && render.call(this, args());
-                    self.$compile(tab.cell)(self.$scope);
-                    self.$scope.$apply(); //trigger $watch in controller new scope on init
+                 
+                    if (resolve) {
+
+                        //app.service(name, injector);
+                    }
+
+                    var newscope = self.$scope.$new();
+                    self.$compile(tab.cell)(newscope);
+                    newscope.$apply(); //trigger $watch in controller new scope on init
                 };
                 var args = function () {
                     return {
@@ -232,6 +246,7 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                     defaultId && tabs.cells(defaultId).setActive(true);
                 }
             };
+          
             self.tabHandles.close_all_except_this = function (tabId) {
                 this.forEachCell(function (tab) {
                     if (tabs.t[tab._idd].conf.close && tab._idd != tabId)
@@ -293,7 +308,7 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                 menu.removeContextZone(hid);
                 tab.close();
             };
-
+            
             //给每个面签添加右键菜单事件
             var baseAddTab = tabs.addTab;
             tabs.addTab = function (id, text, width, position, active, close) {

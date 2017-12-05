@@ -4,7 +4,7 @@
 define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
     app.controller('user/origanationCtrl', ['$scope', '$element', '$http', '$compile', 'userService',
         function ($scope, $element, $http, $compile, userService) {
-
+            debugger;
             $scope.treeToolMenus = [
                { id: "new1", type: "button", img: "new.gif", text: "添加部门", action: "addClick" },
                { id: "new2", type: "button", img: "new.gif", text: "添加子部门", action: "addClick" },
@@ -20,9 +20,20 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
                { type: "separator" },
                { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
                { type: "separator" },
-               { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
+               {
+                   id: "queryType", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_cut1",
+                   options: [
+                       { type: "button", id: "edit_cut1", text: "用户名称", img: "cut.gif" },
+                       { type: "button", id: "edit_copy2", text: "用户账号", img: "copy.gif" },
+                       { type: "button", id: "edit_copy3", text: "用户编号", img: "copy.gif" },
+                   ]
+               },
+               { id: "querytext", type: "buttonInput", width: 120 },
+               { id: "query", type: "button", img: "page.gif", text: "查询"},
+               { type: "separator" },
+               { id: "querymore", type: "button", img: "page.gif", text: "高级查询", action: "query" }];
 
-            
+
             $scope.treeData = {
                 "id": 0,
                 "item": [
@@ -107,7 +118,7 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
             ];
 
             $scope.query = function () {
-              
+
                 $scope.openWindow({
                     url: "app/views/user/user_filter.html",
                     controller: "user/user_filterCtrl",
@@ -210,5 +221,5 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
         }
     })
 
-   
+
 });

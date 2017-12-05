@@ -1,18 +1,12 @@
-﻿<dhx-menu dhx-load-xml-from-dom="true"
-          dhx-on-click="alert">
-    <menu>
-        <item id="new" text="快速访问" >
-            <item id="new1" text="快速访问1">
-            </item>
-            <item id="new2" text="快速访问2">
-            </item>
-        </item>
-        <item id="ms1" type="separator" />
-        <item id="udf" text="任务">
-            <item id="t1" text="任务1">
-            </item>
-            <item id="t2" text="任务2">
-            </item>
-        </item>
-    </menu>
-</dhx-menu>
+﻿<dhx-toolbar dhx-items="toolbarItems">
+</dhx-toolbar>
+<dhx-layout dhx-layout-code="2U">
+
+    <dhx-layout-cell dhx-hide-header="true">
+        aaa
+    </dhx-layout-cell>
+    <dhx-layout-cell dhx-hide-header="true"
+                     dhx-width="300">
+        bbb
+    </dhx-layout-cell>
+</dhx-layout>

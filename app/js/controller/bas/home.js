@@ -50,6 +50,67 @@ define(['app'], function (app) {
     });
 
     app.controller('bas/homeCtrl', ['$scope', '$element', 'homeApi', function ($scope, $element, api) {
+
+        $scope.toolbarItems = [
+       {
+           id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
+               { id: "new1", type: "button", img: "paste_dis.gif", text: "快速访问1", action: "go" },
+               { id: "new2", type: "button", img: "paste_dis.gif", text: "快速访问2", action: "go" },
+               { id: "new3", type: "button", img: "paste_dis.gif", text: "快速访问3", action: "go" },
+               { id: "new4", type: "button", img: "paste_dis.gif", text: "快速访问4", action: "go" },
+               { id: "new5", type: "button", img: "paste_dis.gif", text: "快速访问5", action: "go" },
+               { id: "new6", type: "button", img: "paste_dis.gif", text: "快速访问6", action: "go" },
+           ]
+       },
+       {
+           id: "task", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", options: [
+                 { id: "task1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
+                 { id: "task2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
+                 { id: "task3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
+                 { id: "task4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
+                 { id: "task5", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
+                 { id: "task6", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
+                 { id: "task7", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
+           ]
+       },
+       {
+           id: "form", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", options: [
+                 { id: "form1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
+                 { id: "form2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
+                 { id: "form3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
+                 { id: "form4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
+           ]
+       },
+
+       { type: "separator" },
+       {
+           id: "edit", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_paste",
+           options: [
+               { type: "button", id: "edit_cut", text: "项目", img: "cut.gif" },
+               { type: "button", id: "edit_copy", text: "工程", img: "copy.gif" },
+               { type: "button", id: "edit_paste1", text: "合同", img: "paste.gif" },
+               { type: "button", id: "edit_paste", text: "客户", img: "paste.gif" },
+               { type: "button", id: "edit_paste2", text: "任务", img: "paste.gif" },
+           ]
+       },
+       { id: "querytext", type: "buttonInput", width: 120 },
+       { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
+
+        $scope.go = function (id) {
+            $scope.creator.tabHandles.openTab({
+                id: id,
+                text:"123123",
+                ctrl: "user/origanation",
+                resolve: {
+                    justSrv: function () {
+                        return {
+                            aa:11
+                        }
+                    }
+                }
+            });
+        }
+
         //var tab = app.getTab($element);
 
         //$scope.test = "hometest1";

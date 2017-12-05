@@ -638,6 +638,9 @@ define(['app'], function (app) {
                                 height: 30
                             });
                         }
+                        if (scope.panes[i].hideHeader) {
+                            cell.hideHeader();
+                        }
                     }
 
                     DhxUtils.attachDhxHandlers(layout, scope.dhxHandlers);
@@ -713,6 +716,7 @@ define(['app'], function (app) {
             scope: {
                 dhxText: '@',
                 dhxStatus: '=',
+                dhxHideHeader:'@',
                 dhxCollapsedText: '@', // If this is omitted it becomes dhxText
                 dhxHeader: '=', // Expression... since it is a boolean value
                 dhxWidth: '@',  // These are optional... However when specified they
@@ -740,6 +744,7 @@ define(['app'], function (app) {
                     jqElem: element.detach(),
                     attach: scope.attach,
                     status: scope.dhxStatus,
+                    hideHeader:scope.dhxHideHeader,
                     cellConfig: {
                         text: scope.dhxText || "",
                         collapsed_text: scope.dhxCollapsedText || scope.dhxText || "",
@@ -773,12 +778,21 @@ define(['app'], function (app) {
                     if (item.action) {
                         eventmap[item.id] = item.action
                     }
+                   
+                    if (item.type == "buttonSelect") {
+                        item.options.map(function (option) {
+                            if (option.action) {
+                                eventmap[option.id] = option.action
+                            }
+                        });
+                    }
                 });
 
                 var setToolbar = function (toolbar) {
                     toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
                     toolbar.loadStruct(scope.dhxItems);
                     toolbar.attachEvent("onClick", function (id) {
+                        
                         var name = eventmap[id];
                         if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
                             scope.$parent[name].call(this);
