@@ -1,8 +1,8 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'config', 'controller/chat/chat'], function (app, config) {
-    app.controller('myController', ['$scope', '$compile', '$controller', 'myApi', '$timeout', function ($scope, $compile, $controller, myApi, $timeout) {
+define(['app', 'config', 'directive/dhtmlx'], function (app, config) {
+    app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', function ($scope, $rootScope, $compile, $controller, myApi, $timeout) {
         //get data from the api service
         $scope.menus = myApi.getMenus();
         $scope.tasks = myApi.getTasks();
@@ -16,7 +16,7 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
         $scope.creator.$compile = $compile;
         $scope.creator.$scope = $scope;
         $scope.creator.$controller = $controller;
-
+        $scope.creator.$rootScope = $rootScope;
         //open the chat box
         $scope.openChat = function (e, f) {
             $scope.chat.current = { chats: [] };
@@ -184,14 +184,14 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
             self.initPartial = function (tab, ctrl, name, resolve) {
                 var init = function (render, html) {
                     render && $.isFunction(render) && render.call(this, args());
-                    
+
                     var newscope = self.$scope.$new();
                     var injectors = {
                         "$scope": newscope,
-                        "$page": self
+                        "$page": self.pageHander
                     };
 
-                    angular.extend(injectors,resolve);
+                    angular.extend(injectors, resolve);
 
                     ctrlInstantiate = self.$controller(ctrl.name, injectors, true);
 
@@ -383,8 +383,8 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
             var tab_btn = document.createElement("div");
             tab_btn.className = "dhxtabbar_tabs_button_area dhxtabbar_tabs";
             tab_btn.innerHTML = "<a class='dhxtabbar_tabs_button1'></a>"
-                              + "<a class='dhxtabbar_tabs_button2'></a>"
-                              + "<a class='dhxtabbar_tabs_button3'></a>";
+                + "<a class='dhxtabbar_tabs_button2'></a>"
+                + "<a class='dhxtabbar_tabs_button3'></a>";
             tabs.tabsArea.appendChild(tab_btn);
 
             setTimeout(function () { //for ie8
@@ -576,6 +576,53 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
             }
         };
 
+        self.pageHander = {
+            // 打开window窗口
+            open: function (option) {
+
+                var init = function (html) {
+                    var newScope = self.$rootScope.$new();
+
+                    var injectors = {
+                        "$scope": newScope
+                    };
+
+                    angular.extend(injectors, option.resolve);
+
+                    ctrlInstantiate = self.$controller(option.controller, injectors, true, option.controllerAs);
+
+                    ctrlInstantiate();
+
+                    var angularWin = angular.element('<dhx-window></dhx-window');
+
+                    angularWin.attr({
+                        'dhx-text': option.title,
+                        'dhx-height': option.height ? height : 400,
+                        'dhx-width': option.width ? width : 500,
+                        'dhx-show-inner-scroll': option.scroll,
+                        'dhx-btn-stick': option.stick,
+                    }).append(html);
+
+                    var angularDomEl = angular.element('<dhx-windows></dhx-windows>')
+                        .append(angularWin);
+
+                    angularDomEl = self.$compile(angularDomEl)(newScope);
+                    angular.element("body").append(angularDomEl);
+                }
+                if (option.controllerUrl) {
+                    require(['text!../views/' + option.url, 'controller/' + option.controllerUrl], init);
+                } else {
+                    require(['text!../views/' + option.url], init);
+                }
+
+
+            },
+            // controller跳转
+            go: function (option) {
+                self.tabHandles.openTab(option);
+            }
+        }
+
         app.getSkinImgPath = function (type) {
             var skinstr = (self.layout.conf.skin || 'dhx_skyblue').split('_')[1] || 'skyblue';
             var path = app.getAssetsRoot() + 'lib/dhtmlx/v403_pro/skins/' + skinstr + '/imgs/';
@@ -593,7 +640,8 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                 else
                     return null;
             }
-        }
+        };
+
     }
 
     app.handleToggle = function () {

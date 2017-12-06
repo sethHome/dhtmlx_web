@@ -1,21 +1,18 @@
 ﻿define(['app', 'config'], function (app, config) {
     'use strict';
  
-    var app = angular.module('chituApp', ['ngResource', "restangular"]);
+    var app = angular.module('chituApp', ['ngResource']);
 
     app.init = function () {
         angular.bootstrap(document, ['chituApp']);
     };
  
     app.config(function ($controllerProvider, $provide, $compileProvider,
-        $resourceProvider,RestangularProvider, $httpProvider) {
+        $resourceProvider, $httpProvider) {
 
         $httpProvider.interceptors.push('httpInterceptor'); //添加拦截器
 
-        RestangularProvider.setBaseUrl(config.webapi);
-        RestangularProvider.setResponseExtractor(function (response, operation) {
-            return response.data;
-        });
+     
 
         // Save the older references.
         app._controller = app.controller;
@@ -66,39 +63,7 @@
 
     app.run(function ($rootScope, $http, $compile, $controller) {
 
-        $rootScope.openWindow = function (option) {
-          
-            $http.get(option.url).success(function (html) {
-
-                var newScope = $rootScope.$new();
-               
-                var injectors = {
-                    "$scope": newScope
-                };
-
-                angular.extend(injectors, option.resolve);
-
-                ctrlInstantiate = $controller(option.controller, injectors, true, option.controllerAs);
-
-                ctrlInstantiate();
-
-                var angularWin = angular.element('<dhx-window></dhx-window');
-
-                angularWin.attr({
-                    'dhx-text': option.title,
-                    'dhx-height': option.height ? height : 400,
-                    'dhx-width': option.width ? width : 500,
-                    'dhx-show-inner-scroll': option.scroll,
-                    'dhx-btn-stick': option.stick,
-                }).append(html);
-
-                var angularDomEl = angular.element('<dhx-windows></dhx-windows>')
-                    .append(angularWin);
-
-                angularDomEl = $compile(angularDomEl)(newScope);
-                angular.element("body").append(angularDomEl);
-            });
-        }
+       
     });
 
     return app;

@@ -6,7 +6,7 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
         function ($scope,$page,userService) {
             
             $scope.treeToolMenus = [
-               { id: "new1", type: "button", img: "new.gif", text: "添加部门", action: "addClick" },
+                { id: "new1", type: "button", iconClass: "icon-bell", text: "添加部门", action: "addClick" },
                { id: "new2", type: "button", img: "new.gif", text: "添加子部门", action: "addClick" },
                { type: "separator" },
                { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
@@ -119,8 +119,8 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
 
             $scope.query = function () {
 
-                $scope.openWindow({
-                    url: "app/views/user/user_filter.html",
+                $page.open({
+                    url: "user/user_filter.html",
                     controller: "user/user_filterCtrl",
                     params: { filter: $scope.filter }
                 });
@@ -130,9 +130,9 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
                 // need version 5.1
                 //var data = $scope.grid.obj.getRowData(rowid);
 
-                $scope.openWindow({
+                $page.open({
                     title:'asdasdasdas',
-                    url: "app/views/user/user_maintain.html",
+                    url: "user/user_maintain.html",
                     controller: 'user/user_maintainCtrl',
                     resolve:{
                         params:{
@@ -143,8 +143,9 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
             };
 
             $scope.modify = function () {
-                $scope.openWindow({
-                    url: "app/views/chat/chat.html",
+                $page.open({
+                    url: "chat/chat.html",
+                    controllerUrl:'chat/chat',
                     controller: 'chatController',
                 });
             };

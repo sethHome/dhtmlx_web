@@ -166,6 +166,7 @@ dhtmlXTreeObject.prototype._createItem = function (acheck, itemObject, mode) {
 
 //修改工具栏以支持字体图标
 dhtmlXToolbarObject.prototype.addButton = function (id, pos, text, imgEnabled, imgDisabled) {
+    
     if (imgEnabled.indexOf('.') > -1) { //addButton("new", 1, "新增", "new.gif", "new_dis.gif")
         this._addItem({ id: id, type: "button", text: text, img: imgEnabled, imgdis: imgDisabled || imgEnabled }, pos);
     } else { //addButton("comment", 2, "评论", "fa fa-comments", "green");

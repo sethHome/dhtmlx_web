@@ -1,7 +1,7 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
+define(['app', 'service/user'], function (app) {
     
     app.controller("chatController", function ($scope) {
         $scope.msg = "success";

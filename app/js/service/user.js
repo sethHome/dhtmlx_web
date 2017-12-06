@@ -3,10 +3,8 @@
  * todo using angular-resource to access data
  */
 define(['app'], function (app) {
-    app.service("userService", function ($rootScope, Restangular) {
-        var restSrv = Restangular.withConfig(function (configSetter) {
-        
-        })
+    app.service("userService", function ($rootScope) {
+        var restSrv = null;
         return {
             getUsers: function () {
                 return restSrv.all("user").getList();

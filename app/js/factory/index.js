@@ -18,7 +18,7 @@ define(['app'], function (app) {
                 //    config.headers.token = $localStorage.token;
                 //    // config.headers['X-Access-Token'] = $localStorage.token;
                 //};
-                config.headers.Authorization = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTI3MTU4MTUsIm5iZiI6MTUxMjExMTAxNX0.bYOYLM5m_gcnbfxwaSbDj-5W2Vac0TqukQQ0H3Bxlbs';
+                config.headers.Authorization = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTMxNjU1MzIsIm5iZiI6MTUxMjU2MDczMn0.HZQyXxvAUdQzTIdgjCTdyDAfsIAwIPaRAAr7dxmaxD4';
                 return config || $q.when(config);
 
                 return config;

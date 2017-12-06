@@ -11,6 +11,7 @@ define(['app'], function (app) {
                     text: "用户中心",
                     item: [
                         { id: 500, text: "组织用户", ctrl: 'user/origanation', icon: 'imoon imoon-office' },
+                        { id: 501, text: "数据字典", ctrl: 'data/dic', icon: 'imoon imoon-office' },
                     ]
                 },
                 {
