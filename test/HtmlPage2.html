@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
+    <title></title>
+</head>
+<body ng-controller="myCtrl">
+
+    <button ng-click="open()">open</button>
+
+    <script src="../assets/lib/jquery/jquery-1.11.2.js"></script>
+    <script src="angular.js"></script>
+
+    <script>
+        var app = angular.module("app", []);
+
+        app.controller("myCtrl", function ($scope, $element,$controller, $compile) {
+            $scope.open = function () {
+                var html = "<div>item:{{item | json}},<test item='item'></test></div>";
+                var scope = $scope.$new(true);
+              
+                ctrlInstantiate = $controller("maintainCtrl", {
+                    "$scope": scope,
+                    "maintainParams": {
+                        aa:11
+                    }
+                }, true);
+                ctrlInstantiate();
+
+
+                html = $compile(html)(scope);
+
+                $(document.body).append(html);
+
+
+            }
+        });
+
+        app.directive("test", function () {
+            return {
+                restrict: 'E',
+                template: '<div></div>',
+                replace: true,
+                controller: function () {
+                },
+                scope: {
+                    item: '='
+                },
+                link: function (scope, element, attrs, ctrls) {
+                   
+                    alert(scope.item);
+
+                }
+            };
+        })
+
+        app.controller("maintainCtrl", ["$scope", 'maintainParams', function ($scope,  maintainParams) {
+            debugger;
+            $scope.item = { aa: 11 };
+            $scope.msg = "maintain";
+            $scope.maintainParams = maintainParams;
+        }]);
+
+    </script>
+
+</body>
+</html>

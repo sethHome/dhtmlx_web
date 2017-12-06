@@ -1,0 +1,55 @@
+﻿<dhx-toolbar dhx-items="toolMenus">
+</dhx-toolbar>
+
+<div class="search_form">
+    <div class="row">
+        <div class="col-xs-9 pln prn">
+            <div class="col-xs-1 control-label">
+                名称
+            </div>
+            <div class="col-xs-3 control-value">
+                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="filter.tenant_id" >
+            </div>
+            <div class="col-xs-1 control-label">
+                账号 
+            </div>
+            <div class="col-xs-3 control-value">
+                <input type="text" id="Text1" placeholder="" class="form-control input-sm" ng-model="filter.tenant_name">
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+<dhx-grid dhx-obj="grid.obj"
+          dhx-auto-height="108" ,
+          dhx-url="user"
+          dhx-params="form"
+          dhx-col-sorting="'ro,ro,ed,ro'"
+          dhx-header="'编号,姓名,账号,头像'"
+          dhx-fields="ID|ID,Name,Account,PhotoImg"
+          dhx-context-menu="contextMenu"
+          dhx-handlers="grid.handlers"
+          dhx-paging="true">
+
+</dhx-grid>
+
+
+<dhx-menu dhx-load-xml-from-dom="true"
+          dhx-on-click="contextAction"
+          dhx-context-menu-mode="true"
+          dhx-menu="contextMenu">
+    <menu>
+        <item id="update" text="更新用户信息" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
+            <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+        </item>
+        <item id="ms1" type="separator"></item>
+        <item id="remove" text="删除用户">
+            <userdata name="align">left</userdata> // userdata
+        </item>
+        <item id="refreshsize" text="刷新">
+            <userdata name="align">left</userdata> // userdata
+        </item>
+    </menu>
+</dhx-menu>
+

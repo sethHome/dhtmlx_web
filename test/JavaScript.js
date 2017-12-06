@@ -184,16 +184,12 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
             self.initPartial = function (tab, ctrl, name, resolve) {
                 var init = function (render, html) {
                     render && $.isFunction(render) && render.call(this, args());
-                    
-                    var newscope = self.$scope.$new();
-                    var injectors = {
-                        "$scope": newscope,
-                        "$page": self
-                    };
 
-                    angular.extend(injectors,resolve);
+                    var newscope = self.$scope.$new(true);
 
-                    ctrlInstantiate = self.$controller(ctrl.name, injectors, true);
+                    resolve = resolve || { "$scope": newscope }
+
+                    ctrlInstantiate = self.$controller(ctrl.name, resolve, true);
 
                     ctrlInstantiate();
 
@@ -201,7 +197,7 @@ define(['app', 'config', 'controller/chat/chat'], function (app, config) {
                     html = self.$compile(tab.cell)(newscope);
 
                     newscope.$apply(); //trigger $watch in controller new scope on init
-
+                    
                 };
                 var args = function () {
                     return {

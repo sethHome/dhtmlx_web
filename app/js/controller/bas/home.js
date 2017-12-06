@@ -49,8 +49,7 @@ define(['app'], function (app) {
         };
     });
 
-    app.controller('bas/homeCtrl', ['$scope', '$element', 'homeApi', function ($scope, $element, api) {
-
+    app.controller('bas/homeCtrl', ['$scope', 'homeApi', '$page', function ($scope, homeApi, $page) {
         $scope.toolbarItems = [
        {
            id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
@@ -97,15 +96,13 @@ define(['app'], function (app) {
        { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
 
         $scope.go = function (id) {
-            $scope.creator.tabHandles.openTab({
+            $page.tabHandles.openTab({
                 id: id,
                 text:"123123",
                 ctrl: "user/origanation",
                 resolve: {
-                    justSrv: function () {
-                        return {
-                            aa:11
-                        }
+                    justSrv: {
+                        aa:11
                     }
                 }
             });
@@ -157,4 +154,5 @@ define(['app'], function (app) {
         //    grid.parse(newValue, "json");
         //});
     }]);
+    
 });

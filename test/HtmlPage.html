@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
+    <title>angular test</title>
+    <link href="ui-bootstrap-csp.css" rel="stylesheet" />
+</head>
+<body ng-controller="myCtrl">
+
+    <button ng-click="open()">open</button>
+
+    <script src="angular.js"></script>
+    <script src="angular-animate.js"></script>
+    <script src="ui-bootstrap-tpls.js"></script>
+
+    <script>
+        var app = angular.module("app", ["ui.bootstrap.tpls","ui.bootstrap.modal"]);
+
+        app.controller("myCtrl", function ($scope, $uibModal) {
+            $scope.open = function () {
+                $uibModal.open({
+                    templateUrl: 'maintain.html',
+                    controller: 'maintainCtrl',
+                    resolve: {
+                        maintainParams: function () {
+                            return {
+                                aa:11
+                            }
+                        }
+                    }
+                }).result.then(function (info) {
+                    debugger;
+                });
+            }
+        });
+
+        app.factory("testSrv", function () {
+
+            return {
+                aa: function () {
+                    return 11;
+                }
+            }
+        })
+
+        app.directive("test", function () {
+            return {
+                restrict: 'E',
+                template: '<div></div>',
+                replace: true,
+                controller: function () {
+                },
+                scope: {
+                    item: '='
+                },
+                link: function (scope, element, attrs, ctrls) {
+
+                    alert(scope.item);
+
+                }
+            };
+        })
+
+        app.controller("maintainCtrl", ['$scope', 'testSrv', 'maintainParams', function ($scope, testSrv, maintainParams) {
+            $scope.msg = "maintain";
+        }]);
+       
+    </script>
+</body>
+</html>

@@ -619,7 +619,7 @@ define(['app'], function (app) {
             link: function (scope, element, attrs, ctrls) {
                 var layoutCtrl = ctrls[0];
                 var windowCtrl = ctrls[1];
-
+                
                 var setCell = function (layout) {
 
                     for (var i = 0; i < scope.panes.length; i++) {
@@ -649,7 +649,7 @@ define(['app'], function (app) {
                         scope.dhxWhenDone(layout);
                     }
                 }
-
+                
                 if (windowCtrl == null) {
                     $(element).empty();
                     $('<div></div>').appendTo(element[0]);
@@ -687,9 +687,9 @@ define(['app'], function (app) {
                     });
                     if (scope.dhxObj)
                         scope.dhxObj = layout;
-                    layout.setSizes();
 
                     setCell(layout);
+                    layout.setSizes();
                 } else if (windowCtrl != null) {
                     windowCtrl.registerLayoutCallbak(function (win) {
                         var layout = win.attachLayout({
@@ -772,7 +772,7 @@ define(['app'], function (app) {
             },
             link: function (scope, element, attrs, ctrls) {
                 var layoutCtl = ctrls[0];
-
+                
                 var eventmap = {};
                 scope.dhxItems.map(function (item) {
                     if (item.action) {

@@ -2,9 +2,9 @@
  * Created by liuhuisheng on 2015/2/28.
  */
 define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
-    app.controller('user/origanationCtrl', ['$scope', '$element', '$http', '$compile', 'userService',
-        function ($scope, $element, $http, $compile, userService) {
-            debugger;
+    app.controller('user/origanationCtrl', ['$scope', '$page','userService',
+        function ($scope, userService, $page) {
+            
             $scope.treeToolMenus = [
                { id: "new1", type: "button", img: "new.gif", text: "添加部门", action: "addClick" },
                { id: "new2", type: "button", img: "new.gif", text: "添加子部门", action: "addClick" },
