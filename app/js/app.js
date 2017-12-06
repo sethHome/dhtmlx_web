@@ -64,24 +64,39 @@
         $resourceProvider.defaults.stripTrailingSlashes = false;
     });
 
-    app.run(function ($rootScope, $http, $compile) {
+    app.run(function ($rootScope, $http, $compile, $controller) {
 
         $rootScope.openWindow = function (option) {
           
             $http.get(option.url).success(function (html) {
 
                 var newScope = $rootScope.$new();
-                newScope.$params = option.params;
+               
+                var injectors = {
+                    "$scope": newScope
+                };
 
-                var id = "win_" + app.genStr(6);
+                angular.extend(injectors, option.resolve);
 
-                if (angular.isFunction(option.controller)) {
-                    var fn = $compile(html);
-                    $(document.body).append(fn(newScope, option.controller));
-                }else if (option.controller) {
-                    var html = $(html).attr("id", id).attr("ng-controller", option.controller);
-                    $(document.body).append($compile(html)(newScope));
-                }
+                ctrlInstantiate = $controller(option.controller, injectors, true, option.controllerAs);
+
+                ctrlInstantiate();
+
+                var angularWin = angular.element('<dhx-window></dhx-window');
+
+                angularWin.attr({
+                    'dhx-text': option.title,
+                    'dhx-height': option.height ? height : 400,
+                    'dhx-width': option.width ? width : 500,
+                    'dhx-show-inner-scroll': option.scroll,
+                    'dhx-btn-stick': option.stick,
+                }).append(html);
+
+                var angularDomEl = angular.element('<dhx-windows></dhx-windows>')
+                    .append(angularWin);
+
+                angularDomEl = $compile(angularDomEl)(newScope);
+                angular.element("body").append(angularDomEl);
             });
         }
     });

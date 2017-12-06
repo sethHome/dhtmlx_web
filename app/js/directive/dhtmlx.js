@@ -1086,7 +1086,7 @@ define(['app'], function (app) {
                 dhxMove: '=',
                 dhxPark: '=',
                 dhxResize: '=',
-                dhxText: '=',
+                dhxText: '@',
                 dhxTop: '=',
                 dhxWidth: '=',
                 dhxBtnClose: '=',

@@ -3,7 +3,7 @@
  */
 define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
     app.controller('user/origanationCtrl', ['$scope', '$page','userService',
-        function ($scope, userService, $page) {
+        function ($scope,$page,userService) {
             
             $scope.treeToolMenus = [
                { id: "new1", type: "button", img: "new.gif", text: "添加部门", action: "addClick" },
@@ -131,9 +131,14 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
                 //var data = $scope.grid.obj.getRowData(rowid);
 
                 $scope.openWindow({
+                    title:'asdasdasdas',
                     url: "app/views/user/user_maintain.html",
                     controller: 'user/user_maintainCtrl',
-                    params: { rowid: rowid }
+                    resolve:{
+                        params:{
+                            rowid: rowid
+                        }
+                    }
                 });
             };
 
@@ -195,12 +200,12 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
             $scope.contextMenu2 = {};
         }]);
 
-    app.controller("user/user_maintainCtrl", function ($scope) {
-        if ($scope.$params.rowid > 0) {
-            $scope.title = "更新用户";
-        } else {
-            $scope.title = "新增用户";
-        }
+    app.controller("user/user_maintainCtrl", function ($scope,params) {
+        //if (params.rowid > 0) {
+        //    $scope.title = "更新用户";
+        //} else {
+        //    $scope.title = "新增用户";
+        //}
 
         $scope.toolMenus = [
              { id: "new", type: "button", img: "save.gif", text: "保存", title: "Tooltip here", action: "saveUser" },
