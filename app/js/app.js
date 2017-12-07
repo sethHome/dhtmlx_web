@@ -1,7 +1,7 @@
 ﻿define(['app', 'config'], function (app, config) {
     'use strict';
  
-    var app = angular.module('chituApp', ['ngResource']);
+    var app = angular.module('chituApp', ['ngResource', 'restangular']);
 
     app.init = function () {
         angular.bootstrap(document, ['chituApp']);

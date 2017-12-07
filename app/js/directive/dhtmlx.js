@@ -1,7 +1,4 @@
-﻿/**
- * Created by liuhuisheng on 2015/2/28.
- */
-define(['app'], function (app) {
+﻿define(['app'], function (app) {
     app.directive('dhtmlxgrid', function ($resource, $compile) {
         return {
             restrict: 'A',
@@ -963,7 +960,11 @@ define(['app'], function (app) {
                     }
                     // Finally parsing data
                     //tree.parse(scope.dhxJsonData, "json");
-                    tree.loadJSONObject(scope.dhxJsonData);
+                    scope.$watch("dhxJsonData", function (newval, oldval) {
+                        if (newval) {
+                            tree.loadJSONObject(scope.dhxJsonData);
+                        }
+                    });
 
                     // Letting controller do data manipulation after data has been loaded
 

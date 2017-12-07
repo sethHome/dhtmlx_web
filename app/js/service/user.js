@@ -1,10 +1,6 @@
-﻿/**
- * Created by liuhuisheng on 2015/2/28.
- * todo using angular-resource to access data
- */
-define(['app'], function (app) {
+﻿define(['app'], function (app) {
     app.service("userService", function ($rootScope) {
-        var restSrv = null;
+        var restSrv = app.getRestSrv();
         return {
             getUsers: function () {
                 return restSrv.all("user").getList();

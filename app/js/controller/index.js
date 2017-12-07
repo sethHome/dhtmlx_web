@@ -1,8 +1,9 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'config', 'directive/dhtmlx'], function (app, config) {
-    app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', function ($scope, $rootScope, $compile, $controller, myApi, $timeout) {
+define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, config) {
+    app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout','Restangular',
+        function ($scope, $rootScope, $compile, $controller, myApi, $timeout, Restangular) {
         //get data from the api service
         $scope.menus = myApi.getMenus();
         $scope.tasks = myApi.getTasks();
@@ -62,6 +63,12 @@ define(['app', 'config', 'directive/dhtmlx'], function (app, config) {
         };
 
         $scope.appRoot = app.getAppRoot();
+
+        app.getRestSrv = function () {
+            return Restangular.withConfig(function (configSetter) {
+                configSetter.setBaseUrl(config.webapi);
+            });
+        }
     }]);
 
     app.layoutCreator = function () {
@@ -1197,4 +1204,6 @@ define(['app', 'config', 'directive/dhtmlx'], function (app, config) {
         for (var q = 0; q < w; q++) s += z.charAt(Math.round(Math.random() * (z.length - 1)));
         return s;
     };
+
+    
 });

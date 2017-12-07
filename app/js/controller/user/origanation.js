@@ -1,9 +1,9 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
-    app.controller('user/origanationCtrl', ['$scope', '$page','userService',
-        function ($scope,$page,userService) {
+define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app) {
+    app.controller('user/origanationCtrl', ['$scope', '$page','userService','orgService',
+        function ($scope, $page, userService, orgService) {
             
             $scope.treeToolMenus = [
                 { id: "new1", type: "button", iconClass: "icon-bell", text: "添加部门", action: "addClick" },
@@ -33,76 +33,30 @@ define(['app', 'directive/dhtmlx', 'service/user'], function (app) {
                { type: "separator" },
                { id: "querymore", type: "button", img: "page.gif", text: "高级查询", action: "query" }];
 
+            $scope.orgMenus = [
+                { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
+               { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "modify" },
+            ];
+            orgService.getDepartment().then(function (data) {
+                var orgs = paraseTreeData(data);
+                $scope.treeData = {
+                    "id": 0,
+                    "item": orgs
+                };
+            });
 
-            $scope.treeData = {
-                "id": 0,
-                "item": [
-                  {
-                      "id": "D0",
-                      "text": "xxxx集团",
-                      "item": [
-                        {
-                            "id": "D0-1",
-                            "text": "设计院",
-                            "item": [
-                                {
-                                    "id": "D0-1-1",
-                                    "text": "院长室",
-                                },
-                                {
-                                    "id": "D0-1-2",
-                                    "text": "办公室",
-                                },
-                                {
-                                    "id": "D0-1-3",
-                                    "text": "财务部",
-                                },
-                                {
-                                    "id": "D0-1-4",
-                                    "text": "线路室",
-                                    "item": [
-                                        {
-                                            "id": "D0-1-4-1",
-                                            "text": "走线",
-                                        },
-                                         {
-                                             "id": "D0-1-4-2",
-                                             "text": "建筑",
-                                         },
-                                    ]
-                                },
-                                {
-                                    "id": "D0-1-5",
-                                    "text": "变电室",
-                                    "item": [
-                                         {
-                                             "id": "D0-1-5-1",
-                                             "text": "变电一次",
-                                         },
-                                          {
-                                              "id": "D0-1-5-2",
-                                              "text": "变电二次",
-                                          },
-                                    ]
-                                },
-                                {
-                                    "id": "D0-1-6",
-                                    "text": "综合部",
-                                },
-                                {
-                                    "id": "D0-1-7",
-                                    "text": "出版室",
-                                },
-                            ]
-                        },
-                        {
-                            "id": "D0-2",
-                            "text": "分公司"
-                        }
-                      ]
-                  },
-                ]
-            };
+            var paraseTreeData = function (nodes) {
+                var newNodes = [];
+                angular.forEach(nodes, function (node) {
+                    var newNode = {
+                        id: node.Key,
+                        text: node.Name
+                    };
+                    newNode.item = paraseTreeData(node.SubDepartments);
+                    newNodes.push(newNode);
+                });
+                return newNodes;
+            }
 
             $scope.treeDataLoaded = function (tree) {
                 console.log('Data has been loaded!');

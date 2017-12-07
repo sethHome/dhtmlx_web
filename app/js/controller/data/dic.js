@@ -1,16 +1,22 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app'], function (app) {
+define(['app', 'service/data'], function (app) {
 
-    app.controller("data/dicCtrl", function ($scope, $page) {
+    app.controller("data/dicCtrl", function ($scope, $page, dataService) {
 
         $scope.treeToolMenus = [
-            { id: "new1", type: "button", iconClass: "icon-bell", text: "添加部门", action: "addClick" },
-            { id: "new2", type: "button", img: "new.gif", text: "添加子部门", action: "addClick" },
-            { type: "separator" },
-            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
-            { type: "separator" }];
+           {
+               id: "queryType", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_cut0",
+               options: [
+                   { type: "button", id: "edit_cut0", text: "全部", img: "cut.gif" },
+                   { type: "button", id: "edit_cut1", text: "System2", img: "cut.gif" },
+                   { type: "button", id: "edit_copy2", text: "System3", img: "copy.gif" },
+                   { type: "button", id: "edit_copy3", text: "System4", img: "copy.gif" },
+               ]
+           },
+            { id: "querytext", type: "buttonInput", width: 120 },
+            { id: "query", type: "button", img: "page.gif", text: "查询" }];
 
         $scope.toolMenus = [
             { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
@@ -33,40 +39,34 @@ define(['app'], function (app) {
             { type: "separator" },
             { id: "querymore", type: "button", img: "page.gif", text: "高级查询", action: "query" }];
 
+        dataService.all().then(function (data) {
+            var items = paraseTreeData(data);
+            $scope.treeData = {
+                "id": 0,
+                "item": items
+            };
 
-        $scope.treeData = {
-            "id": 0,
-            "item": [
-                {
-                    "id": "D0",
-                    "text": "项目管理系统",
-                    "item": [
-                        {
-                            "id": "D0-1",
-                            "text": "项目类型",
-                        },
-                        {
-                            "id": "D0-2",
-                            "text": "工程类型"
-                        }
-                    ]
-                },
-                {
-                    "id": "D1",
-                    "text": "数字档案馆",
-                    "item": [
-                        {
-                            "id": "D1-1",
-                            "text": "项目类型",
-                        },
-                        {
-                            "id": "D1-2",
-                            "text": "工程类型"
-                        }
-                    ]
-                },
-            ]
-        };
+        })
+
+        var paraseTreeData = function (nodes) {
+            var newNodes = [];
+            angular.forEach(nodes, function (sysNode) {
+                var treeNode = {
+                    id: sysNode.Key,
+                    text: sysNode.Key,
+                    item:[]
+                };
+                angular.forEach(sysNode.Enums, function (enumNode) {
+                    treeNode.item.push({
+                        id: enumNode.Key,
+                        text: enumNode.Text,
+                        item:[]
+                    });
+                });
+                newNodes.push(treeNode);
+            });
+            return newNodes;
+        }
 
         $scope.treeDataLoaded = function (tree) {
             console.log('Data has been loaded!');
@@ -75,7 +75,9 @@ define(['app'], function (app) {
         $scope.treeHandlers = [
             {
                 type: "onClick",
-                handler: function (id) {
+                handler: function (id, a, b, c) {
+                    debugger;
+                    var tree = this;
                     console.log('You have clicked \'' + id + '\'');
                 }
             }
