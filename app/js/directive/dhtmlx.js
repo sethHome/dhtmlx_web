@@ -538,6 +538,23 @@
                     }
                     // Finally parsing data
 
+
+                    scope.$watch("dhxData", function (newval, oldval) {
+
+                        if (newval) {
+                            var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
+                            switch (dhxDataFormat) {
+                                case 'Basic JSON':
+                                    debugger;
+                                    grid.parse(scope.dhxData, 'json');
+                                    break;
+                                case 'Native JSON':
+                                    grid.load(scope.dhxData, 'js');
+                                    break;
+                            }
+                        }
+                    });
+
                     if (scope.dhxData !== null && scope.dhxData !== undefined) {
                         var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
                         switch (dhxDataFormat) {

@@ -39,11 +39,12 @@
 
 
         <dhx-grid dhx-obj="grid.obj"
-                  dhx-url="user"
+                  dhx-data="enumItems"
+               
                   dhx-params="form"
                   dhx-col-sorting="'ro,ro,ro'"
                   dhx-header="'编号,内容,排序'"
-                  dhx-fields="ID|ID,Name,Account"
+                  dhx-fields="Key|Key,Text,Value"
                   dhx-context-menu="contextMenu2"
                   dhx-handlers="grid.handlers">
 

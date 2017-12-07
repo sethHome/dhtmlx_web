@@ -8,6 +8,9 @@
             all: function () {
                 return restSrv.all("enum").getList();
             },
+            getEnumItem: function (system,name) {
+                return restSrv.one("enum", name).get({ "system": system});
+            },
             // enum
             addEnum: function (data) {
                 return restSrv.all("enum").customPOST(data, $rootScope.currentBusiness.Key);

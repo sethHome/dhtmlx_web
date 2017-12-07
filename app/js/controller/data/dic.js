@@ -54,13 +54,19 @@ define(['app', 'service/data'], function (app) {
                 var treeNode = {
                     id: sysNode.Key,
                     text: sysNode.Key,
+                    open : true,
+                    userdata: {
+                        name1: "value1", name2: "value2"
+                    },
                     item:[]
                 };
                 angular.forEach(sysNode.Enums, function (enumNode) {
                     treeNode.item.push({
                         id: enumNode.Key,
                         text: enumNode.Text,
-                        item:[]
+                        userdata: {
+                            name1: "value1", name2: "value2"
+                        }
                     });
                 });
                 newNodes.push(treeNode);
@@ -76,9 +82,16 @@ define(['app', 'service/data'], function (app) {
             {
                 type: "onClick",
                 handler: function (id, a, b, c) {
-                    debugger;
-                    var tree = this;
-                    console.log('You have clicked \'' + id + '\'');
+                   
+                    var tree = $scope.dhxTree;
+                    var pid = tree.getParentId(id);
+                    console.log(pid);
+
+
+                    dataService.getEnumItem(pid, id).then(function (data) {
+                        debugger;
+                        $scope.enumItems = { rows: data.Items}
+                    });
                 }
             }
         ];
