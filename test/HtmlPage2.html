@@ -7,38 +7,30 @@
 
     <button ng-click="open()">open</button>
 
+    <test item="a"></test>
+
+    <test item="b"></test>
+
     <script src="../assets/lib/jquery/jquery-1.11.2.js"></script>
     <script src="angular.js"></script>
 
     <script>
         var app = angular.module("app", []);
 
-        app.controller("myCtrl", function ($scope, $element,$controller, $compile) {
+        app.controller("myCtrl", function ($scope, $element, $controller, $compile) {
             $scope.open = function () {
-                var html = "<div>item:{{item | json}},<test item='item'></test></div>";
-                var scope = $scope.$new(true);
-              
-                ctrlInstantiate = $controller("maintainCtrl", {
-                    "$scope": scope,
-                    "maintainParams": {
-                        aa:11
-                    }
-                }, true);
-                ctrlInstantiate();
-
-
-                html = $compile(html)(scope);
-
-                $(document.body).append(html);
-
+                $scope.b = [{ b: 222 }, { b: 3333 }, { b: 444 }];
 
             }
+
+            $scope.a = [{ a: 111 }, { a: 222 }];
+            $scope.b = [{ b: 222 }, { b: 3333 }];
         });
 
         app.directive("test", function () {
             return {
                 restrict: 'E',
-                template: '<div></div>',
+                template: '<div>{{item | json}}</div>',
                 replace: true,
                 controller: function () {
                 },
@@ -46,19 +38,15 @@
                     item: '='
                 },
                 link: function (scope, element, attrs, ctrls) {
-                   
-                    alert(scope.item);
 
+                    scope.$watch("item", function (newval, oldval) {
+                        alert(newval);
+                    });
                 }
             };
         })
 
-        app.controller("maintainCtrl", ["$scope", 'maintainParams', function ($scope,  maintainParams) {
-            debugger;
-            $scope.item = { aa: 11 };
-            $scope.msg = "maintain";
-            $scope.maintainParams = maintainParams;
-        }]);
+   
 
     </script>
 

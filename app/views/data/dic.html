@@ -34,54 +34,31 @@
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="字典数据">
 
-        <dhx-toolbar dhx-items="toolMenus">
+        <dhx-toolbar dhx-items="itemToolMenus">
         </dhx-toolbar>
 
 
         <dhx-grid dhx-obj="grid.obj"
                   dhx-data="enumItems"
-               
-                  dhx-params="form"
-                  dhx-col-sorting="'ro,ro,ro'"
-                  dhx-header="'编号,内容,排序'"
+                  dhx-col-types="'ro,ed,edn'"
+                  dhx-header="'Key,Value,Order'"
                   dhx-fields="Key|Key,Text,Value"
-                  dhx-context-menu="contextMenu2"
                   dhx-handlers="grid.handlers">
 
         </dhx-grid>
 
 
-        <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="contextAction"
-                  dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu2">
-            <menu>
-                <item id="update" text="更新用户信息" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
-                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
-                </item>
-                <item id="ms1" type="separator"></item>
-                <item id="remove" text="删除用户">
-                    <userdata name="align">left</userdata> // userdata
-                </item>
-                <item id="refreshsize" text="刷新">
-                    <userdata name="align">left</userdata> // userdata
-                </item>
-            </menu>
-        </dhx-menu>
-
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="字典属性">
-        <dhx-toolbar dhx-items="toolMenus">
+        <dhx-toolbar dhx-items="attrToolMenus">
         </dhx-toolbar>
         
-        <dhx-grid dhx-obj="grid.obj"
-                  dhx-url="user"
-                  dhx-params="form"
-                  dhx-col-sorting="'ro,ro'"
+        <dhx-grid dhx-obj="grid2.obj"
+                  dhx-data="enumItemAttrs"
+                  dhx-col-types="'ed,ed'"
                   dhx-header="'Key,Value'"
-                  dhx-fields="ID|ID,Name,"
-                  dhx-context-menu="contextMenu2"
-                  dhx-handlers="grid.handlers">
+                  dhx-fields="Key|Key,Value"
+                  dhx-handlers="grid2.handlers">
 
         </dhx-grid>
     </dhx-layout-cell>

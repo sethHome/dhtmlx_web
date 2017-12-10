@@ -18,27 +18,14 @@ define(['app', 'service/data'], function (app) {
             { id: "querytext", type: "buttonInput", width: 120 },
             { id: "query", type: "button", img: "page.gif", text: "查询" }];
 
-        $scope.toolMenus = [
-            { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
-            { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "modify" },
-            { type: "separator" },
-            { id: "reset", type: "button", img: "undo.gif", text: "重置密码", action: "resetPsw" },
-            { type: "separator" },
-            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
-            { type: "separator" },
-            {
-                id: "queryType", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_cut1",
-                options: [
-                    { type: "button", id: "edit_cut1", text: "用户名称", img: "cut.gif" },
-                    { type: "button", id: "edit_copy2", text: "用户账号", img: "copy.gif" },
-                    { type: "button", id: "edit_copy3", text: "用户编号", img: "copy.gif" },
-                ]
-            },
-            { id: "querytext", type: "buttonInput", width: 120 },
-            { id: "query", type: "button", img: "page.gif", text: "查询" },
-            { type: "separator" },
-            { id: "querymore", type: "button", img: "page.gif", text: "高级查询", action: "query" }];
-
+        $scope.itemToolMenus = [
+            { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addItem" },
+            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "removeItem"},
+            ];
+        $scope.attrToolMenus = [
+            { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addAttr" },
+            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "removeAttr" },
+        ];
         dataService.all().then(function (data) {
             var items = paraseTreeData(data);
             $scope.treeData = {
@@ -89,8 +76,12 @@ define(['app', 'service/data'], function (app) {
 
 
                     dataService.getEnumItem(pid, id).then(function (data) {
-                        debugger;
-                        $scope.enumItems = { rows: data.Items}
+                      
+                        $scope.enumItems = {
+                            //pageCount : 0,
+                            rows: data.Items,
+                            total: data.Items.length
+                        }
                     });
                 }
             }
@@ -105,20 +96,19 @@ define(['app', 'service/data'], function (app) {
             });
         }
 
-        $scope.addClick = function (rowid) {
-            // need version 5.1
-            //var data = $scope.grid.obj.getRowData(rowid);
+        $scope.addItem = function () {
+            $scope.grid.obj.addRow($scope.grid.obj.uid(), ["*", "New Value","0"], 99);
+        };
+        $scope.addAttr = function () {
+            $scope.grid2.obj.addRow($scope.grid2.obj.uid(), ["*", "New Value"], 99);
+        };
 
-            $page.open({
-                title: 'asdasdasdas',
-                url: "user/user_maintain.html",
-                controller: 'user/user_maintainCtrl',
-                resolve: {
-                    params: {
-                        rowid: rowid
-                    }
-                }
-            });
+        $scope.removeItem = function () {
+            
+            $scope.grid.obj.deleteSelectedItem()
+        };
+        $scope.removeAttr = function () {
+            $scope.grid2.obj.deleteSelectedItem()
         };
 
         $scope.modify = function () {
@@ -150,8 +140,36 @@ define(['app', 'service/data'], function (app) {
             },
             handlers: [
                 {
-                    type: "onRowSelect", handler: function (id) {
-                        //$scope.grid.obj.deleteRow(id);
+                    type: "onRowSelect", handler: function (id, index) {
+                        var rowIndex = $scope.grid.obj.getRowIndex(id);
+
+                        var tags = $scope.enumItems.rows[rowIndex].Tags;
+
+                        var tagSource = { rows: [], total:0};
+                        for (var tag in tags) {
+                            
+                            tagSource.rows.push({ Key: tag, Value: tags[tag] });
+                        }
+                        $scope.$apply(function () {
+                            tagSource.total = tagSource.rows.length; 
+                            $scope.enumItemAttrs = tagSource;
+                        });
+                    }
+                }
+            ]
+        };
+
+        $scope.grid2 = {
+            obj: {
+                unload: function () {
+                    //...
+                }
+            },
+            handlers: [
+                {
+                    type: "onRowSelect", handler: function (id, index) {
+
+
                     }
                 }
             ]

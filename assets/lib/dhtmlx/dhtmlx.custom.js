@@ -373,6 +373,7 @@ dhtmlXGridObject.prototype.setQuery = function () {
 };
 
 dhtmlXGridObject.prototype.convertSource = function (data) {
+    
     return {
         pageCount:data.PageCount,
         rows: data.Source,

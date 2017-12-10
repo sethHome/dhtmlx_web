@@ -1,4 +1,4 @@
-﻿define(['app'], function (app) {
+﻿define(['app', 'config'], function (app, config) {
     app.directive('dhtmlxgrid', function ($resource, $compile) {
         return {
             restrict: 'A',
@@ -536,17 +536,24 @@
                         $(window).resize(resizeGrid);
                         resizeGrid();
                     }
+
+
+                    var myDataProcessor = new dataProcessor(config.webapi);
+                    myDataProcessor.init(grid); // link dataprocessor to the grid
+                    myDataProcessor.setTransactionMode("REST", false);
+                   
                     // Finally parsing data
-
-
                     scope.$watch("dhxData", function (newval, oldval) {
-
+                        
                         if (newval) {
+                            
                             var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
                             switch (dhxDataFormat) {
                                 case 'Basic JSON':
-                                    debugger;
+                                    grid.clearAll();
                                     grid.parse(scope.dhxData, 'json');
+                                    //grid.callEvent("onXLE", [grid, 0, 0, scope.dhxData]);
+
                                     break;
                                 case 'Native JSON':
                                     grid.load(scope.dhxData, 'js');
@@ -556,15 +563,15 @@
                     });
 
                     if (scope.dhxData !== null && scope.dhxData !== undefined) {
-                        var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
-                        switch (dhxDataFormat) {
-                            case 'Basic JSON':
-                                grid.parse(scope.dhxData, 'json');
-                                break;
-                            case 'Native JSON':
-                                grid.load(scope.dhxData, 'js');
-                                break;
-                        }
+                        //var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
+                        //switch (dhxDataFormat) {
+                        //    case 'Basic JSON':
+                        //        grid.parse(scope.dhxData, 'json');
+                        //        break;
+                        //    case 'Native JSON':
+                        //        grid.load(scope.dhxData, 'js');
+                        //        break;
+                        //}
                     } else if (scope.dhxUrl) {
                         var url = app.getApiUrl(scope.dhxUrl);
                         var param = scope.dhxParams || {};
