@@ -7,7 +7,7 @@ define(['app', 'service/data'], function (app) {
 
         $scope.treeToolMenus = [
            {
-               id: "queryType", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_cut0",
+               id: "queryType", type: "buttonSelect", img: "new.gif",img_disabled: "open_dis.gif", text: "Select", mode: "select", selected: "edit_cut0",
                options: [
                    { type: "button", id: "edit_cut0", text: "全部", img: "cut.gif" },
                    { type: "button", id: "edit_cut1", text: "System2", img: "cut.gif" },
@@ -16,7 +16,7 @@ define(['app', 'service/data'], function (app) {
                ]
            },
             { id: "querytext", type: "buttonInput", width: 120 },
-            { id: "query", type: "button", img: "page.gif", text: "查询" }];
+            { id: "query", type: "button", img: "page.gif", img_disabled: "page_dis.gif", text: "查询" }];
 
         $scope.itemToolMenus = [
             { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addItem" },

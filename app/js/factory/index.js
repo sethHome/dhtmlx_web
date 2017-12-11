@@ -14,14 +14,8 @@ define(['app'], function (app) {
             //},
             'request': function (config) {
                 config.headers = config.headers || {};
-                //if ($localStorage.token) {
-                //    config.headers.token = $localStorage.token;
-                //    // config.headers['X-Access-Token'] = $localStorage.token;
-                //};
-                config.headers.Authorization = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTMyMTUxOTYsIm5iZiI6MTUxMjYxMDM5Nn0.R-3xXUXL1LIkCPKuje0fgdi3ogFgpaN_7phbADW4byk';
+                config.headers.Authorization = app.getAuthorization();
                 return config || $q.when(config);
-
-                return config;
             },
             'requestError': function (config) {
                 // ......

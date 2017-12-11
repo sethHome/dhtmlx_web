@@ -50,50 +50,108 @@ define(['app'], function (app) {
     });
 
     app.controller('bas/homeCtrl', ['$scope', 'homeApi', '$page', function ($scope, homeApi, $page) {
+        //$scope.toolbarItems = [
+        //    {
+        //        id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
+        //            {
+        //                id: "new1", type: "button", img: "paste_dis.gif", text: "经营",
+        //                options: [
+        //                    { id: "new12", type: "button", img: "paste_dis.gif", text: "生产" },
+        //                    { id: "new13", type: "button", img: "paste_dis.gif", text: "图档" },
+        //                    { id: "new14", type: "button", img: "paste_dis.gif", text: "质量" },
+        //                ]
+        //            },
+        //            { id: "new2", type: "button", img: "paste_dis.gif", text: "生产" },
+        //            { id: "new3", type: "button", img: "paste_dis.gif", text: "图档" },
+        //            { id: "new4", type: "button", img: "paste_dis.gif", text: "质量" },
+        //            { id: "new5", type: "button", img: "paste_dis.gif", text: "绩效" },
+        //            { id: "new6", type: "button", img: "paste_dis.gif", text: "综合办公" },
+        //        ]
+        //    },
+        //    {
+        //        id: "task", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", options: [
+        //            { id: "task1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
+        //            { id: "task2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
+        //            { id: "task3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
+        //            { id: "task4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
+        //            { id: "task5", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
+        //            { id: "task6", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
+        //            { id: "task7", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
+        //        ]
+        //    },
+        //    {
+        //        id: "form", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", options: [
+        //            { id: "form1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
+        //            { id: "form2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
+        //            { id: "form3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
+        //            { id: "form4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
+        //        ]
+        //    },
+
+        //    { type: "separator" },
+        //    {
+        //        id: "edit", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_paste",
+        //        options: [
+        //            { type: "button", id: "edit_cut", text: "项目", img: "cut.gif" },
+        //            { type: "button", id: "edit_copy", text: "工程", img: "copy.gif" },
+        //            { type: "button", id: "edit_paste1", text: "合同", img: "paste.gif" },
+        //            { type: "button", id: "edit_paste", text: "客户", img: "paste.gif" },
+        //            { type: "button", id: "edit_paste2", text: "任务", img: "paste.gif" },
+        //        ]
+        //    },
+        //    { id: "querytext", type: "buttonInput", width: 120 },
+        //    { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
+
+        $scope.news = [
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+        ];
+
         $scope.toolbarItems = [
             {
-                id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
-                    { id: "new1", type: "button", img: "paste_dis.gif", text: "快速访问1", action: "go" },
-                    { id: "new2", type: "button", img: "paste_dis.gif", text: "快速访问2", action: "go" },
-                    { id: "new3", type: "button", img: "paste_dis.gif", text: "快速访问3", action: "go" },
-                    { id: "new4", type: "button", img: "paste_dis.gif", text: "快速访问4", action: "go" },
-                    { id: "new5", type: "button", img: "paste_dis.gif", text: "快速访问5", action: "go" },
-                    { id: "new6", type: "button", img: "paste_dis.gif", text: "快速访问6", action: "go" },
+                id: "new", img: "open.gif", text: "快速访问", items: [
+                    {
+                        id: "new1", img: "paste_dis.gif", text: "经营",
+                        items: [
+                            { id: "new12", img: "paste_dis.gif", text: "工程管理" },
+                            { id: "new13", img: "paste_dis.gif", text: "合同管理" },
+                            { id: "new14", img: "paste_dis.gif", text: "任务单" },
+                        ]
+                    },
+                    { id: "new2", img: "paste_dis.gif", text: "生产" },
+                    { id: "new3", img: "paste_dis.gif", text: "图档" },
+                    { id: "new4", img: "paste_dis.gif", text: "质量" },
+                    { id: "new5", img: "paste_dis.gif", text: "绩效" },
+                    { id: "new6", img: "paste_dis.gif", text: "综合办公" },
                 ]
             },
             {
-                id: "task", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", options: [
-                    { id: "task1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
-                    { id: "task2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
-                    { id: "task3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
-                    { id: "task4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
-                    { id: "task5", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
-                    { id: "task6", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
-                    { id: "task7", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
+                id: "task", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", items: [
+                    { id: "task1", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
+                    { id: "task2", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
+                    { id: "task3", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
+                    { id: "task4", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
+                    { id: "task5", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
+                    { id: "task6", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
+                    { id: "task7", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
                 ]
             },
-            {
-                id: "form", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", options: [
-                    { id: "form1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
-                    { id: "form2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
-                    { id: "form3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
-                    { id: "form4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
+             {
+                id: "form", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", items: [
+                    { id: "form1", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
+                    { id: "form2", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
+                    { id: "form3", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
+                    { id: "form4", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
                 ]
-            },
-
-            { type: "separator" },
-            {
-                id: "edit", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_paste",
-                options: [
-                    { type: "button", id: "edit_cut", text: "项目", img: "cut.gif" },
-                    { type: "button", id: "edit_copy", text: "工程", img: "copy.gif" },
-                    { type: "button", id: "edit_paste1", text: "合同", img: "paste.gif" },
-                    { type: "button", id: "edit_paste", text: "客户", img: "paste.gif" },
-                    { type: "button", id: "edit_paste2", text: "任务", img: "paste.gif" },
-                ]
-            },
-            { id: "querytext", type: "buttonInput", width: 120 },
-            { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
+            },];
 
         $scope.go = function (id) {
             $page.go({

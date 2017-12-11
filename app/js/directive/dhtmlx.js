@@ -419,7 +419,8 @@
 
                 dhxContextMenu: '=',
                 dhxAutoHeight: '@',
-                dhxPaging: '='
+                dhxPaging: '=',
+                dhxProcessorUrl : '@'
             },
             link: function (scope, element, attrs, ctls) {
 
@@ -537,10 +538,17 @@
                         resizeGrid();
                     }
 
-
-                    var myDataProcessor = new dataProcessor(config.webapi);
-                    myDataProcessor.init(grid); // link dataprocessor to the grid
-                    myDataProcessor.setTransactionMode("REST", false);
+                    if (scope.dhxProcessorUrl) {
+                        var myDataProcessor = new dataProcessor(config.webapi + "/" + scope.dhxProcessorUrl + "/");
+                        myDataProcessor.init(grid); // link dataprocessor to the grid
+                        var authCode = app.getAuthorization();
+                        myDataProcessor.setTransactionMode({
+                            mode: "REST",
+                            headers: {
+                                Authorization: authCode
+                            }
+                        }, false);
+                    }
                    
                     // Finally parsing data
                     scope.$watch("dhxData", function (newval, oldval) {
@@ -841,7 +849,7 @@
     app.directive('dhxMenu', function factory(DhxUtils) {
         return {
             restrict: 'E',
-            require: 'dhxMenu',
+            require: ['?^^dhxLayoutCell'],
             controller: function () {
             },
             scope: {
@@ -865,46 +873,64 @@
                 dhxContextZones: '=',
                 dhxContextAsParent: '='
             },
-            link: function (scope, element/*, attrs, menuCtrl*/) {
+            link: function (scope, element, attrs, ctrls) {
                 //noinspection JSPotentiallyInvalidConstructorUsage
-
+                var layoutCtl = ctrls[0];
                 var domChild = $(element).children().first().detach();
 
-                var menu = new dhtmlXMenuObject(scope.dhxContextMenuMode ? undefined : element[0]);
-                scope.dhxMenu ? scope.dhxMenu = menu : '';
+                var setMenu = function (menu) {
+                    menu.setSkin("dhx_skyblue");
+                    menu.setIconsPath(app.getProjectRoot("assets/img/btn/"));
 
-                scope.dhxContextMenuMode ? menu.renderAsContextMenu() : undefined;
+                    scope.dhxMenu ? scope.dhxMenu = menu : '';
 
-                if (scope.dhxContextZones) {
-                    scope.dhxContextZones.forEach(function (zone) {
-                        menu.addContextZone(zone);
-                    });
+                    scope.dhxContextMenuMode ? menu.renderAsContextMenu() : undefined;
+
+                    if (scope.dhxContextZones) {
+                        scope.dhxContextZones.forEach(function (zone) {
+                            menu.addContextZone(zone);
+                        });
+                    }
+
+                    if (scope.dhxContextAsParent) {
+                        menu.addContextZone($(element).parent()[0]);
+                    }
+
+                    if (scope.dhxOnClick) {
+                        DhxUtils.attachDhxHandlers(menu, [
+                          {
+                              type: 'onClick',
+                              handler: scope.dhxOnClick
+                          }
+                        ]);
+                    }
+                    if (scope.dhxLoadFromHtml) {
+                        menu.loadFromHTML(domChild[0], false, scope.dhxOnLoadedAndRendered);
+                    } else if (scope.dhxLoadXmlFromDom) {
+                        menu.loadStruct(domChild[0].outerHTML, scope.dhxOnLoadedAndRendered);
+                    } else if (scope.dhxXmlJsonData) {
+                        menu.loadStruct(scope.dhxXmlJsonData);
+                    } else {
+                        console.error('Please specify one of dhx-load-from-html or dhx-load-from-dom or dhx-xml-json-data');
+                    }
+
+                    DhxUtils.attachDhxHandlers(menu, scope.dhxHandlers);
+                    DhxUtils.dhxUnloadOnScopeDestroy(scope, menu);
                 }
 
-                if (scope.dhxContextAsParent) {
-                    menu.addContextZone($(element).parent()[0]);
-                }
-
-                if (scope.dhxOnClick) {
-                    DhxUtils.attachDhxHandlers(menu, [
-                      {
-                          type: 'onClick',
-                          handler: scope.dhxOnClick
-                      }
-                    ]);
-                }
-                if (scope.dhxLoadFromHtml) {
-                    menu.loadFromHTML(domChild[0], false, scope.dhxOnLoadedAndRendered);
-                } else if (scope.dhxLoadXmlFromDom) {
-                    menu.loadStruct(domChild[0].outerHTML, scope.dhxOnLoadedAndRendered);
-                } else if (scope.dhxXmlJsonData) {
-                    menu.loadStruct(scope.dhxXmlJsonData);
+                if (layoutCtl == null || layoutCtl == undefined) {
+                    scope.uid = app.genStr(12);
+                    element.attr("id", "dhx_menu_" + scope.uid);
+                    //element.css("background-color", "#e7f1ff");
+                 
+                    var menu = new dhtmlXMenuObject(scope.dhxContextMenuMode ? undefined : element[0]);
+                    setMenu(menu);
                 } else {
-                    console.error('Please specify one of dhx-load-from-html or dhx-load-from-dom or dhx-xml-json-data');
+                    layoutCtl.addCreator(function (layout, cell) {
+                        var menu = cell.attachMenu();
+                        setMenu(menu);
+                    })
                 }
-
-                DhxUtils.attachDhxHandlers(menu, scope.dhxHandlers);
-                DhxUtils.dhxUnloadOnScopeDestroy(scope, menu);
             }
         };
     });
