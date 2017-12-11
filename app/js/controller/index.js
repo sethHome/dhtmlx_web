@@ -589,6 +589,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
                 var init = function (html) {
                     var newScope = self.$rootScope.$new();
+                    newScope.$win = null;
 
                     var injectors = {
                         "$scope": newScope
@@ -600,12 +601,12 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
                     ctrlInstantiate();
 
-                    var angularWin = angular.element('<dhx-window></dhx-window');
+                    var angularWin = angular.element('<dhx-window dhx-win="$win"></dhx-window');
 
                     angularWin.attr({
                         'dhx-text': option.title,
-                        'dhx-height': option.height ? height : 400,
-                        'dhx-width': option.width ? width : 500,
+                        'dhx-height': option.height ? option.height : 400,
+                        'dhx-width': option.width ? option.width : 500,
                         'dhx-show-inner-scroll': option.scroll,
                         'dhx-btn-stick': option.stick,
                     }).append(html);
@@ -621,8 +622,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 } else {
                     require(['text!../views/' + option.url], init);
                 }
-
-
             },
             // controller跳转
             go: function (option) {

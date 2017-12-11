@@ -1642,3 +1642,6 @@ table.tc-va-b-last tbody td:last-child {
 .table-checklist tr.task-checked .progress {
   opacity: 0.3;
 }
+.c-red{
+    color:orangered !important;
+}

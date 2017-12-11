@@ -818,9 +818,12 @@
                 });
 
                 var setToolbar = function (toolbar) {
-                    toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
+
+                    toolbar.setSkin("dhx_skyblue");
+                    toolbar.setIconset("awesome");
+                    //toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
                     toolbar.loadStruct(scope.dhxItems);
-                    toolbar.attachEvent("onClick", function (id) {
+                    toolbar.attachEvent("onclick", function (id) {
                         
                         var name = eventmap[id];
                         if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
@@ -880,7 +883,8 @@
 
                 var setMenu = function (menu) {
                     menu.setSkin("dhx_skyblue");
-                    menu.setIconsPath(app.getProjectRoot("assets/img/btn/"));
+                    menu.setIconset("awesome");
+                    //menu.setIconsPath(app.getProjectRoot("assets/img/btn/"));
 
                     scope.dhxMenu ? scope.dhxMenu = menu : '';
 
@@ -1127,6 +1131,7 @@
         return {
             restrict: 'E',
             scope: {
+                dhxWin:'=',
                 dhxCenter: '=',
                 dhxHeight: '=',
                 dhxHeader: '=',
@@ -1228,6 +1233,8 @@
                 }
                 DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
                 DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
+
+                scope.dhxWin = win;
             }
         };
     });

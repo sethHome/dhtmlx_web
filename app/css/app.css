@@ -1036,23 +1036,35 @@ a.list-group-item.active > .badge,
             background-color: #37474f;
         }
 
+.control-label {
+    /*font-weight:bold;*/
+    text-align: right;
+    line-height: 35px;
+}
+
+.control-value {
+    margin: 5px 0;
+}
+
 .home-news {
     width: 100%;
-    height:100px;
+    height: 100px;
     display: block;
     overflow: hidden;
     padding: 5px 10px;
-    border-bottom:solid 1px #b5deff;
-    background-color:#e7f1ff;
+    border-bottom: solid 1px #b5deff;
+    background-color: #f9fbfe;
     /*margin-bottom:10px;*/
 }
+
     .home-news:hover {
-        background-color:#b5deff;
+        background-color: #b5deff;
     }
+
     .home-news .ntitle {
-        
         font-weight: bold;
     }
+
     .home-news .ncontent {
         width: 100%;
         word-wrap: break-word;
@@ -1063,7 +1075,9 @@ a.list-group-item.active > .badge,
         margin-left: 10px;
         border-left: solid #dcbcbc;
     }
+
     .home-news .ndate {
         float: right;
         font-size: 11px;
     }
+

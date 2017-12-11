@@ -7,24 +7,24 @@ define(['app', 'service/data'], function (app) {
 
         $scope.treeToolMenus = [
            {
-               id: "queryType", type: "buttonSelect", img: "new.gif",img_disabled: "open_dis.gif", text: "Select", mode: "select", selected: "edit_cut0",
+               id: "queryType", type: "buttonSelect", img: "fa fa-folder",text: "Select", mode: "select", selected: "edit_cut0",
                options: [
-                   { type: "button", id: "edit_cut0", text: "全部", img: "cut.gif" },
-                   { type: "button", id: "edit_cut1", text: "System2", img: "cut.gif" },
-                   { type: "button", id: "edit_copy2", text: "System3", img: "copy.gif" },
-                   { type: "button", id: "edit_copy3", text: "System4", img: "copy.gif" },
+                   { type: "button", id: "edit_cut0", text: "全部", img: "fa fa-globe" },
+                   { type: "button", id: "edit_cut1", text: "System2", img: "fa fa-globe" },
+                   { type: "button", id: "edit_copy2", text: "System3", img: "fa fa-globe" },
+                   { type: "button", id: "edit_copy3", text: "System4", img: "fa fa-globe" },
                ]
            },
             { id: "querytext", type: "buttonInput", width: 120 },
-            { id: "query", type: "button", img: "page.gif", img_disabled: "page_dis.gif", text: "查询" }];
+            { id: "query", type: "button", img: "fa fa-query", text: "查询" }];
 
         $scope.itemToolMenus = [
-            { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addItem" },
-            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "removeItem"},
+            { id: "new", type: "button", img: "fa fa-plus", text: "添加", title: "Tooltip here", action: "addItem" },
+            { id: "del", type: "button", img: "fa fa-trash", imgdis: "cross.png", text: "删除", action: "removeItem"},
             ];
         $scope.attrToolMenus = [
-            { id: "new", type: "button", img: "new.gif", text: "添加", title: "Tooltip here", action: "addAttr" },
-            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "removeAttr" },
+            { id: "new", type: "button", img: "fa fa-plus", text: "添加", title: "Tooltip here", action: "addAttr" },
+            { id: "del", type: "button", img: "fa fa-trash", imgdis: "cross.png", text: "删除", action: "removeAttr" },
         ];
         dataService.all().then(function (data) {
             var items = paraseTreeData(data);

@@ -6,32 +6,29 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
         function ($scope, $page, userService, orgService) {
             
             $scope.treeToolMenus = [
-                { id: "new1", type: "button", iconClass: "icon-bell", text: "添加部门", action: "addClick" },
-               { id: "new2", type: "button", img: "new.gif", text: "添加子部门", action: "addClick" },
-               { type: "separator" },
-               { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
-               { type: "separator" }];
+                { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addClick" },
+                { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addClick" },
+                { type: "separator" },
+                { id: "del", type: "button", img: "fa fa-trash-o",text: "删除", action: "test" }];
 
             $scope.toolMenus = [
-               { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
-               { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "modify" },
+                { id: "new", type: "button", img: "fa fa-plus", text: "新增", title: "Tooltip here", action: "addClick" },
+                { id: "edit", type: "button", img: "fa fa-edit", text: "修改", action: "modify" },
                { type: "separator" },
-               { id: "reset", type: "button", img: "undo.gif", text: "重置密码", action: "resetPsw" },
-               { type: "separator" },
-               { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
+               { id: "reset", type: "button", img: "fa fa-refresh", text: "重置密码", action: "resetPsw" },
+               { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "test" },
                { type: "separator" },
                {
-                   id: "queryType", type: "buttonSelect", img: "new.gif", text: "Select", mode: "select", selected: "edit_cut1",
+                   id: "queryType", type: "buttonSelect", img: "fa fa-filter", text: "Select", mode: "select", selected: "edit_cut1",
                    options: [
-                       { type: "button", id: "edit_cut1", text: "用户名称", img: "cut.gif" },
-                       { type: "button", id: "edit_copy2", text: "用户账号", img: "copy.gif" },
-                       { type: "button", id: "edit_copy3", text: "用户编号", img: "copy.gif" },
+                       { type: "button", id: "edit_cut1", text: "用户名称", img: "fa fa-filter" },
+                       { type: "button", id: "edit_copy2", text: "用户账号", img: "fa fa-filter" },
+                       { type: "button", id: "edit_copy3", text: "用户编号", img: "fa fa-filter" },
                    ]
                },
                { id: "querytext", type: "buttonInput", width: 120 },
-               { id: "query", type: "button", img: "page.gif", text: "查询"},
-               { type: "separator" },
-               { id: "querymore", type: "button", img: "page.gif", text: "高级查询", action: "query" }];
+               { id: "query", type: "button", img: "fa fa-search", text: "查询"},
+               { id: "querymore", type: "button", img: "fa fa-list-alt", text: "高级查询", action: "query" }];
 
             $scope.orgMenus = [
                 { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
@@ -85,7 +82,7 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
                 //var data = $scope.grid.obj.getRowData(rowid);
 
                 $page.open({
-                    title:'asdasdasdas',
+                    title:'新增用户',
                     url: "user/user_maintain.html",
                     controller: 'user/user_maintainCtrl',
                     resolve:{
@@ -98,6 +95,8 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
 
             $scope.modify = function () {
                 $page.open({
+                    height: 500,
+                    width: 800,
                     url: "chat/chat.html",
                     controllerUrl:'chat/chat',
                     controller: 'chatController',
@@ -163,7 +162,7 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
         //}
 
         $scope.toolMenus = [
-             { id: "new", type: "button", img: "save.gif", text: "保存", title: "Tooltip here", action: "saveUser" },
+             { id: "new", type: "button", img: "fa fa-save", text: "保存", title: "Tooltip here", action: "saveUser" },
         ];
 
         $scope.saveUser = function () {
@@ -173,7 +172,7 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
 
     app.controller("user/user_filterCtrl", function ($scope) {
         $scope.tools = [
-           { id: "new", type: "button", img: "save.gif", text: "查询", title: "Tooltip here", action: "query" },
+           { id: "new", type: "button", img: "fa fa-query", text: "查询", title: "Tooltip here", action: "query" },
         ];
 
         $scope.saveUser = function () {

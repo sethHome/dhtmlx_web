@@ -54,37 +54,37 @@ define(['app'], function (app) {
         //    {
         //        id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
         //            {
-        //                id: "new1", type: "button", img: "paste_dis.gif", text: "经营",
+        //                id: "new1", type: "button", img: "fa fa-file-o", text: "经营",
         //                options: [
-        //                    { id: "new12", type: "button", img: "paste_dis.gif", text: "生产" },
-        //                    { id: "new13", type: "button", img: "paste_dis.gif", text: "图档" },
-        //                    { id: "new14", type: "button", img: "paste_dis.gif", text: "质量" },
+        //                    { id: "new12", type: "button", img: "fa fa-file-o", text: "生产" },
+        //                    { id: "new13", type: "button", img: "fa fa-file-o", text: "图档" },
+        //                    { id: "new14", type: "button", img: "fa fa-file-o", text: "质量" },
         //                ]
         //            },
-        //            { id: "new2", type: "button", img: "paste_dis.gif", text: "生产" },
-        //            { id: "new3", type: "button", img: "paste_dis.gif", text: "图档" },
-        //            { id: "new4", type: "button", img: "paste_dis.gif", text: "质量" },
-        //            { id: "new5", type: "button", img: "paste_dis.gif", text: "绩效" },
-        //            { id: "new6", type: "button", img: "paste_dis.gif", text: "综合办公" },
+        //            { id: "new2", type: "button", img: "fa fa-file-o", text: "生产" },
+        //            { id: "new3", type: "button", img: "fa fa-file-o", text: "图档" },
+        //            { id: "new4", type: "button", img: "fa fa-file-o", text: "质量" },
+        //            { id: "new5", type: "button", img: "fa fa-file-o", text: "绩效" },
+        //            { id: "new6", type: "button", img: "fa fa-file-o", text: "综合办公" },
         //        ]
         //    },
         //    {
-        //        id: "task", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", options: [
-        //            { id: "task1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
-        //            { id: "task2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
-        //            { id: "task3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
-        //            { id: "task4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
-        //            { id: "task5", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
-        //            { id: "task6", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
-        //            { id: "task7", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
+        //        id: "task", type: "buttonSelect", img: "open.gif", text: "生产任务", mode: "select", options: [
+        //            { id: "task1", type: "button", img: "fa fa-file-o", text: "工程任务单", action: "modify" },
+        //            { id: "task2", type: "button", img: "fa fa-file-o", text: "工程策划", action: "modify" },
+        //            { id: "task3", type: "button", img: "fa fa-file-o", text: "<strong>专业策划</strong>", action: "modify" },
+        //            { id: "task4", type: "button", img: "fa fa-file-o", text: "<span>设计</span>", action: "modify" },
+        //            { id: "task5", type: "button", img: "fa fa-file-o", text: "校对", action: "modify" },
+        //            { id: "task6", type: "button", img: "fa fa-file-o", text: "审核", action: "modify" },
+        //            { id: "task7", type: "button", img: "fa fa-file-o", text: "批准", action: "modify" },
         //        ]
         //    },
         //    {
-        //        id: "form", type: "buttonSelect", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", options: [
-        //            { id: "form1", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
-        //            { id: "form2", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
-        //            { id: "form3", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
-        //            { id: "form4", type: "button", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
+        //        id: "form", type: "buttonSelect", img: "open.gif", text: "表单", mode: "select", options: [
+        //            { id: "form1", type: "button", img: "fa fa-file-o", text: "请假单", action: "modify" },
+        //            { id: "form2", type: "button", img: "fa fa-file-o", text: "变更单", action: "modify" },
+        //            { id: "form3", type: "button", img: "fa fa-file-o", text: "联系单", action: "modify" },
+        //            { id: "form4", type: "button", img: "fa fa-file-o", text: "出版申请单", action: "modify" },
         //        ]
         //    },
 
@@ -117,39 +117,45 @@ define(['app'], function (app) {
 
         $scope.toolbarItems = [
             {
-                id: "new", img: "open.gif", text: "快速访问", items: [
+                id:'main',img:'fa fa-file',text:"我的首页"
+            },
+            {
+                id: 'favite', img: 'fa fa-heart', text: "关注工程"
+            },
+            {
+                id: "new", img: "fa fa-plane", text: "快速访问", items: [
                     {
-                        id: "new1", img: "paste_dis.gif", text: "经营",
+                        id: "new1", img: "fa fa-file", text: "经营",
                         items: [
-                            { id: "new12", img: "paste_dis.gif", text: "工程管理" },
-                            { id: "new13", img: "paste_dis.gif", text: "合同管理" },
-                            { id: "new14", img: "paste_dis.gif", text: "任务单" },
+                            { id: "new12", img: "fa fa-file", text: "工程管理" },
+                            { id: "new13", img: "fa fa-file", text: "合同管理" },
+                            { id: "new14", img: "fa fa-file", text: "任务单" },
                         ]
                     },
-                    { id: "new2", img: "paste_dis.gif", text: "生产" },
-                    { id: "new3", img: "paste_dis.gif", text: "图档" },
-                    { id: "new4", img: "paste_dis.gif", text: "质量" },
-                    { id: "new5", img: "paste_dis.gif", text: "绩效" },
-                    { id: "new6", img: "paste_dis.gif", text: "综合办公" },
+                    { id: "new2", img: "fa fa-file", text: "生产" },
+                    { id: "new3", img: "fa fa-file", text: "图档" },
+                    { id: "new4", img: "fa fa-file", text: "质量" },
+                    { id: "new5", img: "fa fa-file", text: "绩效" },
+                    { id: "new6", img: "fa fa-file", text: "综合办公" },
                 ]
             },
             {
-                id: "task", img: "open.gif", text: "<span>[2]</span>生产任务", mode: "select", items: [
-                    { id: "task1", img: "paste_dis.gif", text: "<span>[2]</span>工程任务单", action: "modify" },
-                    { id: "task2", img: "paste_dis.gif", text: "<span>[2]</span>工程策划", action: "modify" },
-                    { id: "task3", img: "paste_dis.gif", text: "<span>[2]</span><strong>专业策划</strong>", action: "modify" },
-                    { id: "task4", img: "paste_dis.gif", text: "<span>[2]</span><span>设计</span>", action: "modify" },
-                    { id: "task5", img: "paste_dis.gif", text: "<span>[2]</span>校对", action: "modify" },
-                    { id: "task6", img: "paste_dis.gif", text: "<span>[2]</span>审核", action: "modify" },
-                    { id: "task7", img: "paste_dis.gif", text: "<span>[2]</span>批准", action: "modify" },
+                id: "task", img: "fa fa-tasks", text: "生产任务", mode: "select", items: [
+                    { id: "task1", img: "", text: "工程任务单", action: "modify" },
+                    { id: "task2", img: "", text: "工程策划", action: "modify" },
+                    { id: "task3", img: "fa fa-circle c-red", text: "专业策划", action: "modify" },
+                    { id: "task4", img: "", text: "<span>设计</span>", action: "modify" },
+                    { id: "task5", img: "fa fa-circle c-red", text: "校对", action: "modify" },
+                    { id: "task6", img: "", text: "审核", action: "modify" },
+                    { id: "task7", img: "fa fa-circle c-red", text: "批准", action: "modify" },
                 ]
             },
              {
-                id: "form", img: "open.gif", text: "<span>[2]</span>表单", mode: "select", items: [
-                    { id: "form1", img: "paste_dis.gif", text: "<span>[2]</span>请假单", action: "modify" },
-                    { id: "form2", img: "paste_dis.gif", text: "<span>[2]</span>变更单", action: "modify" },
-                    { id: "form3", img: "paste_dis.gif", text: "<span>[2]</span>联系单", action: "modify" },
-                    { id: "form4", img: "paste_dis.gif", text: "<span>[2]</span>出版申请单", action: "modify" },
+                id: "form", img: "fa fa-folder", text: "表单", mode: "select", items: [
+                    { id: "form1", img: "fa fa-file-o", text: "请假单", action: "modify" },
+                    { id: "form2", img: "fa fa-file-o", text: "变更单", action: "modify" },
+                    { id: "form3", img: "fa fa-file-o", text: "联系单", action: "modify" },
+                    { id: "form4", img: "fa fa-file-o", text: "出版申请单", action: "modify" },
                 ]
             },];
 
