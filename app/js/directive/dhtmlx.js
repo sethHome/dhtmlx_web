@@ -632,9 +632,6 @@
                 this.registerPane = function (pane) {
                     $scope.panes.push(pane);
                 };
-                this.attachGrid = function () {
-
-                }
             },
             scope: {
                 dhxLayoutCode: "@",
@@ -653,6 +650,8 @@
 
                     for (var i = 0; i < scope.panes.length; i++) {
                         var cell = layout.cells(letters[i]);
+                        scope.panes[i].scope.dhxCell = cell;
+
                         // 如果cell中没有可以attach的对象则直接attachdom
                         if (!scope.panes[i].attach(layout, cell)) {
                             var dom = scope.panes[i].jqElem[0];
@@ -744,6 +743,7 @@
             require: '^dhxLayout',
             scope: {
                 dhxText: '@',
+                dhxCell: '=?',
                 dhxStatus: '=',
                 dhxHideHeader:'@',
                 dhxCollapsedText: '@', // If this is omitted it becomes dhxText
@@ -770,6 +770,7 @@
             link: function (scope, element, attrs, layoutCtrl) {
 
                 layoutCtrl.registerPane({
+                    scope:scope,
                     jqElem: element.detach(),
                     attach: scope.attach,
                     status: scope.dhxStatus,

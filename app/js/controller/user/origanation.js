@@ -4,7 +4,8 @@
 define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app) {
     app.controller('user/origanationCtrl', ['$scope', '$page','userService','orgService',
         function ($scope, $page, userService, orgService) {
-            
+            //$scope.cell1 = null;
+           
             $scope.treeToolMenus = [
                 { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addClick" },
                 { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addClick" },
@@ -69,12 +70,13 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
             ];
 
             $scope.query = function () {
-
-                $page.open({
-                    url: "user/user_filter.html",
-                    controller: "user/user_filterCtrl",
-                    params: { filter: $scope.filter }
-                });
+                
+                $scope.cell1.progressOn();
+                //$page.open({
+                //    url: "user/user_filter.html",
+                //    controller: "user/user_filterCtrl",
+                //    params: { filter: $scope.filter }
+                //});
             }
 
             $scope.addClick = function (rowid) {
