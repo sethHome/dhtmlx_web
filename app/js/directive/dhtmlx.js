@@ -223,9 +223,9 @@
                 var items = [
                     {
                         id: 1, text: "美和信息技术有限公司", open: 1, item: [
-                        // nested items if any
-                         { id: "1.1", text: "办公室1", checked: true },
-                         { id: "1.2", text: "办公室2", checked: true },
+                            // nested items if any
+                            { id: "1.1", text: "办公室1", checked: true },
+                            { id: "1.2", text: "办公室2", checked: true },
                         ]
                     },
 
@@ -272,9 +272,9 @@
          */
         var attachDhxHandlers = function (dhxObject, dhxHandlers) {
             (dhxHandlers || [])
-              .forEach(function (info) {
-                  dhxObject.attachEvent(info.type, info.handler);
-              });
+                .forEach(function (info) {
+                    dhxObject.attachEvent(info.type, info.handler);
+                });
         };
 
         var getImagePath = function () {
@@ -306,12 +306,12 @@
 
         var dhxDestroy = function (dhxObj) {
             var destructorName =
-              'destructor' in dhxObj
-                ? 'destructor'
-                :
-                ('unload' in dhxObj
-                  ? 'unload'
-                  : null);
+                'destructor' in dhxObj
+                    ? 'destructor'
+                    :
+                    ('unload' in dhxObj
+                        ? 'unload'
+                        : null);
 
             if (destructorName === null) {
                 console.error('Dhtmlx object does not have a destructor or unload method! Failed to register with scope destructor!');
@@ -324,22 +324,22 @@
 
         var dhxUnloadOnScopeDestroy = function (scope, dhxObj) {
             var destructorName =
-              'destructor' in dhxObj
-                ? 'destructor'
-                :
-                ('unload' in dhxObj
-                  ? 'unload'
-                  : null);
+                'destructor' in dhxObj
+                    ? 'destructor'
+                    :
+                    ('unload' in dhxObj
+                        ? 'unload'
+                        : null);
             if (destructorName === null) {
                 console.error('Dhtmlx object does not have a destructor or unload method! Failed to register with scope destructor!');
                 return;
             }
 
             scope.$on(
-              "$destroy",
-              function (/*event*/) {
-                  dhxObj[destructorName]();
-              }
+                "$destroy",
+                function (/*event*/) {
+                    dhxObj[destructorName]();
+                }
             );
         };
 
@@ -420,7 +420,7 @@
                 dhxContextMenu: '=',
                 dhxAutoHeight: '@',
                 dhxPaging: '=',
-                dhxProcessorUrl : '@'
+                dhxProcessorUrl: '@'
             },
             link: function (scope, element, attrs, ctls) {
 
@@ -471,10 +471,10 @@
 
                     scope.dhxContextMenu ? grid.enableContextMenu(scope.dhxContextMenu) : '';
                     scope.$watch(
-                      "dhxContextMenu",
-                      function handle(newValue, oldValue) {
-                          grid.enableContextMenu(newValue);
-                      }
+                        "dhxContextMenu",
+                        function handle(newValue, oldValue) {
+                            grid.enableContextMenu(newValue);
+                        }
                     );
 
                     // Letting controller add configurations before data is parsed
@@ -549,12 +549,12 @@
                             }
                         }, false);
                     }
-                   
+
                     // Finally parsing data
                     scope.$watch("dhxData", function (newval, oldval) {
-                        
+
                         if (newval) {
-                            
+
                             var dhxDataFormat = scope.dhxDataFormat || 'Basic JSON';
                             switch (dhxDataFormat) {
                                 case 'Basic JSON':
@@ -581,12 +581,20 @@
                         //        break;
                         //}
                     } else if (scope.dhxUrl) {
+                        if (cell) {
+                            cell.progressOn();
+                        }
+
                         var url = app.getApiUrl(scope.dhxUrl);
                         var param = scope.dhxParams || {};
 
                         var api = $resource(url, {}, { query: { method: 'GET', isArray: false } });
 
-                        grid.setQuery(api.query, param);
+                        grid.setQuery(api.query, param, function () {
+                            if (cell) {
+                                cell.progressOff();
+                            }
+                        });
                     }
 
                     // Letting controller do data manipulation after data has been loaded
@@ -645,11 +653,12 @@
             link: function (scope, element, attrs, ctrls) {
                 var layoutCtrl = ctrls[0];
                 var windowCtrl = ctrls[1];
-                
+
                 var setCell = function (layout) {
 
                     for (var i = 0; i < scope.panes.length; i++) {
                         var cell = layout.cells(letters[i]);
+
                         scope.panes[i].scope.dhxCell = cell;
 
                         // 如果cell中没有可以attach的对象则直接attachdom
@@ -677,7 +686,7 @@
                         scope.dhxWhenDone(layout);
                     }
                 }
-                
+
                 if (windowCtrl == null) {
                     $(element).empty();
                     $('<div></div>').appendTo(element[0]);
@@ -707,11 +716,11 @@
                         //  left: 10
                         //},
                         cells: scope
-                          .panes
-                          .map(function (paneObj) {
-                              paneObj.cellConfig.id = layoutCtrl.getNextId();
-                              return paneObj.cellConfig;
-                          })
+                            .panes
+                            .map(function (paneObj) {
+                                paneObj.cellConfig.id = layoutCtrl.getNextId();
+                                return paneObj.cellConfig;
+                            })
                     });
                     if (scope.dhxObj)
                         scope.dhxObj = layout;
@@ -723,11 +732,11 @@
                         var layout = win.attachLayout({
                             pattern: scope.dhxLayoutCode,
                             cells: scope
-                              .panes
-                              .map(function (paneObj) {
-                                  paneObj.cellConfig.id = layoutCtrl.getNextId();
-                                  return paneObj.cellConfig;
-                              })
+                                .panes
+                                .map(function (paneObj) {
+                                    paneObj.cellConfig.id = layoutCtrl.getNextId();
+                                    return paneObj.cellConfig;
+                                })
                         });
 
                         setCell(layout);
@@ -745,7 +754,7 @@
                 dhxText: '@',
                 dhxCell: '=?',
                 dhxStatus: '=',
-                dhxHideHeader:'@',
+                dhxHideHeader: '@',
                 dhxCollapsedText: '@', // If this is omitted it becomes dhxText
                 dhxHeader: '=', // Expression... since it is a boolean value
                 dhxWidth: '@',  // These are optional... However when specified they
@@ -770,11 +779,11 @@
             link: function (scope, element, attrs, layoutCtrl) {
 
                 layoutCtrl.registerPane({
-                    scope:scope,
+                    scope: scope,
                     jqElem: element.detach(),
                     attach: scope.attach,
                     status: scope.dhxStatus,
-                    hideHeader:scope.dhxHideHeader,
+                    hideHeader: scope.dhxHideHeader,
                     cellConfig: {
                         text: scope.dhxText || "",
                         collapsed_text: scope.dhxCollapsedText || scope.dhxText || "",
@@ -802,13 +811,13 @@
             },
             link: function (scope, element, attrs, ctrls) {
                 var layoutCtl = ctrls[0];
-                
+
                 var eventmap = {};
                 scope.dhxItems.map(function (item) {
                     if (item.action) {
                         eventmap[item.id] = item.action
                     }
-                   
+
                     if (item.type == "buttonSelect") {
                         item.options.map(function (option) {
                             if (option.action) {
@@ -825,7 +834,7 @@
                     //toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
                     toolbar.loadStruct(scope.dhxItems);
                     toolbar.attachEvent("onclick", function (id) {
-                        
+
                         var name = eventmap[id];
                         if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
                             scope.$parent[name].call(this);
@@ -846,6 +855,94 @@
                         setToolbar(toolbar);
                     })
                 }
+            }
+        };
+    });
+
+    app.directive('dhxTabbar', function factory(DhxUtils) {
+        var nextTabbarId = DhxUtils.createCounter();
+        return {
+            restrict: 'E',
+            require: ['?^^dhxLayoutCell'],
+            controller: function ($scope) {
+                var _tabbarId = nextTabbarId();
+                $scope.panes = [];
+                var _nextTabbarPaneId = DhxUtils.createCounter();
+                this.getTabbarPaneId = function () {
+                    return 'tabbar_' + _tabbarId + '_' + _nextTabbarPaneId();
+                };
+                this.registerPane = function (tab) {
+                    $scope.panes.push(tab);
+                };
+            },
+            scope: {
+                dhxObj: "=",
+                dhxWidth: "=", // Optional... Default is 100%. If set, use ems or pixels.
+                dhxHeight: "=", // Mandatory.
+                dhxUseEms: "=", // Optional... If width and height is in ems. Px is default;
+                dhxDisableScroll: "=",
+                dhxHandlers: '='
+            },
+            link: function (scope, element, attr, ctls) {
+
+                var setTabBar = function (tabbar) {
+
+                    tabbar.setArrowsMode("auto");
+
+                    scope.dhxObj ? scope.dhxObj = tabbar : '';
+                    scope.panes.forEach(function (tabInfo) {
+                        tabbar.addTab(
+                            tabInfo.id,
+                            tabInfo.text
+                        );
+                        tabbar.tabs(tabInfo.id).attachObject(tabInfo.elem[0]);
+                        tabbar.tabs(tabInfo.id).showInnerScroll();
+                        tabInfo.selected ? tabbar.tabs(tabInfo.id).setActive() : '';
+                    });
+                    DhxUtils.attachDhxHandlers(tabbar, scope.dhxHandlers);
+                    DhxUtils.dhxUnloadOnScopeDestroy(scope, tabbar);
+                }
+
+                if (ctls[0] != null) {
+                    ctls[0].addCreator(function (layout, cell) {
+                        var tabbar = cell.attachTabbar();
+                        setTabBar(tabbar);
+                    });
+                } else {
+                    var dim = (scope.dhxUseEms ? 'em' : 'px');
+
+                    var height = scope.dhxHeight ? (scope.dhxHeight + dim) : '100%';
+                    var width = scope.dhxWidth ? (scope.dhxWidth + dim) : '100%';
+                    element.css('width', width);
+                    element.css('height', height);
+                    element.css('display', 'block');
+
+                    //noinspection JSPotentiallyInvalidConstructorUsage
+                    var tabbar = new dhtmlXTabBar(element[0]);
+
+                    setTabBar(tabbar);
+                }
+
+            }
+        };
+    })
+
+    app.directive('dhxTabbarCell', function factory() {
+        return {
+            restrict: 'E',
+            require: '^dhxTabbar',
+            scope: {
+                dhxText: '@',
+                dhxSelected: '='
+            },
+            link: function (scope, element, attrs, tabbarCtrl) {
+                tabbarCtrl.registerPane({
+                    elem: element.detach(),
+                    text: scope.dhxText || "",
+                    id: tabbarCtrl.getTabbarPaneId(),
+                    selected: !!scope.dhxSelected
+                    //NOTE: Feel free to add aditional configuration here
+                });
             }
         };
     });
@@ -903,10 +1000,10 @@
 
                     if (scope.dhxOnClick) {
                         DhxUtils.attachDhxHandlers(menu, [
-                          {
-                              type: 'onClick',
-                              handler: scope.dhxOnClick
-                          }
+                            {
+                                type: 'onClick',
+                                handler: scope.dhxOnClick
+                            }
                         ]);
                     }
                     if (scope.dhxLoadFromHtml) {
@@ -927,7 +1024,7 @@
                     scope.uid = app.genStr(12);
                     element.attr("id", "dhx_menu_" + scope.uid);
                     //element.css("background-color", "#e7f1ff");
-                 
+
                     var menu = new dhtmlXMenuObject(scope.dhxContextMenuMode ? undefined : element[0]);
                     setMenu(menu);
                 } else {
@@ -993,10 +1090,10 @@
 
                     scope.dhxContextMenu ? tree.enableContextMenu(scope.dhxContextMenu) : '';
                     scope.$watch(
-                      "dhxContextMenu",
-                      function handle(newValue) {
-                          tree.enableContextMenu(newValue);
-                      }
+                        "dhxContextMenu",
+                        function handle(newValue) {
+                            tree.enableContextMenu(newValue);
+                        }
                     );
 
                     // Additional optional configuration
@@ -1087,40 +1184,40 @@
                 var windows = new dhtmlXWindows();
                 windows.attachViewportTo(windowsCtrl.getContainer());
                 windowsCtrl
-                  .getWindowInfos()
-                  .forEach(function (windowInfo) {
-                      var conf = windowInfo.config;
-                      DhxUtils.removeUndefinedProps(conf);
-                      var win = windows.createWindow(
-                        windowsCtrl.getNextWindowId(),
-                        conf.left,
-                        conf.top,
-                        conf.width,
-                        conf.height
-                      );
+                    .getWindowInfos()
+                    .forEach(function (windowInfo) {
+                        var conf = windowInfo.config;
+                        DhxUtils.removeUndefinedProps(conf);
+                        var win = windows.createWindow(
+                            windowsCtrl.getNextWindowId(),
+                            conf.left,
+                            conf.top,
+                            conf.width,
+                            conf.height
+                        );
 
-                      conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
-                      conf.center !== undefined ? (conf.center ? win.center() : '') : '';
-                      conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
-                      conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
-                      conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
-                      conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
-                      conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
-                      conf.text !== undefined ? win.setText(conf.text) : '';
+                        conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
+                        conf.center !== undefined ? (conf.center ? win.center() : '') : '';
+                        conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
+                        conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
+                        conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
+                        conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
+                        conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
+                        conf.text !== undefined ? win.setText(conf.text) : '';
 
-                      conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
-                      conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
-                      conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
-                      conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
-                      conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
+                        conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
+                        conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
+                        conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
+                        conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
+                        conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
 
-                      if (conf.appendLayout) {
-                          myLayout = win.attachLayout(conf.appendLayout);
-                      } else {
-                          var domElem = windowInfo.elem[0];
-                          win.attachObject(domElem);
-                      }
-                  });
+                        if (conf.appendLayout) {
+                            myLayout = win.attachLayout(conf.appendLayout);
+                        } else {
+                            var domElem = windowInfo.elem[0];
+                            win.attachObject(domElem);
+                        }
+                    });
 
                 DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
                 DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
@@ -1132,7 +1229,7 @@
         return {
             restrict: 'E',
             scope: {
-                dhxWin:'=',
+                dhxWin: '=',
                 dhxCenter: '=',
                 dhxHeight: '=',
                 dhxHeader: '=',
@@ -1196,11 +1293,11 @@
                 };
 
                 var win = windows.createWindow(
-                  _getNextWindowId,
-                  conf.left,
-                  conf.top,
-                  conf.width,
-                  conf.height
+                    _getNextWindowId,
+                    conf.left,
+                    conf.top,
+                    conf.width,
+                    conf.height
                 );
 
                 if (conf.modal == undefined) {

@@ -61,8 +61,13 @@
         $resourceProvider.defaults.stripTrailingSlashes = false;
     });
 
-    app.run(function ($rootScope, $http, $compile, $controller) {
+    app.run(function ($rootScope, $http, $compile, $controller, Restangular) {
 
+        app.getRestSrv = function () {
+            return Restangular.withConfig(function (configSetter) {
+                configSetter.setBaseUrl(config.webapi);
+            });
+        }
        
     });
 

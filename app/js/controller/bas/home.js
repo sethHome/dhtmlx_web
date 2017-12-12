@@ -117,7 +117,7 @@ define(['app'], function (app) {
 
         $scope.toolbarItems = [
             {
-                id:'main',img:'fa fa-file',text:"我的首页"
+                id: 'main', img: 'fa fa-file', text: "我的首页"
             },
             {
                 id: 'favite', img: 'fa fa-heart', text: "关注工程"
@@ -150,13 +150,16 @@ define(['app'], function (app) {
                     { id: "task7", img: "fa fa-circle c-red", text: "批准", action: "modify" },
                 ]
             },
-             {
+            {
                 id: "form", img: "fa fa-folder", text: "表单", mode: "select", items: [
                     { id: "form1", img: "fa fa-file-o", text: "请假单", action: "modify" },
                     { id: "form2", img: "fa fa-file-o", text: "变更单", action: "modify" },
                     { id: "form3", img: "fa fa-file-o", text: "联系单", action: "modify" },
                     { id: "form4", img: "fa fa-file-o", text: "出版申请单", action: "modify" },
                 ]
+            },
+            {
+                id: 'hideRight', img: 'fa fa-close', text: "关闭右侧"
             },];
 
         $scope.go = function (id) {
@@ -170,6 +173,24 @@ define(['app'], function (app) {
                     }
                 }
             });
+        }
+
+        $scope.menuAction = function (id,item) {
+            $scope[id]();
+        }
+
+        $scope.hideRight = function () {
+            var cell = $scope.layout.cells("b");
+            //collapse expand dock undock
+            if (cell.isCollapsed()) {
+                cell.expand();
+            } else {
+                cell.collapse();
+            }
+        }
+
+        $scope.loaded = function (layout) {
+            $scope.layout = layout;
         }
 
         //var tab = app.getTab($element);

@@ -4,7 +4,6 @@
 define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app) {
     app.controller('user/origanationCtrl', ['$scope', '$page','userService','orgService',
         function ($scope, $page, userService, orgService) {
-            //$scope.cell1 = null;
            
             $scope.treeToolMenus = [
                 { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addClick" },
@@ -35,26 +34,34 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
                 { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
                { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "modify" },
             ];
-            orgService.getDepartment().then(function (data) {
-                var orgs = paraseTreeData(data);
-                $scope.treeData = {
-                    "id": 0,
-                    "item": orgs
-                };
-            });
 
-            var paraseTreeData = function (nodes) {
-                var newNodes = [];
-                angular.forEach(nodes, function (node) {
-                    var newNode = {
-                        id: node.Key,
-                        text: node.Name
+            $scope.loaded = function(layout) {
+                
+                layout.cells("a").progressOn();
+
+                orgService.getDepartment().then(function (data) {
+                    var orgs = paraseTreeData(data);
+                    $scope.treeData = {
+                        "id": 0,
+                        "item": orgs
                     };
-                    newNode.item = paraseTreeData(node.SubDepartments);
-                    newNodes.push(newNode);
+
+                    layout.cells("a").progressOff();
                 });
-                return newNodes;
-            }
+
+                var paraseTreeData = function (nodes) {
+                    var newNodes = [];
+                    angular.forEach(nodes, function (node) {
+                        var newNode = {
+                            id: node.Key,
+                            text: node.Name
+                        };
+                        newNode.item = paraseTreeData(node.SubDepartments);
+                        newNodes.push(newNode);
+                    });
+                    return newNodes;
+                }
+            };
 
             $scope.treeDataLoaded = function (tree) {
                 console.log('Data has been loaded!');
@@ -71,12 +78,11 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
 
             $scope.query = function () {
                 
-                $scope.cell1.progressOn();
-                //$page.open({
-                //    url: "user/user_filter.html",
-                //    controller: "user/user_filterCtrl",
-                //    params: { filter: $scope.filter }
-                //});
+                $page.open({
+                    url: "user/user_filter.html",
+                    controller: "user/user_filterCtrl",
+                    params: { filter: $scope.filter }
+                });
             }
 
             $scope.addClick = function (rowid) {

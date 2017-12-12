@@ -5,7 +5,7 @@
         home: {
             id: 'homeTab',
             text: '我的桌面',
-            icon: 'icon-home',
+            icons: 'icon-home',
             ctrl: 'bas/home',
             href: '',
             close:false

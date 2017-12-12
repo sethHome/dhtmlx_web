@@ -4,7 +4,14 @@
  */
 define(['app'], function (app) {
     app.service('myApi', function () {
+
+        
+        var restSrv = app.getRestSrv();
+
         this.getMenus = function () {
+
+            return restSrv.all("menu").getList({ business: "System3" });
+
             var menusData = [
                 {
                     id: "c",

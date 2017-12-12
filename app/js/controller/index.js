@@ -2,74 +2,112 @@
  * Created by liuhuisheng on 2015/2/28.
  */
 define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, config) {
-    app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout','Restangular',
+    app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', 'Restangular',
         function ($scope, $rootScope, $compile, $controller, myApi, $timeout, Restangular) {
-        //get data from the api service
-        $scope.menus = myApi.getMenus();
-        $scope.tasks = myApi.getTasks();
-        $scope.notifys = myApi.getNotifys();
-        $scope.username = myApi.getUserName();
-        //$scope.homePageGridData = myApi.getHomePageGridData();
-        $scope.chat = myApi.getChat();
 
-        //create the main layout creator instance
-        $scope.creator = new app.layoutCreator();
-        $scope.creator.$compile = $compile;
-        $scope.creator.$scope = $scope;
-        $scope.creator.$controller = $controller;
-        $scope.creator.$rootScope = $rootScope;
-        //open the chat box
-        $scope.openChat = function (e, f) {
-            $scope.chat.current = { chats: [] };
-            $("#chat-box li").remove();//for remove the li not binding with ng
-
-            angular.forEach(f.chats, function (item) {
-                if (item.from == 'You')
-                    item.avatar = $scope.chat.mine.avatar;
-                else
-                    item.avatar = f.avatar;
+            myApi.getMenus().then(function (data) {
+                $scope.menus = convertMenu(data);
             });
-            $scope.chat.current = f;
-            app.handleFormChatOpen(e, f);
-        };
 
-        //watch for menus change
-        $scope.$watch('menus', function (newValue, oldValue) {
-            $scope.creator.loadNavigationData(newValue);
-        });
+            var convertMenu = function (data) {
+                var menus = [];
+                angular.forEach(data, function (item) {
+                    
+                    var subMenus = convertMenu(item.SubMenus);
 
-        ////watch for grid data in home page change
-        //$scope.$watch('homePageGridData', function (newValue, oldValue) {
-        //    $scope.creator.loadHomePageGridData(newValue);
-        //});
-
-        //count unread messages
-        $scope.unreadCount = function (list) {
-            var unread = 0;
-            angular.forEach(list, function (item) {
-                item.status == 'unread' && unread++;
-            });
-            return unread;
-        };
-
-        $scope.chatNewCount = function () {
-            var count = 0;
-            angular.forEach($scope.chat.groups, function (g) {
-                angular.forEach(g.friends, function (f) {
-                    count += $scope.unreadCount(f.chats);
+                    if (item.Text == '用户管理') {
+                        
+                        menus.push({
+                            id: item.Key,
+                            text: item.Text,
+                            ctrl:'user/origanation',
+                            icons: item.Icon ? item.Icon : 'fa fa-file',
+                            item: subMenus,
+                        });
+                    }
+                    else if (item.Text == '基础数据') {
+                        menus.push({
+                            id: item.Key,
+                            text: item.Text,
+                            ctrl: 'data/dic',
+                            icons: item.Icon ? item.Icon : 'fa fa-file',
+                            item: subMenus,
+                        });
+                    }
+                    else {
+                        menus.push({
+                            id: item.Key,
+                            text: item.Text,
+                            icons: item.Icon ? item.Icon : 'fa fa-file',
+                            item: subMenus,
+                        });
+                    }
+                    
                 });
-            });
-            return count;
-        };
 
-        $scope.appRoot = app.getAppRoot();
+                return menus;
+            }
 
-        app.getRestSrv = function () {
-            return Restangular.withConfig(function (configSetter) {
-                configSetter.setBaseUrl(config.webapi);
+            $scope.tasks = myApi.getTasks();
+            $scope.notifys = myApi.getNotifys();
+            $scope.username = myApi.getUserName();
+            //$scope.homePageGridData = myApi.getHomePageGridData();
+            $scope.chat = myApi.getChat();
+
+            //create the main layout creator instance
+            $scope.creator = new app.layoutCreator();
+            $scope.creator.$compile = $compile;
+            $scope.creator.$scope = $scope;
+            $scope.creator.$controller = $controller;
+            $scope.creator.$rootScope = $rootScope;
+            //open the chat box
+            $scope.openChat = function (e, f) {
+                $scope.chat.current = { chats: [] };
+                $("#chat-box li").remove();//for remove the li not binding with ng
+
+                angular.forEach(f.chats, function (item) {
+                    if (item.from == 'You')
+                        item.avatar = $scope.chat.mine.avatar;
+                    else
+                        item.avatar = f.avatar;
+                });
+                $scope.chat.current = f;
+                app.handleFormChatOpen(e, f);
+            };
+
+            //watch for menus change
+            $scope.$watch('menus', function (newValue, oldValue) {
+                $scope.creator.loadNavigationData(newValue);
             });
-        }
-    }]);
+
+            ////watch for grid data in home page change
+            //$scope.$watch('homePageGridData', function (newValue, oldValue) {
+            //    $scope.creator.loadHomePageGridData(newValue);
+            //});
+
+            //count unread messages
+            $scope.unreadCount = function (list) {
+                var unread = 0;
+                angular.forEach(list, function (item) {
+                    item.status == 'unread' && unread++;
+                });
+                return unread;
+            };
+
+            $scope.chatNewCount = function () {
+                var count = 0;
+                angular.forEach($scope.chat.groups, function (g) {
+                    angular.forEach(g.friends, function (f) {
+                        count += $scope.unreadCount(f.chats);
+                    });
+                });
+                return count;
+            };
+
+            $scope.appRoot = app.getAppRoot();
+
+            
+        }]);
 
     app.layoutCreator = function () {
         var self = this;
@@ -132,7 +170,8 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
             var treeImgPath = app.getSkinImgPath("dhxtree");
             angular.forEach(data, function (item) {
-                acc.addItem(item.id, item.text);
+                acc.addItem(item.id, item.text, item.icons, item.icons, item.icons);
+                
                 var tree = acc.cells(item.id).attachTree();
                 tree.setImagePath(treeImgPath);
                 tree.loadJSONObject({ id: 0, item: item.item });
@@ -147,7 +186,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 node = $.extend({
                     id: 'a',
                     text: '我的桌面',
-                    icon: '',
+                    icons: '',
                     title: '',
                     href: '',
                     ctrl: '',
@@ -156,7 +195,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                     active: true,
                     close: true
                 }, node);
-                node.title = node.title || ((node.icon ? "<i class='" + node.icon + "'></i> " : "") + node.text);
+                node.title = node.title || ((node.icons ? "<i class='" + node.icons + "'></i> " : "") + node.text);
 
                 var newtab = self.tabs.cells(node.id);
                 if (newtab) {
