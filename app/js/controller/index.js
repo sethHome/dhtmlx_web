@@ -66,26 +66,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 $scope.creator.layout.cells("a").progressOff();
             });
 
-            myApi.getUsers().then(function (data) {
-                var orgs = paraseTreeData(data);
-                $scope.users = {
-                    "id": 0,
-                    "item": orgs
-                };
-            });
-
-            var paraseTreeData = function (nodes) {
-                var newNodes = [];
-                angular.forEach(nodes, function (node) {
-                    var newNode = {
-                        id: node.Key,
-                        text: node.Name
-                    };
-                    newNode.item = paraseTreeData(node.SubDepartments);
-                    newNodes.push(newNode);
-                });
-                return newNodes;
-            }
 
 
             //open the chat box
@@ -1274,6 +1254,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTMyMTUxOTYsIm5iZiI6MTUxMjYxMDM5Nn0.R-3xXUXL1LIkCPKuje0fgdi3ogFgpaN_7phbADW4byk';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTM3Nzg2MDQsIm5iZiI6MTUxMzE3MzgwNH0.dRBvWp4Ij0DGObuyJ6E4IwgTDudpYgnqyDMef5jee4Y';
     }
 });

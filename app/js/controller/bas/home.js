@@ -2,54 +2,8 @@
  * Created by liuhuisheng on 2015/1/31.
  */
 define(['app'], function (app) {
-    app.service('homeApi', function () {
-        this.getHomePageGridData = function () {
-            var gridData = {
-                rows: [
-                    { id: 1001, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1002, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1003, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1004, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1005, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1006, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] },
-                    { id: 1011, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1012, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1013, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1014, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1015, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1016, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] },
-                    { id: 1021, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1022, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1023, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1024, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1025, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1026, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] },
-                    { id: 1031, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1032, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1033, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1034, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1035, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1036, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] },
-                    { id: 1041, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1042, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1043, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1044, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1045, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1046, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] },
-                    { id: 1051, data: ["100", "A Time to Kill", "John Grisham", "12.99", "1", "05/01/1998"] },
-                    { id: 1052, data: ["1000", "Blood and Smoke", "Stephen King", "0", "1", "01/01/2000"] },
-                    { id: 1053, data: ["-200", "The Rainmaker", "John Grisham", "7.99", "0", "12/01/2001"] },
-                    { id: 1054, data: ["350", "The Green Mile", "Stephen King", "11.10", "1", "01/01/1992"] },
-                    { id: 1055, data: ["700", "Misery", "Stephen King", "7.70", "0", "01/01/2003"] },
-                    { id: 1056, data: ["-1200", "The Dark Half", "Stephen King", "0", "0", "10/30/1999"] }
-                ]
-            };
-
-            return gridData;
-        };
-    });
-
-    app.controller('bas/homeCtrl', ['$scope', 'homeApi', '$page', function ($scope, homeApi, $page) {
+   
+    app.controller('bas/homeCtrl', ['$scope', 'myApi', '$page', function ($scope, myApi, $page) {
         //$scope.toolbarItems = [
         //    {
         //        id: "new", type: "buttonSelect", img: "open.gif", text: "快速访问", options: [
@@ -115,9 +69,47 @@ define(['app'], function (app) {
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
         ];
 
+        myApi.getUsers().then(function (data) {
+            var orgs = paraseTreeData(data);
+            $scope.users = {
+                "id": 0,
+                "item": orgs
+            };
+        });
+
+        var paraseTreeData = function (nodes) {
+            var newNodes = [];
+            angular.forEach(nodes, function (node) {
+                var newNode = {
+                    id: node.Key,
+                    text: node.Name,
+                };
+
+                if (node.SubDepartments && node.SubDepartments.length > 0) {
+                    newNode.open = 1;
+                }
+
+                newNode.item = paraseTreeData(node.SubDepartments);
+                
+                if (node.Users) {
+                  
+                    angular.forEach(node.Users, function (user) {
+                        newNode.item.push({
+                            id: "u" + user.ID,
+                            text: user.Account
+                        });
+                    })
+                }
+
+                newNodes.push(newNode);
+
+            });
+            return newNodes;
+        }
+
         $scope.toolbarItems = [
             {
-                id: 'main', img: 'fa fa-file', text: "我的首页"
+                id: 'go', img: 'fa fa-file', text: "我的首页",
             },
             {
                 id: 'favite', img: 'fa fa-heart', text: "关注工程"

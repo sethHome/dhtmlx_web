@@ -7,9 +7,17 @@
         </dhx-menu> 
         aa
     </dhx-layout-cell>
-    <dhx-layout-cell dhx-width="420" dhx-text="新闻动态、生产任务、关注工程、工程近况">
+    <dhx-layout-cell dhx-width="420" dhx-text="通讯录、新闻动态、生产任务、关注工程">
         <dhx-tabbar>
-            <dhx-tabbar-cell dhx-text="<i class='fa fa-list'></i> 新闻动态" dhx-selected="'true'">
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-file-text'></i> 通讯录" dhx-selected="'true'">
+                <dhx-tree dhx-tree="dhxTree"
+                          dhx-enable-tree-images="true"
+                          dhx-enable-highlighting="true"
+                          dhx-json-data="users"
+                          dhx-handlers="treeHandlers">
+                </dhx-tree>
+            </dhx-tabbar-cell>
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-list'></i> 新闻动态" >
                 <div ng-repeat="new in news track by $index" class="home-news">
                     <a class="ntitle" href="#">{{new.title}}</a>
                     <p class="ncontent">{{new.content}}</p>
@@ -22,14 +30,7 @@
             <dhx-tabbar-cell dhx-text="<i class='fa fa-heart'></i> 关注工程">
                 关注工程
             </dhx-tabbar-cell>
-            <dhx-tabbar-cell dhx-text="<i class='fa fa-file-text'></i> 通讯录">
-                <dhx-tree dhx-tree="dhxTree"
-                          dhx-enable-tree-images="true"
-                          dhx-enable-highlighting="true"
-                          dhx-json-data="users"
-                          dhx-handlers="treeHandlers">
-                </dhx-tree>
-            </dhx-tabbar-cell>
+            
         </dhx-tabbar>
        
     </dhx-layout-cell>

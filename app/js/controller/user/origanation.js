@@ -6,8 +6,8 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
         function ($scope, $page, userService, orgService) {
            
             $scope.treeToolMenus = [
-                { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addClick" },
-                { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addClick" },
+                { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addNextOrg" },
+                { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addChildOrg" },
                 { type: "separator" },
                 { id: "del", type: "button", img: "fa fa-trash-o",text: "删除", action: "test" }];
 
@@ -54,7 +54,8 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
                     angular.forEach(nodes, function (node) {
                         var newNode = {
                             id: node.Key,
-                            text: node.Name
+                            text: node.Name,
+                            open:1
                         };
                         newNode.item = paraseTreeData(node.SubDepartments);
                         newNodes.push(newNode);
@@ -121,6 +122,40 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
 
                 $scope.grid.query($scope.form);
             };
+
+            $scope.treeHand = function (id) {
+                var orgKey = $scope.dhxTree.contextID; 
+                $scope[id](orgKey);
+            }
+
+            $scope.addChildOrg = function (orgkey) {
+                var d = new Date();
+                if (orgkey == undefined) {
+                    orgkey = $scope.dhxTree.getSelectedItemId()
+                }
+                
+                $scope.dhxTree.insertNewItem(orgkey, d.valueOf(), '新建部门', 0, 0, 0, 0, 'SELECT');
+
+                $scope.dhxTree.editItem(d.valueOf());
+            }
+
+            $scope.addNextOrg = function (orgkey) {
+                var d = new Date();
+                if (orgkey == undefined) {
+                    orgkey = $scope.dhxTree.getSelectedItemId()
+                }
+                $scope.dhxTree.insertNewNext(orgkey, d.valueOf(), '新建部门', 0, 0, 0, 0, 'SELECT');
+
+                $scope.dhxTree.editItem(d.valueOf());
+            }
+
+            $scope.rename = function (orgkey) {
+                $scope.dhxTree.editItem(orgkey);
+            }
+
+            $scope.deleteOrg = function (orgkey) {
+                $scope.dhxTree.deleteItem(orgkey);
+            }
 
             //$scope.grid.enableSmartRendering(true);
 

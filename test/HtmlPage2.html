@@ -14,25 +14,35 @@
 <body ng-controller="myCtrl">
 
     <box1>
-        <box3>
-            <box2>
-                <box1>
-                    <box1>
+        <box2>
+            <box3>
+                <box3>
 
-                    </box1>
-                </box1>
-            </box2>
-           
-        </box3>
+                </box3>
+            </box3>
+            <box3>
+
+            </box3>
+        </box2>
     </box1>
+
+    <script type="text/ng-template" id="box.html">
+        <div class="box">
+            {{level}},
+
+            parent:{{parent.level}}
+            <div ng-transclude></div>
+        </div>
+    </script>
 
     <script src="../assets/lib/jquery/jquery-1.11.2.js"></script>
     <script src="angular.js"></script>
 
     <script>
+        var index = 0;
 
         var app = angular.module("app", []);
-        
+
         app.controller("myCtrl", function ($scope, $element, $controller, $compile) {
 
         });
@@ -40,34 +50,23 @@
         app.directive("box1", function () {
             return {
                 restrict: 'E',
-                template: '<div class="box" >{{$id}}-{{level}},parent:{{parents.length}},children:{{children.length}}<div ng-transclude></div></div>',
+                templateUrl: 'box.html',
                 replace: true,
                 transclude: true,
-                require: ['box1','?^^box1', '?^box2', '?^box3'],
+                require: ['box1', '?^^box1', '?^box2', '?^box3'],
                 controller: function ($scope) {
-                    this.$scope = $scope;
-                    this.$scope.level = "box1";
-                    this.$scope.parents = [];
-                    this.$scope.children = [];
-
-                    this.setParent = function (ctrl) {
-                        ctrl.$scope.parents.push(this);
-                        this.$scope.children.push(ctrl);
-                    }
+                    this.level = index++;
+                    $scope.level = this.level;
                 },
                 scope: true,
                 link: function (scope, element, attrs, ctrls) {
-                    var top = true;
+                    var max = -1;
 
                     for (var i = 1; i < ctrls.length; i++) {
-                        if (ctrls[i]) {
-                            top = true;
-                            ctrls[i].setParent(ctrls[0]);
+                        if (ctrls[i] != null && ctrls[i].level > max) {
+                            scope.parent = ctrls[i];
+                            max = ctrls[i].level;
                         }
-                    }
-
-                    if (top) {
-                        ctrls[0].$scope.children
                     }
                 }
             };
@@ -76,30 +75,23 @@
         app.directive("box2", function () {
             return {
                 restrict: 'E',
-                template: '<div class="box" >{{$id}}-{{level}},parent:{{parents.length}},children:{{children.length}}<div ng-transclude></div></div>',
+                templateUrl: 'box.html',
                 replace: true,
                 transclude: true,
-                require: ['box2','?^^box2', '?^box1', '?^box3'],
+                require: ['box2', '?^^box2', '?^box1', '?^box3'],
                 controller: function ($scope) {
-                    this.$scope = $scope;
-                    this.$scope.level = "box2";
-                    this.$scope.parents = [];
-                    this.$scope.children = [];
-
-                    this.setParent = function (ctrl) {
-                        ctrl.$scope.parents.push(this);
-                        this.$scope.children.push(ctrl);
-                    }
+                    this.level = index++;
+                    $scope.level = this.level;
                 },
                 scope: true,
                 link: function (scope, element, attrs, ctrls) {
-
+                    var max = -1;
                     for (var i = 1; i < ctrls.length; i++) {
-                        if (ctrls[i]) {
-                            ctrls[i].setParent(ctrls[0]);
+                        if (ctrls[i] != null && ctrls[i].level > max) {
+                            scope.parent = ctrls[i];
+                            max = ctrls[i].level;
                         }
                     }
-
                 }
             };
         })
@@ -107,27 +99,22 @@
         app.directive("box3", function () {
             return {
                 restrict: 'E',
-                template: '<div class="box" >{{$id}}-{{level}},parent:{{parents.length}},children:{{children.length}}<div ng-transclude></div></div>',
+                templateUrl: 'box.html',
                 replace: true,
                 transclude: true,
-                require: ['box3','?^^box3', '?^box1', '?^box2'],
+                require: ['box3', '?^^box3', '?^box1', '?^box2'],
                 controller: function ($scope) {
-                    this.$scope = $scope;
-                    this.$scope.level = "box3";
-                    this.$scope.parents = [];
-                    this.$scope.children = [];
-
-                    this.setParent = function (ctrl) {
-                        ctrl.$scope.parents.push(this);
-                        this.$scope.children.push(ctrl);
-                    }
+                    this.level = index++;
+                    $scope.level = this.level;
                 },
                 scope: true,
                 link: function (scope, element, attrs, ctrls) {
-                    
+                    var max = -1;
+
                     for (var i = 1; i < ctrls.length; i++) {
-                        if (ctrls[i]) {
-                            ctrls[i].setParent(ctrls[0]);
+                        if (ctrls[i] != null && ctrls[i].level > max) {
+                            scope.parent = ctrls[i];
+                            max = ctrls[i].level;
                         }
                     }
                 }

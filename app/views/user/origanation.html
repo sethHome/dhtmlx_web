@@ -11,22 +11,26 @@
         <dhx-tree dhx-tree="dhxTree"
                   dhx-enable-tree-images="true"
                   dhx-enable-highlighting="true"
+                  dhx-enable-item-editor="true"
+                  dhx-processor-url="department"
                   dhx-json-data="treeData"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
                   dhx-context-menu="contextMenu1"></dhx-tree>
 
-        <dhx-menu dhx-xml-json-data="orgMenus"
-                  dhx-on-click="alert"
+        <dhx-menu dhx-load-xml-from-dom="true"
+                  dhx-on-click="treeHand"
                   dhx-context-menu-mode="true"
                   dhx-menu="contextMenu1">
             <menu>
-                <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
-                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+                <item id="addChildOrg" text="添加子部门">
+                </item>
+                <item id="addNextOrg" text="添加部门">
+                </item>
+                <item id="rename" text="重命名">
                 </item>
                 <item id="ms1" type="separator" />
-                <item id="udf" text="UDF">
-                    <userdata name="align">left</userdata> // userdata
+                <item id="deleteOrg" text="删除部门">
                 </item>
             </menu>
         </dhx-menu>

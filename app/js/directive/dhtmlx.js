@@ -1,4 +1,7 @@
 ﻿define(['app', 'config'], function (app, config) {
+
+    app.level = 0;
+
     app.directive('dhtmlxgrid', function ($resource, $compile) {
         return {
             restrict: 'A',
@@ -746,7 +749,7 @@
         };
     });
 
-    app.directive('dhxLayoutCell', function factory(DhxUtils) {
+    app.directive('dhxLayoutCell', function factory(DhxUtils,$rootScope) {
         return {
             restrict: 'E',
             require: '^dhxLayout',
@@ -763,7 +766,8 @@
                 dhxFixSize: '='
             },
             controller: function ($scope) {
-                this.level = 0;
+                this.level = app.level++;
+
                 $scope.creators = [];
                 $scope.attach = function (layout, cell) {
 
@@ -887,7 +891,7 @@
                 dhxHandlers: '='
             },
             link: function (scope, element, attr, ctls) {
-                ctls[0].level = ctls[1].level + 1;
+                
                 var layoutCell = ctls[1];
 
                 var setTabBar = function (tabbar) {
@@ -900,9 +904,14 @@
                             tabInfo.id,
                             tabInfo.text
                         );
-                        tabbar.tabs(tabInfo.id).attachObject(tabInfo.elem[0]);
-                        tabbar.tabs(tabInfo.id).showInnerScroll();
                         tabInfo.selected ? tabbar.tabs(tabInfo.id).setActive() : '';
+
+                        if (!tabInfo.attach(tabbar, tabbar.tabs(tabInfo.id))) {
+                            tabbar.tabs(tabInfo.id).attachObject(tabInfo.elem[0]);
+                        }
+
+                        tabbar.tabs(tabInfo.id).showInnerScroll();
+                        
                     });
                     DhxUtils.attachDhxHandlers(tabbar, scope.dhxHandlers);
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, tabbar);
@@ -941,7 +950,7 @@
                 dhxSelected: '='
             },
             controller: function ($scope) {
-                this.level = 0;
+                this.level = app.level++;
                 
                 $scope.creators = [];
                 $scope.attach = function (tabbar, cell) {
@@ -965,7 +974,8 @@
                     elem: element.detach(),
                     text: scope.dhxText || "",
                     id: tabbarCtrl.getTabbarPaneId(),
-                    selected: !!scope.dhxSelected
+                    selected: !!scope.dhxSelected,
+                    attach: scope.attach,
                     //NOTE: Feel free to add aditional configuration here
                 });
             }
@@ -1096,6 +1106,7 @@
                 dhxEnableThreeStateCheckboxes: '=',
                 dhxEnableTreeLines: '=',
                 dhxEnableTreeImages: '=',
+                dhxEnableItemEditor:'=',
                 /**
                  * preLoad and postLoad callbacks to controller for additional
                  * customization power.
@@ -1103,7 +1114,8 @@
                 dhxConfigureFunc: '=',
                 dhxOnDataLoaded: '=',
 
-                dhxContextMenu: '='
+                dhxContextMenu: '=',
+                dhxProcessorUrl: '@'
             },
             link: function (scope, element, attrs, ctls) {
 
@@ -1131,8 +1143,21 @@
                     tree.enableThreeStateCheckboxes(scope.dhxEnableThreeStateCheckboxes);
                     tree.enableTreeImages(scope.dhxEnableTreeImages);
                     tree.enableTreeLines(scope.dhxEnableTreeLines);
+                    tree.enableItemEditor(scope.dhxEnableItemEditor);
+                    
                     // Letting controller add configurations before data is parsed
 
+                    if (scope.dhxProcessorUrl) {
+                        var myDataProcessor = new dataProcessor(config.webapi + "/" + scope.dhxProcessorUrl + "/");
+                        myDataProcessor.init(tree);
+                        var authCode = app.getAuthorization();
+                        myDataProcessor.setTransactionMode({
+                            mode: "RESTAPI",
+                            headers: {
+                                Authorization: authCode
+                            }
+                        }, false);
+                    }
 
                     if (scope.dhxConfigureFunc) {
                         scope.dhxConfigureFunc(tree);
@@ -1155,19 +1180,22 @@
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, tree);
                 }
                 
-                var inContainer = false;
+                var maxLevel = -1;
+                var parentCell = null;
+
                 for (var i = 0; i < ctls.length; i++) {
-                    if (ctls[i].addCreator) {
-                        inContainer = true
-                        ctls[i].addCreator(function (obj, cell) {
-                            var tree = cell.attachTree();
-                            setTree(tree);
-                        });
-                        break;
+                    if (ctls[i] != null && ctls[i].level > maxLevel) {
+                        parentCell = ctls[i];
+                        maxLevel = ctls[i].level;
                     }
                 }
 
-                if (!inContainer) {
+                if (parentCell != null) {
+                    parentCell.addCreator(function (obj, cell) {
+                        var tree = cell.attachTree();
+                        setTree(tree);
+                    });
+                } else {
                     var tree = new dhtmlXTreeObject({
                         parent: element[0],
                         skin: "dhx_skyblue",
@@ -1372,7 +1400,7 @@
         };
     });
 
-    app.directive('dhxWindowContainer', function factory() {
+    app.directive('dhxWindowContainer', function factory(DhxUtils) {
         return {
             restrict: 'E',
             require: '^dhxWindows',
