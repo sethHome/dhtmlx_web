@@ -22,8 +22,13 @@
             <dhx-tabbar-cell dhx-text="<i class='fa fa-heart'></i> 关注工程">
                 关注工程
             </dhx-tabbar-cell>
-            <dhx-tabbar-cell dhx-text="<i class='fa fa-file-text'></i> 工程近况">
-                关注工程
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-file-text'></i> 通讯录">
+                <dhx-tree dhx-tree="dhxTree"
+                          dhx-enable-tree-images="true"
+                          dhx-enable-highlighting="true"
+                          dhx-json-data="users"
+                          dhx-handlers="treeHandlers">
+                </dhx-tree>
             </dhx-tabbar-cell>
         </dhx-tabbar>
        

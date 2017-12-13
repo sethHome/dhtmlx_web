@@ -73,6 +73,10 @@ define(['app'], function (app) {
             return menusData;
         };
 
+        this.getUsers = function () {
+            return restSrv.all("department").getList();
+        }
+
         this.getTasks = function () {
             var tasks = [
                   { name: 'Lorem ipsum dolor sit amet', type: 'Html', time: '4 mins ago', status: 'unread', typeCls: 'label-success' }

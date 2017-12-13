@@ -5,22 +5,18 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', 'Restangular',
         function ($scope, $rootScope, $compile, $controller, myApi, $timeout, Restangular) {
 
-            myApi.getMenus().then(function (data) {
-                $scope.menus = convertMenu(data);
-            });
-
             var convertMenu = function (data) {
                 var menus = [];
                 angular.forEach(data, function (item) {
-                    
+
                     var subMenus = convertMenu(item.SubMenus);
 
                     if (item.Text == '用户管理') {
-                        
+
                         menus.push({
                             id: item.Key,
                             text: item.Text,
-                            ctrl:'user/origanation',
+                            ctrl: 'user/origanation',
                             icons: item.Icon ? item.Icon : 'fa fa-file',
                             item: subMenus,
                         });
@@ -42,7 +38,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                             item: subMenus,
                         });
                     }
-                    
+
                 });
 
                 return menus;
@@ -60,6 +56,38 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             $scope.creator.$scope = $scope;
             $scope.creator.$controller = $controller;
             $scope.creator.$rootScope = $rootScope;
+
+            // load menu
+            myApi.getMenus().then(function (data) {
+                $scope.menus = convertMenu(data);
+
+                $scope.creator.loadNavigationData($scope.menus);
+
+                $scope.creator.layout.cells("a").progressOff();
+            });
+
+            myApi.getUsers().then(function (data) {
+                var orgs = paraseTreeData(data);
+                $scope.users = {
+                    "id": 0,
+                    "item": orgs
+                };
+            });
+
+            var paraseTreeData = function (nodes) {
+                var newNodes = [];
+                angular.forEach(nodes, function (node) {
+                    var newNode = {
+                        id: node.Key,
+                        text: node.Name
+                    };
+                    newNode.item = paraseTreeData(node.SubDepartments);
+                    newNodes.push(newNode);
+                });
+                return newNodes;
+            }
+
+
             //open the chat box
             $scope.openChat = function (e, f) {
                 $scope.chat.current = { chats: [] };
@@ -74,11 +102,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 $scope.chat.current = f;
                 app.handleFormChatOpen(e, f);
             };
-
-            //watch for menus change
-            $scope.$watch('menus', function (newValue, oldValue) {
-                $scope.creator.loadNavigationData(newValue);
-            });
 
             ////watch for grid data in home page change
             //$scope.$watch('homePageGridData', function (newValue, oldValue) {
@@ -105,8 +128,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             };
 
             $scope.appRoot = app.getAppRoot();
-
-            
         }]);
 
     app.layoutCreator = function () {
@@ -117,7 +138,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 parent: 'my_layout',
                 pattern: '2U',
                 cells: [
-                    { id: "a", text: "菜单导航", width: 160, header: true },
+                    { id: "a", text: "菜单导航", width: 180, header: true },
                     { id: "b", text: "left", header: false }
                 ]
             });
@@ -125,7 +146,9 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             layout.attachFooter("my_footer", 20);
 
             //create navigation
-            self.accordion = layout.cells("a").attachAccordion();
+            self.accordion = layout.cells("a").attachAccordion({ iconset: "awesome" });
+            //self.accordion.setIconset("awesome");
+            layout.cells("a").progressOn();
 
             //create tabs
             var tabs = self.tabs = layout.cells("b").attachTabbar({
@@ -163,6 +186,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
         };
 
         self.loadNavigationData = function (data) {
+
             var acc = self.accordion;
             acc.forEachItem(function (cell) {
                 acc.removeItem(cell.getId());
@@ -171,7 +195,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             var treeImgPath = app.getSkinImgPath("dhxtree");
             angular.forEach(data, function (item) {
                 acc.addItem(item.id, item.text, item.icons, item.icons, item.icons);
-                
+
                 var tree = acc.cells(item.id).attachTree();
                 tree.setImagePath(treeImgPath);
                 tree.loadJSONObject({ id: 0, item: item.item });
@@ -224,10 +248,10 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                         view: 'text!views/' + node.ctrl + '.html'
                     };
                     //$cell.data('ctrl', ctrl).attr('ng-controller', ctrl.name);
-                    self.initPartial(tab, ctrl, name, node.resolve);
+                    self.initPartial(tab, ctrl, node.resolve);
                 }
             };
-            self.initPartial = function (tab, ctrl, name, resolve) {
+            self.initPartial = function (tab, ctrl, resolve) {
                 var init = function (render, html) {
                     render && $.isFunction(render) && render.call(this, args());
 
@@ -272,6 +296,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 require.undef(ctrl.path);
             };
             self.tabHandles.refresh = function (tabId) {
+
                 var tab = tabs.cells(tabId);
                 var $cell = $(tab.cell);
                 var ctrl = $cell.data("ctrl");
@@ -279,8 +304,13 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 tab.setActive();
 
                 if (ctrl) {
-                    self.destoryPartial(tab, ctrl);
-                    self.initPartial(tab, ctrl);
+                    var ctrlInfo = {
+                        name: ctrl + 'Ctrl',
+                        path: 'controller/' + ctrl,
+                        view: 'text!views/' + ctrl + '.html'
+                    };
+                    self.destoryPartial(tab, ctrlInfo);
+                    self.initPartial(tab, ctrlInfo);
                 }
                 else {
                     var win = ((tab.cell.childNodes[0] || {}).childNodes[0] || {}).contentWindow;

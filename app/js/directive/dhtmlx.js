@@ -746,7 +746,7 @@
         };
     });
 
-    app.directive('dhxLayoutCell', function factory() {
+    app.directive('dhxLayoutCell', function factory(DhxUtils) {
         return {
             restrict: 'E',
             require: '^dhxLayout',
@@ -763,6 +763,7 @@
                 dhxFixSize: '='
             },
             controller: function ($scope) {
+                this.level = 0;
                 $scope.creators = [];
                 $scope.attach = function (layout, cell) {
 
@@ -863,8 +864,10 @@
         var nextTabbarId = DhxUtils.createCounter();
         return {
             restrict: 'E',
-            require: ['?^^dhxLayoutCell'],
+            require: ['dhxTabbar','?^^dhxLayoutCell'],
             controller: function ($scope) {
+                this.level = 0;
+                
                 var _tabbarId = nextTabbarId();
                 $scope.panes = [];
                 var _nextTabbarPaneId = DhxUtils.createCounter();
@@ -884,6 +887,8 @@
                 dhxHandlers: '='
             },
             link: function (scope, element, attr, ctls) {
+                ctls[0].level = ctls[1].level + 1;
+                var layoutCell = ctls[1];
 
                 var setTabBar = function (tabbar) {
 
@@ -903,8 +908,8 @@
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, tabbar);
                 }
 
-                if (ctls[0] != null) {
-                    ctls[0].addCreator(function (layout, cell) {
+                if (layoutCell != null) {
+                    layoutCell.addCreator(function (layout, cell) {
                         var tabbar = cell.attachTabbar();
                         setTabBar(tabbar);
                     });
@@ -927,15 +932,35 @@
         };
     })
 
-    app.directive('dhxTabbarCell', function factory() {
+    app.directive('dhxTabbarCell', function factory(DhxUtils) {
         return {
             restrict: 'E',
-            require: '^dhxTabbar',
+            require: ['dhxTabbarCell', '^dhxTabbar'],
             scope: {
                 dhxText: '@',
                 dhxSelected: '='
             },
-            link: function (scope, element, attrs, tabbarCtrl) {
+            controller: function ($scope) {
+                this.level = 0;
+                
+                $scope.creators = [];
+                $scope.attach = function (tabbar, cell) {
+
+                    angular.forEach($scope.creators, function (creator) {
+                        creator(tabbar, cell);
+                    });
+
+                    return $scope.creators.length > 0;
+                }
+                this.addCreator = function (creator) {
+                    $scope.creators.push(creator);
+                }
+            },
+            link: function (scope, element, attrs, ctrls) {
+                ctrls[0].level = ctrls[1].level + 1;
+                console.log(ctrls[0].level);
+                
+                var tabbarCtrl = ctrls[1];
                 tabbarCtrl.registerPane({
                     elem: element.detach(),
                     text: scope.dhxText || "",
@@ -1040,8 +1065,8 @@
     app.directive('dhxTree', function factory(DhxUtils) {
         return {
             restrict: 'E',
-            require: ['dhxTree', '?^^dhxLayoutCell'],
-            controller: function () {
+            require: ['?^^dhxTabbarCell', '?^^dhxLayoutCell'],
+            controller: function ($scope) {
             },
             scope: {
                 /**
@@ -1092,7 +1117,9 @@
                     scope.$watch(
                         "dhxContextMenu",
                         function handle(newValue) {
-                            tree.enableContextMenu(newValue);
+                            if (newValue) {
+                                tree.enableContextMenu(newValue);
+                            }
                         }
                     );
 
@@ -1114,6 +1141,7 @@
                     //tree.parse(scope.dhxJsonData, "json");
                     scope.$watch("dhxJsonData", function (newval, oldval) {
                         if (newval) {
+                            
                             tree.loadJSONObject(scope.dhxJsonData);
                         }
                     });
@@ -1126,13 +1154,20 @@
                     DhxUtils.attachDhxHandlers(tree, scope.dhxHandlers);
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, tree);
                 }
+                
+                var inContainer = false;
+                for (var i = 0; i < ctls.length; i++) {
+                    if (ctls[i].addCreator) {
+                        inContainer = true
+                        ctls[i].addCreator(function (obj, cell) {
+                            var tree = cell.attachTree();
+                            setTree(tree);
+                        });
+                        break;
+                    }
+                }
 
-                if (ctls[1] != null) {
-                    ctls[1].addCreator(function (layout, cell) {
-                        var tree = cell.attachTree();
-                        setTree(tree);
-                    });
-                } else {
+                if (!inContainer) {
                     var tree = new dhtmlXTreeObject({
                         parent: element[0],
                         skin: "dhx_skyblue",
