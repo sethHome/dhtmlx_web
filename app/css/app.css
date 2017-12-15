@@ -1081,3 +1081,27 @@ a.list-group-item.active > .badge,
         font-size: 11px;
     }
 
+.newspager {
+    width: 77%;
+    margin: 0 auto;
+}
+
+    .newspager h3 {
+        font-size: 2.5em;
+        font-family: SimHei;
+        text-align: center;
+        margin: 10px;
+        padding: 30px 0;
+    }
+
+    .newspager hr {
+        margin:10px 0;
+    }
+
+    .newspager .newsbody {
+        font-size: 1.5em;
+        font-family: fangsong;
+        color: #1d4161;
+        letter-spacing: 0.1em;
+        line-height: 1.8em;
+    }

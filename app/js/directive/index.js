@@ -49,4 +49,64 @@ define(['app'], function (app) {
             }
         };
     });
+
+    app.directive('pageContainer', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                controller: '=?',
+                controllerUrl: '=?',
+                controllerAs:'=?',
+                resolve:'=?',
+                view: '='
+            },
+            require: ['?^^dhxLayoutCell'],
+            controller: function ($scope, $rootScope, $controller, $compile) {
+                $scope.load = function (html) {
+                  
+                    var newScope = $rootScope.$new();
+                    var injectors = {
+                        "$scope": newScope
+                    };
+
+                    angular.extend(injectors, $scope.resolve);
+
+                    ctrlInstantiate = $controller($scope.controller, injectors, true, $scope.controllerAs);
+
+                    ctrlInstantiate();
+                    
+                    $scope.cell.attachHTMLString($compile(html)(newScope));
+
+                    newScope.$apply();
+                }
+            },
+            link: function (scope, element, attrs, ctrls) {
+
+                var layoutCtl = ctrls[0];
+
+                var setContainer = function (layout, cell) {
+                    
+                    scope.cell = cell;
+
+                    scope.$watch(["view", "resolve"], function (newval, oldval) {
+                        if (newval) {
+                            if (scope.controllerUrl) {
+                                require(['text!../views/' + scope.view, 'controller/' + scope.controllerUrl], scope.load);
+                            } else {
+                                require(['text!../views/' + scope.view], scope.load);
+                            }
+                        }
+                    })
+                }
+
+                if (layoutCtl == null || layoutCtl == undefined) {
+                    setContainer();
+                } else {
+                    layoutCtl.addCreator(function (layout, cell) {
+                        setContainer(layout, cell);
+                    })
+                }
+            }
+        }
+    });
 });

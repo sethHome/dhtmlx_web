@@ -2,7 +2,7 @@
  * Created by liuhuisheng on 2015/1/31.
  */
 define(['app'], function (app) {
-   
+
     app.controller('bas/homeCtrl', ['$scope', 'myApi', '$page', function ($scope, myApi, $page) {
         //$scope.toolbarItems = [
         //    {
@@ -58,9 +58,9 @@ define(['app'], function (app) {
 
         $scope.news = [
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
-            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
-            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
-            { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '2222222222', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '3333333333', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
+            { id: 1, title: '习近平主席视察王杰生前所在连侧记', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
@@ -68,6 +68,20 @@ define(['app'], function (app) {
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
         ];
+
+        $scope.page = {};
+
+        $scope.openNews = function (news) {
+            
+            $scope.page = {
+                view: 'news/viewer.html',
+                controller: 'news/viewerCtl',
+                controllerUrl: 'news/viewer',
+                resolve: {
+                    "news": news
+                }
+            }
+        }
 
         myApi.getUsers().then(function (data) {
             var orgs = paraseTreeData(data);
@@ -90,9 +104,9 @@ define(['app'], function (app) {
                 }
 
                 newNode.item = paraseTreeData(node.SubDepartments);
-                
+
                 if (node.Users) {
-                  
+
                     angular.forEach(node.Users, function (user) {
                         newNode.item.push({
                             id: "u" + user.ID,
@@ -152,7 +166,7 @@ define(['app'], function (app) {
             },
             {
                 id: 'hideRight', img: 'fa fa-close', text: "关闭右侧"
-            },];
+            }, ];
 
         $scope.go = function (id) {
             $page.go({
@@ -167,7 +181,7 @@ define(['app'], function (app) {
             });
         }
 
-        $scope.menuAction = function (id,item) {
+        $scope.menuAction = function (id, item) {
             $scope[id]();
         }
 

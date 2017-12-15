@@ -662,6 +662,8 @@
                     for (var i = 0; i < scope.panes.length; i++) {
                         var cell = layout.cells(letters[i]);
 
+                        cell.showInnerScroll();
+
                         scope.panes[i].scope.dhxCell = cell;
 
                         // 如果cell中没有可以attach的对象则直接attachdom
