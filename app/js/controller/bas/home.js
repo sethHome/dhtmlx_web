@@ -121,6 +121,26 @@ define(['app'], function (app) {
             return newNodes;
         }
 
+        $scope.treeHandlers = [
+            {
+                type: "onClick",
+                handler: function (id, a, b, c) {
+                    
+                    if (id.indexOf('Origanization') < 0) {
+                        $scope.page = {
+                            view: 'chat/chat.html',
+                            controller: 'chatController',
+                            controllerUrl: 'chat/chat',
+                            resolve: {
+                                "userId": id
+                            }
+                        }
+                        $scope.$apply();
+                    }
+                }
+            }
+        ];
+
         $scope.toolbarItems = [
             {
                 id: 'go', img: 'fa fa-file', text: "我的首页",

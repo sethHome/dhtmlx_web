@@ -5,17 +5,15 @@
         </dhx-toolbar>-->
         <dhx-menu dhx-xml-json-data="toolbarItems" dhx-on-click="menuAction">
         </dhx-menu>
-        <page-container view="page.view"
-                        controller-url="page.controllerUrl"
-                        controller="page.controller"
-                        resolve="page.resolve">
-
-        </page-container>
+        <dhx-windows>
+            <dhx-window dhx-height="200" dhx-width="200" dhx-text="test" dhx-modal="false" dhx-left="20" dhx-top="20">
+                top 20
+            </dhx-window>
+        </dhx-windows>
     </dhx-layout-cell>
     <dhx-layout-cell dhx-width="380" dhx-text="通讯录、新闻动态、生产任务、关注工程">
         <dhx-tabbar>
-            <dhx-tabbar-cell dhx-text="
-                <i class='fa fa-file-text'></i> 通讯录" dhx-selected="'true'">
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-file-text'></i> 通讯录" dhx-selected="'true'">
                 <dhx-tree dhx-tree="dhxTree"
                           dhx-enable-tree-images="true"
                           dhx-enable-highlighting="true"
@@ -23,8 +21,7 @@
                           dhx-handlers="treeHandlers">
                 </dhx-tree>
             </dhx-tabbar-cell>
-            <dhx-tabbar-cell dhx-text="
-                <i class='fa fa-list'></i> 新闻动态" >
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-list'></i> 新闻动态" >
                 <div ng-repeat="new in news track by $index" class="home-news">
                     <a class="ntitle" href="#" ng-click="openNews(new)">{{new.title}}</a>
                     <p class="ncontent">{{new.content}}</p>
@@ -32,8 +29,7 @@
                 </div>
             </dhx-tabbar-cell>
            
-            <dhx-tabbar-cell dhx-text="
-                <i class='fa fa-heart'></i> 关注工程">
+            <dhx-tabbar-cell dhx-text="<i class='fa fa-heart'></i> 关注工程">
                 关注工程
             </dhx-tabbar-cell>
 

@@ -1213,7 +1213,7 @@
         var nextWindowsId = DhxUtils.createCounter();
         return {
             restrict: 'E',
-            require: 'dhxWindows',
+            require: ['dhxWindows', '?^^dhxLayoutCell'],
             controller: function (/*$scope*/) {
                 var _windowInfos = [];
                 var _container = document.documentElement;
@@ -1244,48 +1244,89 @@
             scope: {
                 dhxHandlers: '='
             },
-            link: function (scope, element, attrs, windowsCtrl) {
-                //noinspection JSPotentiallyInvalidConstructorUsage
-                var windows = new dhtmlXWindows();
-                windows.attachViewportTo(windowsCtrl.getContainer());
-                windowsCtrl
-                    .getWindowInfos()
-                    .forEach(function (windowInfo) {
-                        var conf = windowInfo.config;
-                        DhxUtils.removeUndefinedProps(conf);
-                        var win = windows.createWindow(
-                            windowsCtrl.getNextWindowId(),
-                            conf.left,
-                            conf.top,
-                            conf.width,
-                            conf.height
-                        );
+            link: function (scope, element, attrs, ctrls) {
+                
+                var windowsCtrl = ctrls[0];
 
-                        conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
-                        conf.center !== undefined ? (conf.center ? win.center() : '') : '';
-                        conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
-                        conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
-                        conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
-                        conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
-                        conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
-                        conf.text !== undefined ? win.setText(conf.text) : '';
+                var setWin = function (windows) {
+                    windowsCtrl
+                        .getWindowInfos()
+                        .forEach(function (windowInfo) {
 
-                        conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
-                        conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
-                        conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
-                        conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
-                        conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
 
-                        if (conf.appendLayout) {
-                            myLayout = win.attachLayout(conf.appendLayout);
-                        } else {
+                            var conf = windowInfo.config;
+                            DhxUtils.removeUndefinedProps(conf);
+                           
+                            //var win = windows.createWindow("w1", 10, 10, 300, 190);
+
+                            var win = windows.createWindow(
+                                windowsCtrl.getNextWindowId(),
+                                conf.left,
+                                conf.top,
+                                conf.width,
+                                conf.height
+                            );
+
+                            conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
+                            conf.center !== undefined ? (conf.center ? win.center() : '') : '';
+                            conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
+                            conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
+                            conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
+                            conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
+                            conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
+                            conf.text !== undefined ? win.setText(conf.text) : '';
+
+                            conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
+                            conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
+                            conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
+                            conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
+                            conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
+
                             var domElem = windowInfo.elem[0];
                             win.attachObject(domElem);
-                        }
+                        });
+
+                    DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
+                    DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
+                }
+
+                if (ctrls[1] != null) {
+
+                    ctrls[1].addCreator(function (layout, cell) {
+
+                        $("<div id='testwin' style='display: none;'></div>").css({
+                            position: 'relative',
+                            width: '100%',
+                            height: '100%',
+                            overflow: 'hidden'
+                        }).appendTo("body");
+
+
+                        cell.attachObject("testwin");
+
+                        // init windows
+                        dhxWins = new dhtmlXWindows();
+                        // rendering viewport as an existing object on page
+                        // which already attached to layout
+                        dhxWins.attachViewportTo("testwin");
+                        
+                        setWin(dhxWins);
+                        //// open windows
+                        //dhxWins.createWindow("w1", 10, 10, 300, 190);
+                        //dhxWins.createWindow("w2", 30, 65, 300, 190);
+                        //dhxWins.createWindow("w3", 50, 120, 300, 190);
                     });
 
-                DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
-                DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
+                } else {
+
+                    debugger;
+
+                    //noinspection JSPotentiallyInvalidConstructorUsage
+                    var windows = new dhtmlXWindows();
+                    windows.attachViewportTo(windowsCtrl.getContainer());
+
+                    setWin(windows);
+                }
             }
         };
     });
@@ -1315,15 +1356,11 @@
                 dhxBtnHelp: '=',
                 dhxAppendLayout: '@'
             },
-            controller: function ($scope) {
-
-                this.registerLayoutCallbak = function (initor) {
-                    $scope.layoutInitor = initor
-                }
-            },
-            link: function (scope, element, attrs) {
+            require: '?^^dhxWindows',
+            link: function (scope, element, attrs,windowsCtrl) {
                 var elem = element.detach();
                 var conf = {
+                    
                     center: scope.dhxCenter,
                     height: scope.dhxHeight,
                     header: scope.dhxHeader,
@@ -1344,60 +1381,64 @@
                     btnHelp: scope.dhxBtnHelp,
                     appendLayout: scope.dhxAppendLayout
                 };
+                windowsCtrl.registerWindow({
+                    elem: elem,
+                    config: conf
+                });
 
-                var windows = new dhtmlXWindows();
-                //windows.attachViewportTo(windowsCtrl.getContainer());
+                //var windows = new dhtmlXWindows();
+                ////windows.attachViewportTo(windowsCtrl.getContainer());
 
-                DhxUtils.removeUndefinedProps(conf);
+                //DhxUtils.removeUndefinedProps(conf);
 
-                var _winsId = DhxUtils.createCounter();
-                var _idPerWin = DhxUtils.createCounter();
+                //var _winsId = DhxUtils.createCounter();
+                //var _idPerWin = DhxUtils.createCounter();
 
-                var _getNextWindowId = function () {
-                    return "wins_" + _winsId() + "_" + _idPerWin();
-                };
+                //var _getNextWindowId = function () {
+                //    return "wins_" + _winsId() + "_" + _idPerWin();
+                //};
 
-                var win = windows.createWindow(
-                    _getNextWindowId,
-                    conf.left,
-                    conf.top,
-                    conf.width,
-                    conf.height
-                );
+                //var win = windows.createWindow(
+                //    _getNextWindowId,
+                //    conf.left,
+                //    conf.top,
+                //    conf.width,
+                //    conf.height
+                //);
 
-                if (conf.modal == undefined) {
-                    conf.modal = true;
-                }
-                if (conf.center == undefined) {
-                    conf.center = true;
-                }
+                //if (conf.modal == undefined) {
+                //    conf.modal = true;
+                //}
+                //if (conf.center == undefined) {
+                //    conf.center = true;
+                //}
 
-                win.setModal(conf.modal);
+                //win.setModal(conf.modal);
 
-                conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
-                conf.center !== undefined ? (conf.center ? win.center() : '') : '';
-                conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
-                conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
-                conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
-                conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
-                conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
-                conf.text !== undefined ? win.setText(conf.text) : '';
+                //conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
+                //conf.center !== undefined ? (conf.center ? win.center() : '') : '';
+                //conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
+                //conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
+                //conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
+                //conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
+                //conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
+                //conf.text !== undefined ? win.setText(conf.text) : '';
 
-                conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
-                conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
-                conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
-                conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
-                conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
+                //conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
+                //conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
+                //conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
+                //conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
+                //conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
 
-                if (scope.layoutInitor != undefined) {
-                    scope.layoutInitor(win);
-                } else {
-                    win.attachObject(elem[0]);
-                }
-                DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
-                DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
+                //if (scope.layoutInitor != undefined) {
+                //    scope.layoutInitor(win);
+                //} else {
+                //    win.attachObject(elem[0]);
+                //}
+                //DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
+                //DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
 
-                scope.dhxWin = win;
+                //scope.dhxWin = win;
             }
         };
     });

@@ -54,11 +54,13 @@ define(['app'], function (app) {
         return {
             restrict: 'E',
             scope: {
+                page:'=?',
                 controller: '=?',
                 controllerUrl: '=?',
                 controllerAs:'=?',
-                resolve:'=?',
-                view: '='
+                resolve: '=?',
+                set:'&?',
+                view: '=?'
             },
             require: ['?^^dhxLayoutCell'],
             controller: function ($scope, $rootScope, $controller, $compile) {
@@ -69,18 +71,21 @@ define(['app'], function (app) {
                         "$scope": newScope
                     };
 
-                    angular.extend(injectors, $scope.resolve);
+                    angular.extend(injectors, $scope.page.resolve);
 
-                    ctrlInstantiate = $controller($scope.controller, injectors, true, $scope.controllerAs);
+                    ctrlInstantiate = $controller($scope.page.controller, injectors, true, $scope.page.controllerAs);
 
                     ctrlInstantiate();
-                    
-                    $scope.cell.attachHTMLString($compile(html)(newScope));
+                    $scope.cell.detachObject();
 
+                    $scope.cell.attachHTMLString($compile(html)(newScope));
+                    
                     newScope.$apply();
                 }
             },
             link: function (scope, element, attrs, ctrls) {
+
+               
 
                 var layoutCtl = ctrls[0];
 
@@ -88,15 +93,22 @@ define(['app'], function (app) {
                     
                     scope.cell = cell;
 
-                    scope.$watch(["view", "resolve"], function (newval, oldval) {
-                        if (newval) {
-                            if (scope.controllerUrl) {
-                                require(['text!../views/' + scope.view, 'controller/' + scope.controllerUrl], scope.load);
-                            } else {
-                                require(['text!../views/' + scope.view], scope.load);
-                            }
+                    var init = function () {
+                        
+                        if (scope.page.controllerUrl) {
+                            require(['text!../views/' + scope.page.view, 'controller/' + scope.page.controllerUrl], scope.load);
+                        } else {
+                            require(['text!../views/' + scope.page.view], scope.load);
                         }
-                    })
+                    }
+
+                    scope.$watch("page", function (newval, oldval) {
+                        if (newval && newval.view) {
+                            init();
+                        }
+                    }, true);
+
+                    
                 }
 
                 if (layoutCtl == null || layoutCtl == undefined) {
