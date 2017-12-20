@@ -6,8 +6,9 @@
         <dhx-menu dhx-xml-json-data="toolbarItems" dhx-on-click="menuAction">
         </dhx-menu>
         <dhx-windows>
-            <dhx-window dhx-height="200" dhx-width="200" dhx-text="test" dhx-modal="false" dhx-left="20" dhx-top="20">
-                top 20
+            <dhx-window dhx-win-option="win"
+                        ng-repeat="win in wins">
+
             </dhx-window>
         </dhx-windows>
     </dhx-layout-cell>

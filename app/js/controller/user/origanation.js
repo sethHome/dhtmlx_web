@@ -90,25 +90,50 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
                 // need version 5.1
                 //var data = $scope.grid.obj.getRowData(rowid);
 
-                $page.open({
-                    title:'新增用户',
-                    url: "user/user_maintain.html",
+                $page.open({config: {
+                    height: 500,
+                    width: 500,
+                    text: '新增用户',
+                    },
+                    view: 'user/user_maintain.html',
                     controller: 'user/user_maintainCtrl',
-                    resolve:{
-                        params:{
+                    resolve: {
+                        params: {
                             rowid: rowid
                         }
                     }
                 });
+                //$page.open2({
+                //    title:'新增用户',
+                //    url: "user/user_maintain.html",
+                //    controller: 'user/user_maintainCtrl',
+                //    resolve:{
+                //        params:{
+                //            rowid: rowid
+                //        }
+                //    }
+                //});
             };
 
             $scope.modify = function () {
+                //$page.open({
+                //    height: 500,
+                //    width: 800,
+                //    url: "chat/chat.html",
+                //    controllerUrl:'chat/chat',
+                //    controller: 'chatController',
+                //});
+
+
                 $page.open({
-                    height: 500,
-                    width: 800,
-                    url: "chat/chat.html",
-                    controllerUrl:'chat/chat',
-                    controller: 'chatController',
+                    config: {
+                        height: 500,
+                        width: 800,
+                        text: '聊天',
+                    },
+                    view: "chat/chat.html",
+                    controllerUrl: 'chat/chat',
+                    controller: 'chatController'
                 });
             };
 

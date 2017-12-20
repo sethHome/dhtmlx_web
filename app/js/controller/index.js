@@ -44,6 +44,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 return menus;
             }
 
+            $scope.wins = [];
             $scope.tasks = myApi.getTasks();
             $scope.notifys = myApi.getNotifys();
             $scope.username = myApi.getUserName();
@@ -56,7 +57,11 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             $scope.creator.$scope = $scope;
             $scope.creator.$controller = $controller;
             $scope.creator.$rootScope = $rootScope;
-
+            $scope.creator.addWin = function (win) {
+                $scope.$apply(function () {
+                    $scope.wins.push(win);
+                });
+            }
             // load menu
             myApi.getMenus().then(function (data) {
                 $scope.menus = convertMenu(data);
@@ -634,7 +639,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
         self.pageHander = {
             // 打开window窗口
-            open: function (option) {
+            open2: function (option) {
 
                 var init = function (html) {
                     var newScope = self.$rootScope.$new();
@@ -671,6 +676,9 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 } else {
                     require(['text!../views/' + option.url], init);
                 }
+            },
+            open: function (option) {
+                self.addWin(option);
             },
             // controller跳转
             go: function (option) {

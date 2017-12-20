@@ -69,18 +69,34 @@ define(['app'], function (app) {
             { id: 1, title: '1111111111', content: 'xxxxxxxxxxxxxx', date: '2017/11/12', author: 'seth.tang' },
         ];
 
+        $scope.wins = [];
+
         $scope.page = {};
 
         $scope.openNews = function (news) {
-            
-            $scope.page = {
+
+            $scope.wins.push({
+                config: {
+                    height: 500,
+                    width: 500,
+                    text: '[新闻]' + news.title,
+                },
                 view: 'news/viewer.html',
                 controller: 'news/viewerCtl',
                 controllerUrl: 'news/viewer',
                 resolve: {
                     "news": news
                 }
-            }
+            });
+
+            //$scope.page = {
+            //    view: 'news/viewer.html',
+            //    controller: 'news/viewerCtl',
+            //    controllerUrl: 'news/viewer',
+            //    resolve: {
+            //        "news": news
+            //    }
+            //}
         }
 
         myApi.getUsers().then(function (data) {
@@ -125,16 +141,24 @@ define(['app'], function (app) {
             {
                 type: "onClick",
                 handler: function (id, a, b, c) {
-                    
+
                     if (id.indexOf('Origanization') < 0) {
-                        $scope.page = {
+
+                        $scope.wins.push({
+                            config: {
+                                height: 500,
+                                width: 500,
+                                text: '[聊天]',
+                            },
                             view: 'chat/chat.html',
                             controller: 'chatController',
                             controllerUrl: 'chat/chat',
                             resolve: {
                                 "userId": id
                             }
-                        }
+                        });
+
+                      
                         $scope.$apply();
                     }
                 }
