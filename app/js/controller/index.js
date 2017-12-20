@@ -63,15 +63,22 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 });
             }
             // load menu
-            myApi.getMenus().then(function (data) {
-                $scope.menus = convertMenu(data);
+            //myApi.getMenus().then(function (data) {
+            //    $scope.menus = convertMenu(data);
 
-                $scope.creator.loadNavigationData($scope.menus);
+            //    $scope.creator.loadNavigationData($scope.menus);
 
+            //    $scope.creator.layout.cells("a").progressOff();
+            //});
+
+            $scope.menus = myApi.getMenus();
+            //$scope.creator.loadNavigationData($scope.menus);
+
+
+            $scope.$watch('menus', function (newValue, oldValue) {
                 $scope.creator.layout.cells("a").progressOff();
+                $scope.creator.loadNavigationData(newValue);
             });
-
-
 
             //open the chat box
             $scope.openChat = function (e, f) {
@@ -129,7 +136,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             });
             layout.attachHeader("my_header", 40);
             layout.attachFooter("my_footer", 20);
-
+            
             //create navigation
             self.accordion = layout.cells("a").attachAccordion({ iconset: "awesome" });
             //self.accordion.setIconset("awesome");
@@ -171,7 +178,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
         };
 
         self.loadNavigationData = function (data) {
-
+            
             var acc = self.accordion;
             acc.forEachItem(function (cell) {
                 acc.removeItem(cell.getId());
@@ -191,6 +198,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
         self.createTabsContextMenu = function (tabs) {
             self.tabHandles = {};
             self.tabHandles.openTab = function (node) {
+                
                 //open a new tab for tabbar
                 node = $.extend({
                     id: 'a',
@@ -218,7 +226,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 var tab = self.tabs.cells(node.id);
                 var $cell = $(tab.cell).attr('data-tabid', node.id);
 
-                if (!node.href && !node.ctrl)
+                if (!node.href && !node.Controller)
                     node.href = 'views/demo/page1.html';
 
                 //load tab content
@@ -226,17 +234,18 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                     node.href = app.getAppRoot() + node.href;
                     self.tabs.cells(node.id).attachURL(node.href);
                 }
-                else if (node.ctrl) {
+                else if (node.Controller) {
                     var ctrl = {
-                        name: node.ctrl + 'Ctrl',
-                        path: 'controller/' + node.ctrl,
-                        view: 'text!views/' + node.ctrl + '.html'
+                        name: node.Controller,
+                        path: 'controller/' + node.ControllerUrl,
+                        view: 'text!views/' + node.ViewUrl + '.html'
                     };
                     //$cell.data('ctrl', ctrl).attr('ng-controller', ctrl.name);
                     self.initPartial(tab, ctrl, node.resolve);
                 }
             };
             self.initPartial = function (tab, ctrl, resolve) {
+               
                 var init = function (render, html) {
                     render && $.isFunction(render) && render.call(this, args());
 

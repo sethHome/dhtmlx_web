@@ -6,7 +6,9 @@
             id: 'homeTab',
             text: '我的桌面',
             icons: 'icon-home',
-            ctrl: 'bas/home',
+            ViewUrl: 'bas/home',
+            ControllerUrl: 'bas/home',
+            Controller:'bas/homeCtrl',
             href: '',
             close:false
         },

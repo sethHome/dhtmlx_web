@@ -8,17 +8,20 @@ define(['app'], function (app) {
         
         var restSrv = app.getRestSrv();
 
-        this.getMenus = function () {
+        this.getMenus = function (flage) {
 
-            return restSrv.all("menu").getList({ business: "System3" });
+            if (flage) {
+                return restSrv.all("menu").getList({ business: "System3" });
+            }
 
             var menusData = [
                 {
                     id: "c",
                     text: "用户中心",
                     item: [
-                        { id: 500, text: "组织用户", ctrl: 'user/origanation', icon: 'imoon imoon-office' },
-                        { id: 501, text: "数据字典", ctrl: 'data/dic', icon: 'imoon imoon-office' },
+                        { id: 500, text: "组织用户", ViewUrl: 'user/origanation',ControllerUrl: 'user/origanation', Controller: '',icon: 'imoon imoon-office' },
+                        { id: 501, text: "数据字典", ViewUrl: 'data/dic',ControllerUrl: 'data/dic', Controller: '',icon: 'imoon imoon-office' },
+                        { id: 502, text: "菜单页面", ViewUrl: 'system/page/page', ControllerUrl: 'system/page/page',Controller:'pageController', icon: 'imoon imoon-office' },
                     ]
                 },
                 {
