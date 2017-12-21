@@ -241,8 +241,8 @@ dataProcessor.prototype={
 		
 		this.messages=[];
 		if (this.getState(rowId) !== "deleted")
-			if (!this.checkBeforeUpdate(rowId) && this.callEvent("onValidationError",[rowId,this.messages])) return false;
-
+            if (!this.checkBeforeUpdate(rowId) && this.callEvent("onValidationError", [rowId, this.messages])) return false;
+        
 		this._beforeSendData(this._getRowData(rowId),rowId);
     },
     _beforeSendData:function(data,rowId){
@@ -286,7 +286,7 @@ dataProcessor.prototype={
        	return url;
     },
     _sendData:function(a1,rowId){
-    
+        debugger;
     	this._log("url: "+this.serverProcessor);
     	this._log(a1)
 
@@ -440,7 +440,8 @@ dataProcessor.prototype={
 	
 	
 	
-	_getAllData:function(rowId){
+    _getAllData: function (rowId) {
+        
 		var out={};
 		var has_one = false;
 		for(var i=0;i<this.updatedRows.length;i++){

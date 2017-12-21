@@ -3,35 +3,86 @@
                      dhx-width="200"
                      dhx-collapsed-text="菜单">
         <dhx-tree dhx-tree="dhxTree"
-                  dhx-enable-check-boxes="true"
                   dhx-enable-tree-images="true"
                   dhx-enable-highlighting="true"
                   dhx-json-data="treeData"
+                  dhx-processor-url="menu"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
                   dhx-context-menu="contextMenu"></dhx-tree>
 
         <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="alert"
+                  dhx-on-click="contextMenuExcute"
                   dhx-context-menu-mode="true"
                   dhx-menu="contextMenu">
             <menu>
-                <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
-                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
+                <item id="add" text="添加菜单" >
+                </item>
+                <item id="addSub" text="添加子菜单" >
                 </item>
                 <item id="ms1" type="separator" />
-                <item id="udf" text="UDF">
-                    <userdata name="align">left</userdata> // userdata
+                <item id="addPagePart" text="添加界面元素">
+                </item>
+                <item id="ms2" type="separator" />
+                <item id="remove" text="删除菜单">
                 </item>
             </menu>
         </dhx-menu>
     </dhx-layout-cell>
-    <dhx-layout-cell dhx-text="数据">
+    <dhx-layout-cell dhx-hide-header="true">
         <dhx-toolbar dhx-items="toolMenus">
         </dhx-toolbar>
+        <dhx-cell-html>
 
-        <page-container page="page">
+            <form class="form-horizontal mauto pt20" style="width:90%;"  role="form">
 
-        </page-container>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Name</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.Text">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Key</span>
+                    <div class="col-sm-10">
+                        <input class="form-control" ng-readonly="true" type="text" ng-model="currentMenu.Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Icon</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.Icon">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Href</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.Href">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Param</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.Param">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Permission</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.PermissionKey">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">IndexValue</span>
+                    <div class="col-sm-10">
+                        <input class="form-control form-white" type="text" ng-model="currentMenu.IndexValue">
+                    </div>
+                </div>
+
+               
+
+            </form>
+        </dhx-cell-html>
+        
     </dhx-layout-cell>
 </dhx-layout>

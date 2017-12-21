@@ -367,6 +367,16 @@
         return {
             restrict: 'E',
             require: ['dhxLayout', '?^^dhxWindow'],
+            scope: {
+                dhxLayoutCode: "@",
+                dhxWidth: "=", // Optional... Default is 100%. If set, use ems or pixels.
+                dhxHeight: "=", // Mandatory.
+                dhxUseEms: "=", // Optional... If width and height is in ems. Px is   default;
+                dhxHandlers: '=',
+                dhxObj: '=',
+                dhxWhenDone: '=',
+                dhxWin:'='
+            },
             controller: function ($scope) {
                 $scope.panes = [];
                 this.getNextId = (function () {
@@ -381,16 +391,6 @@
                     $scope.panes.push(pane);
                 };
             },
-            scope: {
-                dhxLayoutCode: "@",
-                dhxWidth: "=", // Optional... Default is 100%. If set, use ems or pixels.
-                dhxHeight: "=", // Mandatory.
-                dhxUseEms: "=", // Optional... If width and height is in ems. Px is   default;
-                dhxHandlers: '=',
-                dhxObj: '=',
-                dhxWhenDone: '=',
-                dhxWin:'='
-            },
             link: function (scope, element, attrs, ctrls) {
                 var layoutCtrl = ctrls[0];
                 var windowCtrl = ctrls[1];
@@ -400,17 +400,19 @@
                     for (var i = 0; i < scope.panes.length; i++) {
                         var cell = layout.cells(letters[i]);
 
-                        cell.showInnerScroll();
 
                         scope.panes[i].scope.dhxCell = cell;
 
+                        scope.panes[i].attach(layout, cell);
+
                         // 如果cell中没有可以attach的对象则直接attachdom
-                        if (!scope.panes[i].attach(layout, cell)) {
-                            var dom = scope.panes[i].jqElem[0];
-                            if (dom != null) {
-                                cell.appendObject(dom);
-                            }
-                        }
+                        //if (!) {
+
+                        //    var dom = scope.panes[i].jqElem[0];
+                        //    if (dom != null) {
+                        //        cell.appendObject(dom);
+                        //    }
+                        //}
 
                         if (scope.panes[i].status) {
                             cell.attachStatusBar({
@@ -516,26 +518,31 @@
                 dhxFixSize: '='
             },
             controller: function ($scope) {
-                this.level = app.level++;
+                var self = this;
+                self.level = app.level++;
 
                 $scope.creators = [];
                 $scope.attach = function (layout, cell) {
 
+                    cell.showInnerScroll();
+
                     angular.forEach($scope.creators, function (creator) {
                         creator(layout, cell);
                     });
+                    if (self.html) {
+                        cell.appendObject(self.html);
+                    }
 
-                    return $scope.creators.length > 0;
                 }
-                this.addCreator = function (creator) {
+                self.addCreator = function (creator) {
                     $scope.creators.push(creator);
                 }
             },
-            link: function (scope, element, attrs, layoutCtrl) {
-
-                layoutCtrl.registerPane({
+            link: function (scope, element, attrs, ctrl) {
+                
+                ctrl.registerPane({
                     scope: scope,
-                    jqElem: element.detach(),
+                    elem: element.detach(),
                     attach: scope.attach,
                     status: scope.dhxStatus,
                     hideHeader: scope.dhxHideHeader,
@@ -552,6 +559,19 @@
             }
         };
     });
+
+    app.directive('dhxCellHtml', function factory(DhxUtils, $rootScope) {
+        return {
+            restrict: 'E',
+            require: ['?^^dhxLayoutCell'],
+            link: function (scope, element, attrs, ctrls) {
+                ctrls.forEach(function (ctrl) {
+                    ctrl.html = element.detach()[0];
+                })
+            }
+        };
+    });
+
 
     app.directive('dhxToolbar', function factory(DhxUtils) {
         return {

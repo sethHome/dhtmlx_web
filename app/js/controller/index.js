@@ -190,6 +190,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
                 var tree = acc.cells(item.id).attachTree();
                 tree.setImagePath(treeImgPath);
+                
                 tree.loadJSONObject({ id: 0, item: item.item });
                 tree.attachEvent("onClick", self.onTreeClick);
             });
@@ -1271,6 +1272,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTM3Nzg2MDQsIm5iZiI6MTUxMzE3MzgwNH0.dRBvWp4Ij0DGObuyJ6E4IwgTDudpYgnqyDMef5jee4Y';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTQ0NjU5ODQsIm5iZiI6MTUxMzg2MTE4NH0.BY0EXndEkz_Bd2XsHYUhmyLPgpUoC2cX99-ee57aSp0';
     }
 });

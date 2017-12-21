@@ -15,11 +15,13 @@ dhtmlXTreeObject.prototype._parseItem__old = dhtmlXTreeObject.prototype._parseIt
 dhtmlXTreeObject.prototype._parseItem = function (c, temp, preNode, befNode) {
     this._currentItem = c.get_all();
     dhtmlXTreeObject.prototype._parseItem__old.apply(this, arguments);
-
+    
     var list = ["id", "text", "open", "item", "nocheckbox", "userdata"];
     for (var k in this._currentItem)
-        if (k != "id" && k != "text" && k != "open" && k != "item" && k != "child" && k != "nocheckbox" && k != "userdata")
+        if (k != "id" && k != "text" && k != "open" && k != "item" && k != "child" && k != "nocheckbox" && k != "userdata") {
+            
             this.setUserData(this._currentItem.id, k, this._currentItem[k]);
+        }
 
     this._currentItem = null;
 };
@@ -42,126 +44,191 @@ dhtmlXTreeObject.prototype.getUserData = function (itemId, name) {
 };
 
 //修改树节点的创建方法以支持数据中有icon生成<i class='icon'></i>
-dhtmlXTreeObject.prototype._createItem = function (acheck, itemObject, mode) {
-    var table = document.createElement('table');
-    table.cellSpacing = 0; table.cellPadding = 0;
-    table.border = 0;
+//dhtmlXTreeObject.prototype._createItem = function (acheck, itemObject, mode) {
+//    var table = document.createElement('table');
+//    table.cellSpacing = 0; table.cellPadding = 0;
+//    table.border = 0;
 
-    if (this.hfMode) table.style.tableLayout = "fixed";
-    table.style.margin = 0; table.style.padding = 0;
+//    if (this.hfMode) table.style.tableLayout = "fixed";
+//    table.style.margin = 0; table.style.padding = 0;
 
-    var tbody = document.createElement('tbody');
-    var tr = document.createElement('tr');
+//    var tbody = document.createElement('tbody');
+//    var tr = document.createElement('tr');
 
-    var td1 = document.createElement('td');
-    td1.className = "standartTreeImage";
+//    var td1 = document.createElement('td');
+//    td1.className = "standartTreeImage";
 
-    if (this._txtimg) {
-        var img0 = document.createElement("div");
-        td1.appendChild(img0);
-        img0.className = "dhx_tree_textSign";
-    }else {
-        var img0 = this._getImg(itemObject.id);
-        img0.border = "0";
-        if (img0.tagName == "IMG") img0.align = "absmiddle";
-        td1.appendChild(img0); img0.style.padding = 0; img0.style.margin = 0;
-        img0.style.width = this.def_line_img_x; img0.style.height = this.def_line_img_y;
-    }
+//    if (this._txtimg) {
+//        var img0 = document.createElement("div");
+//        td1.appendChild(img0);
+//        img0.className = "dhx_tree_textSign";
+//    }else {
+//        var img0 = this._getImg(itemObject.id);
+//        img0.border = "0";
+//        if (img0.tagName == "IMG") img0.align = "absmiddle";
+//        td1.appendChild(img0); img0.style.padding = 0; img0.style.margin = 0;
+//        img0.style.width = this.def_line_img_x; img0.style.height = this.def_line_img_y;
+//    }
 
-    var td11 = document.createElement('td');
+//    var td11 = document.createElement('td');
    
-    var inp = this._getImg(this.cBROf ? this.rootId : itemObject.id);
-    inp.checked = 0; this._setSrc(inp, this.imPath + this.checkArray[0]); inp.style.width = "18px"; inp.style.height = "18px";
-    //can cause problems with hide/show check
+//    var inp = this._getImg(this.cBROf ? this.rootId : itemObject.id);
+//    inp.checked = 0; this._setSrc(inp, this.imPath + this.checkArray[0]); inp.style.width = "18px"; inp.style.height = "18px";
+//    //can cause problems with hide/show check
 
-    if (!acheck) td11.style.display = "none";
-    td11.appendChild(inp);
-    if ((!this.cBROf) && (inp.tagName == "IMG")) inp.align = "absmiddle";
-    inp.onclick = this.onCheckBoxClick;
-    inp.treeNod = this;
-    inp.parentObject = itemObject;
-    if (!window._KHTMLrv) td11.width = "20px";
-    else td11.width = "16px";
+//    if (!acheck) td11.style.display = "none";
+//    td11.appendChild(inp);
+//    if ((!this.cBROf) && (inp.tagName == "IMG")) inp.align = "absmiddle";
+//    inp.onclick = this.onCheckBoxClick;
+//    inp.treeNod = this;
+//    inp.parentObject = itemObject;
+//    if (!window._KHTMLrv) td11.width = "20px";
+//    else td11.width = "16px";
 
-    var td12 = document.createElement('td');
-    td12.className = "standartTreeImage";
+//    var td12 = document.createElement('td');
+//    td12.className = "standartTreeImage";
 
-    //add by liuhuisheng 20150209 start for support iconClass
-    var iconCls = (this._currentItem || {}).icon;
-    if (iconCls) {
-        var img = document.createElement("i");
-        img.className = iconCls;
-        img.style.fontSize = "16px";
-        img.style.color = "#ff5722";
-        img.style.paddingTop = "4px";
-        td12.appendChild(img);
+//    //add by liuhuisheng 20150209 start for support iconClass
+//    var iconCls = (this._currentItem || {}).icon;
+//    if (iconCls) {
+//        var img = document.createElement("i");
+//        img.className = iconCls;
+//        img.style.fontSize = "16px";
+//        img.style.color = "#ff5722";
+//        img.style.paddingTop = "4px";
+//        td12.appendChild(img);
 
-        img.onmousedown = this._preventNsDrag; img.ondragstart = this._preventNsDrag;
-        if (this._aimgs) {
-            img.parentObject = itemObject;
-            img.onclick = this.onRowSelect;
-        }
-    }
-    else {
-        var img = this._getImg(this.timgen ? itemObject.id : this.rootId);
-        img.onmousedown = this._preventNsDrag; img.ondragstart = this._preventNsDrag;
-        img.border = "0";
-        if (this._aimgs) {
-            img.parentObject = itemObject;
-            if (img.tagName == "IMG") img.align = "absmiddle";
-            img.onclick = this.onRowSelect;
-        }
-        if (!mode) this._setSrc(img, this.iconURL + this.imageArray[0]);
-        td12.appendChild(img); img.style.padding = 0; img.style.margin = 0;
-    }
-    //add by liuhuisheng 20150209 end
+//        img.onmousedown = this._preventNsDrag; img.ondragstart = this._preventNsDrag;
+//        if (this._aimgs) {
+//            img.parentObject = itemObject;
+//            img.onclick = this.onRowSelect;
+//        }
+//    }
+//    else {
+//        var img = this._getImg(this.timgen ? itemObject.id : this.rootId);
+//        img.onmousedown = this._preventNsDrag; img.ondragstart = this._preventNsDrag;
+//        img.border = "0";
+//        if (this._aimgs) {
+//            img.parentObject = itemObject;
+//            if (img.tagName == "IMG") img.align = "absmiddle";
+//            img.onclick = this.onRowSelect;
+//        }
+//        if (!mode) this._setSrc(img, this.iconURL + this.imageArray[0]);
+//        td12.appendChild(img); img.style.padding = 0; img.style.margin = 0;
+//    }
+//    //add by liuhuisheng 20150209 end
 
-    if (this.timgen) {
-        td12.style.width = img.style.width = this.def_img_x; img.style.height = this.def_img_y;
-    }
-    else {
-        img.style.width = "0px"; img.style.height = "0px";
-        if (_isOpera || window._KHTMLrv) td12.style.display = "none";
-    }
+//    if (this.timgen) {
+//        td12.style.width = img.style.width = this.def_img_x; img.style.height = this.def_img_y;
+//    }
+//    else {
+//        img.style.width = "0px"; img.style.height = "0px";
+//        if (_isOpera || window._KHTMLrv) td12.style.display = "none";
+//    }
 
 
-    var td2 = document.createElement('td');
-    td2.className = "standartTreeRow";
+//    var td2 = document.createElement('td');
+//    td2.className = "standartTreeRow";
 
-    itemObject.span = document.createElement('span');
-    itemObject.span.className = "standartTreeRow";
-    if (this.mlitems) {
-        itemObject.span.style.width = this.mlitems;
-        itemObject.span.style.display = "block";
-    }
-    else td2.noWrap = true;
-    if (_isIE && _isIE > 7) td2.style.width = "999999px";
-    else if (!window._KHTMLrv) td2.style.width = "100%";
+//    itemObject.span = document.createElement('span');
+//    itemObject.span.className = "standartTreeRow";
+//    if (this.mlitems) {
+//        itemObject.span.style.width = this.mlitems;
+//        itemObject.span.style.display = "block";
+//    }
+//    else td2.noWrap = true;
+//    if (_isIE && _isIE > 7) td2.style.width = "999999px";
+//    else if (!window._KHTMLrv) td2.style.width = "100%";
  
-    itemObject.span.innerHTML = itemObject.label;
-    td2.appendChild(itemObject.span);
-    td2.parentObject = itemObject; td1.parentObject = itemObject;
-    td2.onclick = this.onRowSelect; td1.onclick = this.onRowClick; td2.ondblclick = this.onRowClick2;
-    if (this.ettip)
-        tr.title = itemObject.label;
+//    itemObject.span.innerHTML = itemObject.label;
+//    td2.appendChild(itemObject.span);
+//    td2.parentObject = itemObject; td1.parentObject = itemObject;
+//    td2.onclick = this.onRowSelect; td1.onclick = this.onRowClick; td2.ondblclick = this.onRowClick2;
+//    if (this.ettip)
+//        tr.title = itemObject.label;
 
-    if (this.dragAndDropOff) {
-        if (this._aimgs) { this.dragger.addDraggableItem(td12, this); td12.parentObject = itemObject; }
-        this.dragger.addDraggableItem(td2, this);
-    }
+//    if (this.dragAndDropOff) {
+//        if (this._aimgs) { this.dragger.addDraggableItem(td12, this); td12.parentObject = itemObject; }
+//        this.dragger.addDraggableItem(td2, this);
+//    }
 
-    itemObject.span.style.paddingLeft = "5px"; itemObject.span.style.paddingRight = "5px"; td2.style.verticalAlign = "";
-    td2.style.fontSize = "10pt"; td2.style.cursor = this.style_pointer;
-    tr.appendChild(td1); tr.appendChild(td11); tr.appendChild(td12);
-    tr.appendChild(td2);
-    tbody.appendChild(tr);
-    table.appendChild(tbody);
+//    itemObject.span.style.paddingLeft = "5px"; itemObject.span.style.paddingRight = "5px"; td2.style.verticalAlign = "";
+//    td2.style.fontSize = "10pt"; td2.style.cursor = this.style_pointer;
+//    tr.appendChild(td1); tr.appendChild(td11); tr.appendChild(td12);
+//    tr.appendChild(td2);
+//    tbody.appendChild(tr);
+//    table.appendChild(tbody);
 
-    if (this.ehlt || this.checkEvent("onMouseIn") || this.checkEvent("onMouseOut")) {//highlighting
-        tr.onmousemove = this._itemMouseIn;
-        tr[(_isIE) ? "onmouseleave" : "onmouseout"] = this._itemMouseOut;
-    }
-    return table;
+//    if (this.ehlt || this.checkEvent("onMouseIn") || this.checkEvent("onMouseOut")) {//highlighting
+//        tr.onmousemove = this._itemMouseIn;
+//        tr[(_isIE) ? "onmouseleave" : "onmouseout"] = this._itemMouseOut;
+//    }
+//    return table;
+//};
+
+dhtmlXTreeObject.prototype._dp_init = function (dp) {
+    dp.attachEvent("insertCallback", function (upd, id, parent) {
+        var data = dhx4.ajax.xpath(".//item", upd);
+        var text = data[0].getAttribute('text');
+        this.obj.insertNewItem(parent, id, text, 0, 0, 0, 0, "CHILD");
+    });
+
+    dp.attachEvent("updateCallback", function (upd, id, parent) {
+        var data = dhx4.ajax.xpath(".//item", upd);
+        var text = data[0].getAttribute('text');
+        this.obj.setItemText(id, text);
+        if (this.obj.getParentId(id) != parent) {
+            this.obj.moveItem(id, 'item_child', parent);
+        }
+        this.setUpdated(id, true, 'updated');
+    });
+
+    dp.attachEvent("deleteCallback", function (upd, id, parent) {
+        this.obj.setUserData(id, this.action_param, "true_deleted");
+        this.obj.deleteItem(id, false);
+    });
+
+    dp._methods = ["setItemStyle", "", "changeItemId", "deleteItem"];
+    this.attachEvent("onEdit", function (state, id) {
+        if (state == 3)
+            dp.setUpdated(id, true)
+        return true;
+    });
+    this.attachEvent("onDrop", function (id, id_2, id_3, tree_1, tree_2) {
+        if (tree_1 == tree_2)
+            dp.setUpdated(id, true);
+    });
+    this._onrdlh = function (rowId) {
+        var z = dp.getState(rowId);
+        if (z == "inserted") { dp.set_invalid(rowId, false); dp.setUpdated(rowId, false); return true; }
+        if (z == "true_deleted") { dp.setUpdated(rowId, false); return true; }
+
+        dp.setUpdated(rowId, true, "deleted")
+        return false;
+    };
+    this._onradh = function (rowId) {
+        dp.setUpdated(rowId, true, "inserted")
+    };
+    dp._getRowData = function (rowId) {
+        var data = {};
+        var z = this.obj._globalIdStorageFind(rowId);
+        var z2 = z.parentObject;
+
+        var i = 0;
+        for (i = 0; i < z2.childsCount; i++)
+            if (z2.childNodes[i] == z) break;
+
+        data["tr_id"] = z.id;
+        data["tr_pid"] = z2.id;
+        data["tr_order"] = i;
+        data["tr_text"] = z.span.innerHTML;
+
+        z2 = (z._userdatalist || "").split(",");
+        for (i = 0; i < z2.length; i++)
+            data[z2[i]] = z.userData["t_" + z2[i]];
+
+        return data;
+    };
 };
 
 //================================修改grid数据加载机制=========================================

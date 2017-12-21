@@ -21,7 +21,7 @@ define(['app'], function (app) {
                     item: [
                         { id: 500, text: "组织用户", ViewUrl: 'user/origanation',ControllerUrl: 'user/origanation', Controller: '',icon: 'imoon imoon-office' },
                         { id: 501, text: "数据字典", ViewUrl: 'data/dic',ControllerUrl: 'data/dic', Controller: '',icon: 'imoon imoon-office' },
-                        { id: 502, text: "菜单页面", ViewUrl: 'system/page/page', ControllerUrl: 'system/page/page',Controller:'pageController', icon: 'imoon imoon-office' },
+                        { id: 502, text: "菜单页面", ViewUrl: 'system/page/page', ControllerUrl: 'system/page/page', Controller: 'pageController', icon: 'imoon imoon-office', userdata: {name:'1111'}},
                     ]
                 },
                 {

@@ -1,9 +1,11 @@
 ﻿define(['app', 'service/user', 'service/pagemenu'], function (app) {
 
     app.controller("pageController", function ($scope, pagemenuService) {
-        $scope.msg = "success";
 
-        
+        $scope.toolMenus = [
+            { id: "new", type: "button", img: "fa fa-save", text: "保存", action: "save" },
+            { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "remove", title: "同时删除子菜单" }];
+
         $scope.menuAttrs = {};
 
         var convertMenu = function (data) {
@@ -14,11 +16,12 @@
                 var subMenus = convertMenu(item.SubMenus);
                 
                 menus.push({
-                    id: item.Key,
+                    id: item.MenuID,
                     text: item.Text,
                     icons: item.Icon ? item.Icon : 'fa fa-file',
-                    item: subMenus,
-                    
+                    Test1: "value1",
+                    Test2: "value2",
+                    item: subMenus
                 });
             });
 
@@ -26,7 +29,9 @@
         }
 
         pagemenuService.getMenus().then(function (data) {
-            $scope.treeData = { "id": 0, "item": convertMenu(data)};
+            var menus = convertMenu(data);
+            debugger;
+            $scope.treeData = { "id": 0, "item": menus };
         });
 
   
@@ -39,47 +44,37 @@
                 type: "onClick",
                 handler: function (id) {
 
-                    $scope.page = {
-                        view: 'system/page/maintain.html',
-                        controller: 'pageMaintainController',
-                        resolve: {
-                            info: $scope.menuAttrs[id]
-                        }
-                    }
 
+                    var a = $scope.dhxTree.getUserData(id);
+                    debugger;
+
+                    $scope.currentMenu = $scope.menuAttrs[id];
                     $scope.$apply();
-                    //getUserData
-                    console.log('You have clicked \'' + id + '\'');
                 }
             }
         ];
 
-        $scope.contextMenu = {};
-
-        $scope.page = {
-            view: 'system/page/maintain.html',
-            controller: 'pageMaintainController',
-            resolve: {
-                info: {}
+        $scope.add = function (orgkey) {
+            var d = new Date();
+            if (orgkey == undefined) {
+                orgkey = $scope.dhxTree.getSelectedItemId()
             }
+
+            $scope.dhxTree.insertNewItem(orgkey, d.valueOf(), '新建菜单', 0, 0, 0, 0, 'SELECT');
+
+            //$scope.dhxTree.editItem(d.valueOf());
         }
 
-        $scope.toolMenus = [
-            { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
-            { id: "edit", type: "button", img: "edit.gif", text: "修改", action: "modify" },
-            { type: "separator" },
-            { id: "reset", type: "button", img: "undo.gif", text: "重置密码", action: "resetPsw" },
-            { type: "separator" },
-            { id: "del", type: "button", img: "cross.png", imgdis: "cross.png", text: "删除", action: "test", enabled: false },
-            { type: "separator" },
-            { id: "query", type: "button", img: "page.gif", text: "查询", action: "query" }];
+        $scope.contextMenuExcute = function (id) {
+            var orgKey = $scope.dhxTree.contextID;
+            $scope[id](orgKey);
+        }
 
+        $scope.contextMenu = {};
 
     })
 
     app.controller("pageMaintainController", function ($scope, info) {
         $scope.currentMenu = info;
-
-        
     })
 });
