@@ -30,7 +30,7 @@
 
         pagemenuService.getMenus().then(function (data) {
             var menus = convertMenu(data);
-            debugger;
+            
             $scope.treeData = { "id": 0, "item": menus };
         });
 
@@ -46,8 +46,7 @@
 
 
                     var a = $scope.dhxTree.getUserData(id);
-                    debugger;
-
+                    
                     $scope.currentMenu = $scope.menuAttrs[id];
                     $scope.$apply();
                 }

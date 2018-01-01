@@ -524,7 +524,7 @@
                 $scope.creators = [];
                 $scope.attach = function (layout, cell) {
 
-                    cell.showInnerScroll();
+                    //cell.showInnerScroll();
 
                     angular.forEach($scope.creators, function (creator) {
                         creator(layout, cell);
@@ -571,7 +571,6 @@
             }
         };
     });
-
 
     app.directive('dhxToolbar', function factory(DhxUtils) {
         return {
@@ -1263,5 +1262,48 @@
             }
         };
     });
+
+    app.directive('dhxForm', function factory(DhxUtils) {
+        return {
+            restrict: 'E',
+            require: ['?^^dhxTabbarCell', '?^^dhxLayoutCell'],
+            scope: {
+                'formData':'='
+            },
+            link: function (scope, element, attrs, ctls) {
+
+                var setForm = function (form) {
+                    
+                    scope.$watch("formData", function (newval, oldval) {
+                        if (newval) {
+                            form.loadStruct(scope.formData);
+                        }
+                    });
+                }
+
+                var maxLevel = -1;
+                var parentCell = null;
+
+                for (var i = 0; i < ctls.length; i++) {
+                    if (ctls[i] != null && ctls[i].level > maxLevel) {
+                        parentCell = ctls[i];
+                        maxLevel = ctls[i].level;
+                    }
+                }
+                debugger;
+
+                if (parentCell != null) {
+                    parentCell.addCreator(function (obj, cell) {
+                        var form = cell.attachForm();
+                        setForm(form);
+                    });
+                } else {
+                    var form = new dhtmlXForm(element[0], scope.formData);
+
+                    setForm(form);
+                }
+            }
+        };
+    })
 
 });
