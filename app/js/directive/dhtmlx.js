@@ -97,7 +97,7 @@
     app.directive('dhxGrid', function factory(DhxUtils, $resource) {
         return {
             restrict: 'E',
-            require: ['?^^dhxLayoutCell'],
+            require: ['?^^dhxLayoutCell','?^^dhxWindow'],
             scope: {
                 /**
                  * Grid will be accessible in controller via this scope entry
@@ -160,10 +160,11 @@
                 dhxContextMenu: '=',
                 dhxAutoHeight: '@',
                 dhxPaging: '=',
-                dhxProcessorUrl: '@'
+                dhxProcessorUrl: '@',
+                dhxWin : '=?'
             },
             link: function (scope, element, attrs, ctls) {
-
+                
                 scope.uid = app.genStr(12);
 
                 var createGrid = function () {
@@ -281,9 +282,32 @@
                     if (scope.dhxProcessorUrl) {
                         var myDataProcessor = new dataProcessor(config.webapi + "/" + scope.dhxProcessorUrl + "/");
                         myDataProcessor.init(grid); // link dataprocessor to the grid
+
+                        myDataProcessor._getRowData = function (rowId, pref) {
+                            var data = grid.getRowData(rowId);
+
+                            var udata = this.obj.UserData[rowId];
+                            if (udata) {
+                                for (var j = 0; j < udata.keys.length; j++)
+                                    if (udata.keys[j] && udata.keys[j].indexOf("__") != 0)
+                                        data[udata.keys[j]] = udata.values[j];
+                            }
+                            return data;
+                        };
+
+                        myDataProcessor.attachEvent("onAfterUpdate", function (id, action, tid, response) {
+                            if (action == "inserted") {
+                                var data = grid.getRowData(id);
+                                data.ID = response;
+
+                                grid.changeRowId(id, response);
+                                grid.setRowData(response, data);
+                            }
+                        });
+
                         var authCode = app.getAuthorization();
                         myDataProcessor.setTransactionMode({
-                            mode: "REST",
+                            mode: "RESTAPI",
                             headers: {
                                 Authorization: authCode
                             }
@@ -328,7 +352,7 @@
                         var url = app.getApiUrl(scope.dhxUrl);
                         var param = scope.dhxParams || {};
 
-                        var api = $resource(url, {}, { query: { method: 'GET', isArray: false } });
+                        var api = $resource(url, {}, { query: { method: 'GET', isArray: !scope.dhxPaging } });
 
                         grid.setQuery(api.query, param, function () {
                             if (cell) {
@@ -346,7 +370,24 @@
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, grid);
                 };
 
-                if (ctls[0] != null) {
+                if (scope.dhxWin) {
+                    var grid = scope.dhxWin.attachGrid();
+                    setGrid(grid,scope.dhxWin);
+
+                    return;
+                } 
+
+                var maxLevel = -1;
+                var parentCell = null;
+
+                for (var i = 0; i < ctls.length; i++) {
+                    if (ctls[i] != null && ctls[i].level > maxLevel) {
+                        parentCell = ctls[i];
+                        maxLevel = ctls[i].level;
+                    }
+                }
+
+                if (parentCell != null) {
                     ctls[0].addCreator(function (layout, cell) {
                         var grid = cell.attachGrid();
                         setGrid(grid, cell);
@@ -575,19 +616,27 @@
     app.directive('dhxToolbar', function factory(DhxUtils) {
         return {
             restrict: 'E',
-            require: ['?^^dhxLayoutCell'],
+            require: ['?^^dhxLayoutCell', '?^^dhxWindow'],
             template: '<div></div>',
             replace: true,
+            scope: {
+                dhxItems: '=?',
+                dhxWin: '=?',
+                dhxName: '@?',
+                dhxMenu: '=?'
+            },
             controller: function () {
             },
-            scope: {
-                dhxItems: '='
-            },
             link: function (scope, element, attrs, ctrls) {
-                var layoutCtl = ctrls[0];
+
+                var source = scope.dhxItems;
+
+                if (scope.dhxMenu > 0) {
+                    source = app.buttons[scope.dhxMenu][scope.dhxName];
+                }
 
                 var eventmap = {};
-                scope.dhxItems.map(function (item) {
+                source.map(function (item) {
                     if (item.action) {
                         eventmap[item.id] = item.action
                     }
@@ -606,7 +655,7 @@
                     toolbar.setSkin("dhx_skyblue");
                     toolbar.setIconset("awesome");
                     //toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
-                    toolbar.loadStruct(scope.dhxItems);
+                    toolbar.loadStruct(source);
                     toolbar.attachEvent("onclick", function (id) {
 
                         var name = eventmap[id];
@@ -614,6 +663,16 @@
                             scope.$parent[name].call(this);
                     });
                 }
+
+                if (scope.dhxWin) {
+                    
+                    var toolbar = scope.dhxWin.attachToolbar();
+                    setToolbar(toolbar);
+
+                    return;
+                } 
+
+                var layoutCtl = ctrls[0];
 
                 if (layoutCtl == null || layoutCtl == undefined) {
                     scope.uid = app.genStr(12);
@@ -736,7 +795,6 @@
             },
             link: function (scope, element, attrs, ctrls) {
                 ctrls[0].level = ctrls[1].level + 1;
-                console.log(ctrls[0].level);
                 
                 var tabbarCtrl = ctrls[1];
                 tabbarCtrl.registerPane({
@@ -923,9 +981,14 @@
                         myDataProcessor.setTransactionMode({
                             mode: "RESTAPI",
                             headers: {
-                                Authorization: authCode
+                                "Authorization" : authCode
                             }
                         }, false);
+                        myDataProcessor.attachEvent("onAfterUpdate", function (id, action, tid, response) {
+                            if (action == "inserted") {
+                                tree.changeItemId(id, response);
+                            }
+                        });
                     }
 
                     if (scope.dhxConfigureFunc) {
@@ -1034,9 +1097,8 @@
                     );
 
                     conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
-                    conf.center !== undefined ? (conf.center ? win.center() : '') : '';
                     conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
-                    conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
+                    
                     conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
                     conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
                     conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
@@ -1047,6 +1109,12 @@
                     conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
                     conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
                     conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
+
+                    //conf.center !== undefined ? (conf.center ? win.center() : '') : '';
+                    win.center();
+                    //win.showInnerScroll();
+                    
+                    //conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
 
                     var init = function (html) {
                         var newScope = $rootScope.$new();
@@ -1063,6 +1131,7 @@
                         ctrlInstantiate();
                        
                         win.attachHTMLString($compile(html)(newScope));
+
                         win.showInnerScroll();
 
                         $scope.$apply();
@@ -1084,38 +1153,30 @@
                 dhxHandlers: '='
             },
             link: function (scope, element, attrs, ctrls) {
-                
+
                 var windowsCtrl = ctrls[0];
                 
                 if (ctrls[1] != null) {
 
                     ctrls[1].addCreator(function (layout, cell) {
 
-                        $("<div id='testwin' style='display: none;'></div>").css({
+                        $("<div id='layoutCellWins' style='display: none;'></div>").css({
                             position: 'relative',
                             width: '100%',
                             height: '100%',
                             overflow: 'hidden'
                         }).appendTo("body");
 
-                        cell.attachObject("testwin");
+                        cell.attachObject("layoutCellWins");
 
                         // init windows
                         dhxWins = new dhtmlXWindows();
                         // rendering viewport as an existing object on page
                         // which already attached to layout
-                        dhxWins.attachViewportTo("testwin");
+                        dhxWins.attachViewportTo("layoutCellWins");
                         
                         windowsCtrl.setWins(dhxWins);
                         
-                        //setWin(dhxWins);
-                        //// open windows
-                        //dhxWins.createWindow("w1", 10, 10, 300, 190);
-                        //dhxWins.createWindow("w2", 30, 65, 300, 190);
-                        //dhxWins.createWindow("w3", 50, 120, 300, 190);
-
-                        //DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
-                        //DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
                     });
 
                 } else {
@@ -1130,6 +1191,129 @@
                     DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
                     //setWin(windows);
                 }
+            }
+        };
+    });
+
+    app.directive('dhxWindowsc', function factory(DhxUtils) {
+        var nextWindowsId = DhxUtils.createCounter();
+        return {
+            restrict: 'C',
+            require: 'dhxWindowsc',
+            controller: function ($scope, $rootScope, $controller, $compile) {
+                var windows = null;
+
+                var _windowInfos = [];
+                var _container = document.documentElement;
+
+                var _winsId = nextWindowsId();
+                var _idPerWin = DhxUtils.createCounter();
+
+                var getNextWindowId = function () {
+                    return "wins_" + _winsId + "_" + _idPerWin();
+                };
+
+                this.registerWindow = function (windowInfo) {
+                    _windowInfos.push(windowInfo);
+
+                    setWin(windowInfo);
+                };
+
+                this.setContainer = function (container) {
+                    _container = container;
+                };
+
+                this.getContainer = function () {
+                    return _container;
+                };
+
+                this.getWindowInfos = function () {
+                    return _windowInfos;
+                };
+
+                this.setWins = function (wins) {
+                    windows = wins;
+
+                    _windowInfos.forEach(function (windowInfo) {
+                        setWin(windowInfo);
+                    });
+                };
+
+                var setWin = function (windowInfo) {
+                    var conf = windowInfo.config;
+                    DhxUtils.removeUndefinedProps(conf);
+
+                    //var win = windows.createWindow("w1", 10, 10, 300, 190);
+                    var winId = getNextWindowId();
+                    var win = windows.createWindow(
+                        winId,
+                        conf.left,
+                        conf.top,
+                        conf.width,
+                        conf.height
+                    );
+
+                    conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
+                    conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
+
+                    conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
+                    conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
+                    conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
+                    conf.text !== undefined ? win.setText(conf.text) : '';
+
+                    conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
+                    conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
+                    conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
+                    conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
+                    conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
+
+                    //conf.center !== undefined ? (conf.center ? win.center() : '') : '';
+                    win.center();
+                    conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
+
+                    var init = function (html) {
+                        var newScope = $rootScope.$new();
+                        newScope.$win = win;
+
+                        var injectors = {
+                            "$scope": newScope
+                        };
+
+                        angular.extend(injectors, windowInfo.resolve);
+
+                        ctrlInstantiate = $controller(windowInfo.controller, injectors, true, windowInfo.controllerAs);
+
+                        ctrlInstantiate();
+
+                        win.attachHTMLString($compile(html)(newScope));
+
+                        $scope.$apply();
+                    }
+
+                    if (windowInfo.view) {
+                        if (windowInfo.controllerUrl) {
+                            require(['text!../views/' + windowInfo.view, 'controller/' + windowInfo.controllerUrl], init);
+                        } else {
+                            require(['text!../views/' + windowInfo.view], init);
+                        }
+                    } else {
+                        var domElem = windowInfo.elem[0];
+                        win.attachObject(domElem);
+                    }
+                };
+            },
+            scope: {
+                dhxHandlers: '='
+            },
+            link: function (scope, element, attrs, windowsCtrl) {
+
+                var windows = new dhtmlXWindows();
+                windows.attachViewportTo(element[0]);
+
+                windowsCtrl.setWins(windows);
+
+                DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
+                DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
             }
         };
     });
@@ -1159,10 +1343,24 @@
                 dhxBtnStick: '=',
                 dhxBtnHelp: '='
             },
-            require: '^^dhxWindows',
-            link: function (scope, element, attrs,windowsCtrl) {
+            require: ['?^^dhxWindows','?^^dhxWindowsc'],
+            controller: function ($scope) {
+                this.level = app.level++;
+
+                $scope.creators = [];
+                this.addCreator = function (creator) {
+                    $scope.creators.push(creator);
+                }
+            },
+            link: function (scope, element, attrs,ctrls) {
                 var elem = element.detach();
                 
+                var windowsCtrl = ctrls[0];
+
+                if (ctrls[1] != null) {
+                    windowsCtrl = ctrls[1];
+                }
+               
                 if (scope.dhxWinOption) {
                     scope.dhxWinOption.elem = elem;
                     windowsCtrl.registerWindow(scope.dhxWinOption);
@@ -1174,12 +1372,12 @@
                         modal: scope.dhxModal,
                         keep_in_viewport: scope.dhxKeepInViewport,
                         showInnerScroll: scope.dhxShowInnerScroll,
-                        left: scope.dhxLeft,
+                        left: scope.dhxLeft ? scope.dhxLeft : 0,
                         move: scope.dhxMove,
                         park: scope.dhxPark,
                         resize: scope.dhxResize,
                         text: scope.dhxText,
-                        top: scope.dhxTop,
+                        top: scope.dhxTop ? scope.dhxTop : 0,
                         width: scope.dhxWidth,
                         btnClose: scope.dhxBtnClose,
                         btnMinmax: scope.dhxBtnMinmax,
@@ -1192,73 +1390,6 @@
                         config: conf
                     });
                 }
-
-                
-
-                //var windows = new dhtmlXWindows();
-                ////windows.attachViewportTo(windowsCtrl.getContainer());
-
-                //DhxUtils.removeUndefinedProps(conf);
-
-                //var _winsId = DhxUtils.createCounter();
-                //var _idPerWin = DhxUtils.createCounter();
-
-                //var _getNextWindowId = function () {
-                //    return "wins_" + _winsId() + "_" + _idPerWin();
-                //};
-
-                //var win = windows.createWindow(
-                //    _getNextWindowId,
-                //    conf.left,
-                //    conf.top,
-                //    conf.width,
-                //    conf.height
-                //);
-
-                //if (conf.modal == undefined) {
-                //    conf.modal = true;
-                //}
-                //if (conf.center == undefined) {
-                //    conf.center = true;
-                //}
-
-                //win.setModal(conf.modal);
-
-                //conf.header != undefined ? (!conf.header ? win.hideHeader() : '') : '';
-                //conf.center !== undefined ? (conf.center ? win.center() : '') : '';
-                //conf.keep_in_viewport !== undefined ? win.keepInViewport(!!conf.keep_in_viewport) : '';
-                //conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
-                //conf.move !== undefined ? win[(conf.move ? 'allow' : 'deny') + 'Move']() : '';
-                //conf.park !== undefined ? win[(conf.park ? 'allow' : 'deny') + 'Park']() : '';
-                //conf.resize !== undefined ? win[(conf.resize ? 'allow' : 'deny') + 'Resize']() : '';
-                //conf.text !== undefined ? win.setText(conf.text) : '';
-
-                //conf.btnClose !== undefined ? win.button('close')[conf.btnClose ? 'show' : 'hide']() : '';
-                //conf.btnMinmax !== undefined ? win.button('minmax')[conf.btnMinmax ? 'show' : 'hide']() : '';
-                //conf.btnPark !== undefined ? win.button('park')[conf.btnPark ? 'show' : 'hide']() : '';
-                //conf.btnStick !== undefined ? win.button('stick')[conf.btnStick ? 'show' : 'hide']() : '';
-                //conf.btnHelp !== undefined ? win.button('help')[conf.btnHelp ? 'show' : 'hide']() : '';
-
-                //if (scope.layoutInitor != undefined) {
-                //    scope.layoutInitor(win);
-                //} else {
-                //    win.attachObject(elem[0]);
-                //}
-                //DhxUtils.attachDhxHandlers(windows, scope.dhxHandlers);
-                //DhxUtils.dhxUnloadOnScopeDestroy(scope, windows);
-
-                //scope.dhxWin = win;
-            }
-        };
-    });
-
-    app.directive('dhxWindowContainer', function factory(DhxUtils) {
-        return {
-            restrict: 'E',
-            require: '^dhxWindows',
-            scope: {},
-            link: function (scope, element, attrs, windowsCtrl) {
-                windowsCtrl.setContainer(element[0]);
             }
         };
     });

@@ -11,33 +11,15 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
                     var subMenus = convertMenu(item.SubMenus);
 
-                    if (item.Text == '用户管理') {
-
-                        menus.push({
-                            id: item.Key,
-                            text: item.Text,
-                            ctrl: 'user/origanation',
-                            icons: item.Icon ? item.Icon : 'fa fa-file',
-                            item: subMenus,
-                        });
-                    }
-                    else if (item.Text == '基础数据') {
-                        menus.push({
-                            id: item.Key,
-                            text: item.Text,
-                            ctrl: 'data/dic',
-                            icons: item.Icon ? item.Icon : 'fa fa-file',
-                            item: subMenus,
-                        });
-                    }
-                    else {
-                        menus.push({
-                            id: item.Key,
-                            text: item.Text,
-                            icons: item.Icon ? item.Icon : 'fa fa-file',
-                            item: subMenus,
-                        });
-                    }
+                    menus.push({
+                        id: item.MenuID,
+                        text: item.Text,
+                        icons: item.Icon ? item.Icon : 'fa fa-file',
+                        ViewUrl: item.View,
+                        Controller: item.ControllerName,
+                        ControllerUrl: item.ControllerUrl,
+                        item: subMenus,
+                    });
 
                 });
 
@@ -62,18 +44,37 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                     $scope.wins.push(win);
                 });
             }
+
             // load menu
-            //myApi.getMenus().then(function (data) {
-            //    $scope.menus = convertMenu(data);
+            myApi.getMenus().then(function (data) {
 
-            //    $scope.creator.loadNavigationData($scope.menus);
+                $scope.menus = convertMenu(data);
 
-            //    $scope.creator.layout.cells("a").progressOff();
-            //});
+                $scope.creator.loadNavigationData($scope.menus);
 
-            $scope.menus = myApi.getMenus();
-            //$scope.creator.loadNavigationData($scope.menus);
+                $scope.creator.layout.cells("a").progressOff();
 
+                //$scope.menus = myApi.getMenus();
+                //$scope.creator.loadNavigationData($scope.menus);
+            });
+
+            app.buttons = {};
+            myApi.getPageButton().then(function (data) {
+                angular.forEach(data, function (btn) {
+
+                    var item = { id: btn.ID, type: btn.BtnType, img: btn.BtnIcon, text: btn.BtnText, title: btn.BtnTitle, action: btn.BtnAction};
+
+                    if (!app.buttons[btn.MenuID]) {
+                        app.buttons[btn.MenuID] = {};
+                    }
+
+                    if (!app.buttons[btn.MenuID][btn.GroupName]) {
+                        app.buttons[btn.MenuID][btn.GroupName] = [item];
+                    } else {
+                        app.buttons[btn.MenuID][btn.GroupName].push(item);
+                    }
+                });
+            });
 
             $scope.$watch('menus', function (newValue, oldValue) {
                 $scope.creator.layout.cells("a").progressOff();
@@ -136,11 +137,11 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             });
             layout.attachHeader("my_header", 40);
             layout.attachFooter("my_footer", 20);
-            
+
             //create navigation
             self.accordion = layout.cells("a").attachAccordion({ iconset: "awesome" });
             //self.accordion.setIconset("awesome");
-            layout.cells("a").progressOn();
+            //layout.cells("a").progressOn();
 
             //create tabs
             var tabs = self.tabs = layout.cells("b").attachTabbar({
@@ -172,13 +173,14 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                 var node = this.getUserData(id);
                 node.text = this.getItemText(id);
                 node.id = tabId;
+                node.menuId = id;
                 self.tabHandles.openTab(node);
             }
             return true;
         };
 
         self.loadNavigationData = function (data) {
-            
+
             var acc = self.accordion;
             acc.forEachItem(function (cell) {
                 acc.removeItem(cell.getId());
@@ -190,7 +192,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
                 var tree = acc.cells(item.id).attachTree();
                 tree.setImagePath(treeImgPath);
-                
+
                 tree.loadJSONObject({ id: 0, item: item.item });
                 tree.attachEvent("onClick", self.onTreeClick);
             });
@@ -242,15 +244,22 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                         view: 'text!views/' + node.ViewUrl + '.html'
                     };
                     //$cell.data('ctrl', ctrl).attr('ng-controller', ctrl.name);
-                    self.initPartial(tab, ctrl, node.resolve);
+                    self.initPartial(tab,node.menuId, ctrl, node.resolve);
                 }
             };
-            self.initPartial = function (tab, ctrl, resolve) {
-               
+            self.initPartial = function (tab, menuId, ctrl, resolve) {
+
                 var init = function (render, html) {
                     render && $.isFunction(render) && render.call(this, args());
 
                     var newscope = self.$scope.$new();
+
+                    newscope.$tab = tab;
+                    newscope.menuId = menuId;
+
+                    self.pageHander.menuId = menuId;
+
+                    // $(tab.cell).data()
                     var injectors = {
                         "$scope": newscope,
                         "$page": self.pageHander
@@ -1239,8 +1248,8 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
         }
     }
 
-    app.getApiUrl = function (url) {
-        return config.webapi.replace(/(\s*$)/g, "") + "/" + (url || '').replace(/(^\s*)/g, "");
+    app.getApiUrl = function (url, version) {
+        return config.webapi.replace(/(\s*$)/g, "") + "/" + (version ? version : "v1") + "/" + (url || '').replace(/(^\s*)/g, "");
     };
 
     app.getProjectRoot = function (prj) {
@@ -1272,6 +1281,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTUzODQwNzAsIm5iZiI6MTUxNDc3OTI3MH0.m61a7RBSwrtuEFg-rbmrJKNhckxeTsagqZoO-G8_pAI';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTYzNjU0NTIsIm5iZiI6MTUxNTc2MDY1Mn0.PVkOIEhKoEFrnG1Te86-UdnlRaKhlFjCobp8D3LuYkU';
     }
 });

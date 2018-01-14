@@ -65,9 +65,10 @@
 
         
 
-        app.getRestSrv = function () {
+        app.getRestSrv = function (version) {
+            
             return Restangular.withConfig(function (configSetter) {
-                configSetter.setBaseUrl(config.webapi);
+                configSetter.setBaseUrl(config.webapi + "/" +(version ? version : "v1"));
             });
         }
        

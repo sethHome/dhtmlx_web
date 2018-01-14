@@ -10,7 +10,7 @@ define(['app'], function (app) {
 
         this.getMenus = function (flage) {
 
-            if (flage) {
+            if (true) {
                 return restSrv.all("menu").getList({ business: "System3" });
             }
 
@@ -76,6 +76,10 @@ define(['app'], function (app) {
 
             return menusData;
         };
+
+        this.getPageButton = function () {
+            return restSrv.all("pagebutton").getList();
+        }
 
         this.getUsers = function () {
             return restSrv.all("department").getList();

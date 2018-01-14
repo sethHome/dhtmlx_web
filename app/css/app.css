@@ -1105,3 +1105,6 @@ a.list-group-item.active > .badge,
         letter-spacing: 0.1em;
         line-height: 1.8em;
     }
+.dhx-windowsc {
+    height:100%;
+}

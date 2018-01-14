@@ -286,7 +286,7 @@ dataProcessor.prototype={
        	return url;
     },
     _sendData:function(a1,rowId){
-        debugger;
+        
     	this._log("url: "+this.serverProcessor);
     	this._log(a1)
 
@@ -349,6 +349,7 @@ dataProcessor.prototype={
         	});		
         }
         else if (this._tMode == "RESTAPI") {
+            
             var action = a1[this.action_param];
             var data = {};
             for (var key in a1) data[key] = a1[key];
@@ -362,7 +363,7 @@ dataProcessor.prototype={
                 parts[1] = "?" + parts[1];
             
             var method = "POST";
-
+            
             if (action == "deleted") {
                 method = "DELETE";
                 url = parts[0] + rowId + (parts[1] || "");
@@ -371,7 +372,7 @@ dataProcessor.prototype={
             }
 
             dhx4.ajax.query({
-                url: a4,
+                url: url,
                 method: method,
                 headers: this._headers,
                 callback: back,

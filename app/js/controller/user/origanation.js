@@ -4,31 +4,31 @@
 define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app) {
     app.controller('user/origanationCtrl', ['$scope', '$page','userService','orgService',
         function ($scope, $page, userService, orgService) {
-           
-            $scope.treeToolMenus = [
-                { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addNextOrg" },
-                { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addChildOrg" },
-                { type: "separator" },
-                { id: "del", type: "button", img: "fa fa-trash-o",text: "删除", action: "test" }];
+            
+            //$scope.treeToolMenus = [
+            //    { id: "new1", type: "button", img: "fa fa-plus", text: "添加部门", action: "addNextOrg" },
+            //    { id: "new2", type: "button", img: "fa fa-plus", text: "添加子部门", action: "addChildOrg" },
+            //    { type: "separator" },
+            //    { id: "del", type: "button", img: "fa fa-trash-o",text: "删除", action: "test" }];
 
-            $scope.toolMenus = [
-                { id: "new", type: "button", img: "fa fa-plus", text: "新增", title: "Tooltip here", action: "addClick" },
-                { id: "edit", type: "button", img: "fa fa-edit", text: "修改", action: "modify" },
-               { type: "separator" },
-               { id: "reset", type: "button", img: "fa fa-refresh", text: "重置密码", action: "resetPsw" },
-               { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "test" },
-               { type: "separator" },
-               {
-                   id: "queryType", type: "buttonSelect", img: "fa fa-filter", text: "Select", mode: "select", selected: "edit_cut1",
-                   options: [
-                       { type: "button", id: "edit_cut1", text: "用户名称", img: "fa fa-filter" },
-                       { type: "button", id: "edit_copy2", text: "用户账号", img: "fa fa-filter" },
-                       { type: "button", id: "edit_copy3", text: "用户编号", img: "fa fa-filter" },
-                   ]
-               },
-               { id: "querytext", type: "buttonInput", width: 120 },
-               { id: "query", type: "button", img: "fa fa-search", text: "查询"},
-               { id: "querymore", type: "button", img: "fa fa-list-alt", text: "高级查询", action: "query" }];
+            //$scope.toolMenus = [
+            //    { id: "new", type: "button", img: "fa fa-plus", text: "新增", title: "Tooltip here", action: "addClick" },
+            //    { id: "edit", type: "button", img: "fa fa-edit", text: "修改", action: "modify" },
+            //   { type: "separator" },
+            //   { id: "reset", type: "button", img: "fa fa-refresh", text: "重置密码", action: "resetPsw" },
+            //   { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "test" },
+            //   { type: "separator" },
+            //   {
+            //       id: "queryType", type: "buttonSelect", img: "fa fa-filter", text: "Select", mode: "select", selected: "edit_cut1",
+            //       options: [
+            //           { type: "button", id: "edit_cut1", text: "用户名称", img: "fa fa-filter" },
+            //           { type: "button", id: "edit_copy2", text: "用户账号", img: "fa fa-filter" },
+            //           { type: "button", id: "edit_copy3", text: "用户编号", img: "fa fa-filter" },
+            //       ]
+            //   },
+            //   { id: "querytext", type: "buttonInput", width: 120 },
+            //   { id: "query", type: "button", img: "fa fa-search", text: "查询"},
+            //   { id: "querymore", type: "button", img: "fa fa-list-alt", text: "高级查询", action: "query" }];
 
             $scope.orgMenus = [
                 { id: "new", type: "button", img: "new.gif", text: "新增", title: "Tooltip here", action: "addClick" },
@@ -88,7 +88,7 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
 
             $scope.addClick = function (rowid) {
                 // need version 5.1
-                //var data = $scope.grid.obj.getRowData(rowid);
+                var data = $scope.grid.obj.getRowData(rowid);
 
                 $page.open({config: {
                     height: 500,

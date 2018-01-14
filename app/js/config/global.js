@@ -15,7 +15,7 @@
         dashboard: {
             limit: 30
         },
-        webapi: 'http://localhost:8002/api/v1',
+        webapi: 'http://localhost:8002/api',
         signalr: 'http://localhost:14001/signalr/'
     };
 });

@@ -5,7 +5,7 @@
                      dhx-cell="cell1"
                      dhx-collapsed-text="组织架构">
 
-        <dhx-toolbar dhx-items="treeToolMenus">
+        <dhx-toolbar dhx-name="tree" dhx-menu="menuId">
         </dhx-toolbar>
 
         <dhx-tree dhx-tree="dhxTree"
@@ -39,9 +39,8 @@
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="员工列表">
 
-        <dhx-toolbar dhx-items="toolMenus">
+        <dhx-toolbar dhx-name="tools" dhx-menu="menuId">
         </dhx-toolbar>
-
 
         <dhx-grid dhx-obj="grid.obj"
                   dhx-url="user"

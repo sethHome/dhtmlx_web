@@ -6,7 +6,7 @@
                   dhx-enable-tree-images="true"
                   dhx-enable-highlighting="true"
                   dhx-json-data="treeData"
-                  dhx-processor-url="menu"
+                  dhx-processor-url="v2/menu"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
                   dhx-context-menu="contextMenu"></dhx-tree>
@@ -16,15 +16,13 @@
                   dhx-context-menu-mode="true"
                   dhx-menu="contextMenu">
             <menu>
-                <item id="add" text="添加菜单" >
+                <item id="add" text="添加页面" >
                 </item>
-                <item id="addSub" text="添加子菜单" >
+                <item id="addSub" text="添加子页面" >
                 </item>
                 <item id="ms1" type="separator" />
-                <item id="addPagePart" text="添加界面元素">
-                </item>
                 <item id="ms2" type="separator" />
-                <item id="remove" text="删除菜单">
+                <item id="remove" text="删除">
                 </item>
             </menu>
         </dhx-menu>
@@ -33,56 +31,76 @@
         <dhx-toolbar dhx-items="toolMenus">
         </dhx-toolbar>
         <dhx-cell-html>
+            <div class="dhx-windowsc">
 
-            <form class="form-horizontal mauto pt20" style="width:90%;"  role="form">
+                <form class="form-horizontal mauto pt20" style="width:90%;" role="form">
 
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Name</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.Text">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Text</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.Text">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Key</span>
-                    <div class="col-sm-10">
-                        <input class="form-control" ng-readonly="true" type="text" ng-model="currentMenu.Name">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Key</span>
+                        <div class="col-sm-10">
+                            <input class="form-control" ng-readonly="true" type="text" ng-model="currentMenu.Name">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Icon</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.Icon">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Icon</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.Icon">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Href</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.Href">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Href</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.Href">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Param</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.Param">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">View</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.View">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">Permission</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.PermissionKey">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">ControllerName</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.ControllerName">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <span class="col-sm-2 control-label">IndexValue</span>
-                    <div class="col-sm-10">
-                        <input class="form-control form-white" type="text" ng-model="currentMenu.IndexValue">
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">ControllerUrl</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.ControllerUrl">
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Param</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.Param">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">Permission</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.PermissionKey">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="col-sm-2 control-label">IndexValue</span>
+                        <div class="col-sm-10">
+                            <input class="form-control form-white" type="text" ng-model="currentMenu.IndexValue">
+                        </div>
+                    </div>
+                </form>
 
-               
-
-            </form>
+                <dhx-window dhx-win-option="win"
+                            ng-repeat="win in pageWins">
+                </dhx-window>
+            </div>
         </dhx-cell-html>
-        
     </dhx-layout-cell>
 </dhx-layout>

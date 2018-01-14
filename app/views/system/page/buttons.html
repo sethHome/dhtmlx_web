@@ -1,0 +1,15 @@
+﻿<dhx-toolbar dhx-items="toolMenus" dhx-win="$win">
+</dhx-toolbar>
+
+<dhx-grid dhx-obj="grid.obj"
+          dhx-win="$win"
+          dhx-api-version="v1"
+          dhx-url="menu/{{menuID}}/pagebutton"
+          dhx-processor-url="v1/menu/{{menuID}}/pagebutton"
+          dhx-col-sorting="'ro,ro,ro,ro'"
+          
+          dhx-header="'ID,Group,Text,Type,Action,Icon,Title'"
+          dhx-fields="ID|ID,GroupName,BtnText,BtnType,BtnAction,BtnIcon,BtnTitle">
+
+</dhx-grid>
+

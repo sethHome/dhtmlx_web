@@ -171,6 +171,7 @@ dhtmlXTreeObject.prototype._dp_init = function (dp) {
         var data = dhx4.ajax.xpath(".//item", upd);
         var text = data[0].getAttribute('text');
         this.obj.insertNewItem(parent, id, text, 0, 0, 0, 0, "CHILD");
+        
     });
 
     dp.attachEvent("updateCallback", function (upd, id, parent) {
@@ -218,11 +219,12 @@ dhtmlXTreeObject.prototype._dp_init = function (dp) {
         for (i = 0; i < z2.childsCount; i++)
             if (z2.childNodes[i] == z) break;
 
-        data["tr_id"] = z.id;
-        data["tr_pid"] = z2.id;
-        data["tr_order"] = i;
-        data["tr_text"] = z.span.innerHTML;
-
+        data["ID"] = z.id;
+        data["NodeID"] = z.id;
+        data["ParentID"] = z2.id;
+        data["Order"] = i;
+        data["Text"] = z.span.innerHTML;
+        
         z2 = (z._userdatalist || "").split(",");
         for (i = 0; i < z2.length; i++)
             data[z2[i]] = z.userData["t_" + z2[i]];
@@ -275,6 +277,13 @@ dhtmlXGridObject.prototype.setQuery = function () {
             if (loaded != undefined && typeof (loaded) === "function") {
                 loaded(self);
             }
+
+            var cols = [];
+            if (d.total > 0) {
+                for (var key in d.rows[0]) {
+                    cols.push(key);
+                }
+            }
         });
 
         self.queryParams = param;
@@ -283,12 +292,23 @@ dhtmlXGridObject.prototype.setQuery = function () {
 };
 
 dhtmlXGridObject.prototype.convertSource = function (data) {
-    
-    return {
-        pageCount:data.PageCount,
-        rows: data.Source,
-        total:data.TotalCount
-    };
+    if (data.TotalCount) {
+        return {
+            pageCount: data.PageCount,
+            rows: data.Source,
+            total: data.TotalCount
+        };
+    } else {
+        var source = [];
+        angular.forEach(data, function (item) {
+            source.push(item);
+        });
+
+        return {
+            rows: source,
+            total: source.length
+        };
+    }
 };
 
 dhtmlXGridObject.prototype.setFields = function () {
@@ -299,6 +319,9 @@ dhtmlXGridObject.prototype.setFields = function () {
     var arr = filedText.split('|');
     this._idField = arr[0];
     this._fields = arr[1].split(',');
+
+
+    this.setColumnIds(this._fields.join(','));
 };
 
 dhtmlXGridObject.prototype.load_old = dhtmlXGridObject.prototype.load;
@@ -604,49 +627,72 @@ dhtmlXGridObject.prototype.filterBy = function (column, value, preserve) {
         this.query(params);
     }
 };
+
+
+dhtmlXGridObject.prototype.getRowData = function ( /*string*/ rowId) {
+    var result = {};
+    var colsNum = this.getColumnsNum();
+    for (var index = 0; index < colsNum; index++) {
+        var colId = this.getColumnId(index);
+        if (colId) {
+            result[colId] = this.cells(rowId, index).getValue();
+        }
+    }
+    return result;
+};
+
+dhtmlXGridObject.prototype.setRowData = function ( /*string*/ rowId, /*json*/ rowJson) {
+    var colsNum = this.getColumnsNum();
+    for (var index = 0; index < colsNum; index++) {
+        var colId = this.getColumnId(index);
+        if (colId && rowJson.hasOwnProperty(colId)) {
+            this.cells(rowId, index).setValue(rowJson[colId]);
+        }
+    }
+};
 //============================================================================================
 
-function eXcell_roch(cell) {
-    if (cell) {
-        this.cell = cell;
-        this.grid = this.cell.parentNode.grid;
-    }
-    this.getValue = function () {
-        return this.cell.chstate ? this.cell.chstate.toString() : "0";
-    }
-}
-eXcell_roch.prototype = new eXcell;
-eXcell_roch.prototype.setValue = function (val) {
-    this.cell.style.verticalAlign = "middle"; //nb:to center checkbox in line
-    //val can be int
-    if (val) {
-        val = val.toString()._dhx_trim();
+//function eXcell_roch(cell) {
+//    if (cell) {
+//        this.cell = cell;
+//        this.grid = this.cell.parentNode.grid;
+//    }
+//    this.getValue = function () {
+//        return this.cell.chstate ? this.cell.chstate.toString() : "0";
+//    }
+//}
+//eXcell_roch.prototype = new eXcell;
+//eXcell_roch.prototype.setValue = function (val) {
+//    this.cell.style.verticalAlign = "middle"; //nb:to center checkbox in line
+//    //val can be int
+//    if (val) {
+//        val = val.toString()._dhx_trim();
 
-        if ((val == "false") || (val == "0"))
-            val = "";
-    }
+//        if ((val == "false") || (val == "0"))
+//            val = "";
+//    }
 
-    if (val) {
-        val = "1";
-        this.cell.chstate = "1";
-    } else {
-        val = "0";
-        this.cell.chstate = "0"
-    }
-    var obj = this;
-    this.setCValue("<img src='" + this.grid.imgURL + "item_chk" + val + ".gif'>",this.cell.chstate);
-}
+//    if (val) {
+//        val = "1";
+//        this.cell.chstate = "1";
+//    } else {
+//        val = "0";
+//        this.cell.chstate = "0"
+//    }
+//    var obj = this;
+//    this.setCValue("<img src='" + this.grid.imgURL + "item_chk" + val + ".gif'>",this.cell.chstate);
+//}
 
-function eXcell_filter(cell) { //the eXcell name is defined here
-    if (cell) {                // the default pattern, just copy it
-        this.cell = cell;
-        this.grid = this.cell.parentNode.grid;
-    }
-    this.edit = function () { }  //read-only cell doesn't have edit method
-    // the cell is read-only, so it's always in the disabled state
-    this.isDisabled = function () { return true; }
-    this.setValue = function (val) {
-        this.setCValue(val + ":{{1+1}}", val);
-    }
-}
-eXcell_filter.prototype = new eXcell;// nests all other methods from the base class
+//function eXcell_filter(cell) { //the eXcell name is defined here
+//    if (cell) {                // the default pattern, just copy it
+//        this.cell = cell;
+//        this.grid = this.cell.parentNode.grid;
+//    }
+//    this.edit = function () { }  //read-only cell doesn't have edit method
+//    // the cell is read-only, so it's always in the disabled state
+//    this.isDisabled = function () { return true; }
+//    this.setValue = function (val) {
+//        this.setCValue(val + ":{{1+1}}", val);
+//    }
+//}
+//eXcell_filter.prototype = new eXcell;// nests all other methods from the base class

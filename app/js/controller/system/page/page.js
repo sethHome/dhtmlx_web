@@ -1,17 +1,19 @@
 ﻿define(['app', 'service/user', 'service/pagemenu'], function (app) {
 
-    app.controller("pageController", function ($scope, pagemenuService) {
+    app.controller("pageController", function ($scope, $page, pagemenuService) {
 
+        $scope.pageWins = [];
         $scope.toolMenus = [
             { id: "new", type: "button", img: "fa fa-save", text: "保存", action: "save" },
-            { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "remove", title: "同时删除子菜单" }];
+            { id: "del", type: "button", img: "fa fa-trash-o", text: "删除", action: "remove", title: "同时删除子菜单" },
+            { id: "btns", type: "button", img: "fa fa-list", text: "页面按钮", action: "viewBtns" }];
 
         $scope.menuAttrs = {};
 
         var convertMenu = function (data) {
             var menus = [];
             angular.forEach(data, function (item) {
-                $scope.menuAttrs[item.Key] = item;
+                $scope.menuAttrs[item.MenuID] = item;
 
                 var subMenus = convertMenu(item.SubMenus);
                 
@@ -44,7 +46,7 @@
                 type: "onClick",
                 handler: function (id) {
 
-
+                    
                     var a = $scope.dhxTree.getUserData(id);
                     
                     $scope.currentMenu = $scope.menuAttrs[id];
@@ -53,15 +55,47 @@
             }
         ];
 
+        $scope.viewBtns = function () {
+
+            var menuID = $scope.dhxTree.getSelectedItemId()
+
+            $scope.$apply(function () {
+                $scope.pageWins.push({
+
+                    config: {
+                        height: 600,
+                        width: 800,
+                        text: '按钮',
+                    },
+                    view: "system/page/buttons.html",
+                    controller: 'pageButtonCtrl',
+                    resolve: {
+                        menuID: menuID
+                    }
+                })
+            })
+        }
+
         $scope.add = function (orgkey) {
-            var d = new Date();
+
             if (orgkey == undefined) {
                 orgkey = $scope.dhxTree.getSelectedItemId()
             }
 
-            $scope.dhxTree.insertNewItem(orgkey, d.valueOf(), '新建菜单', 0, 0, 0, 0, 'SELECT');
+            $scope.dhxTree.insertNewItem(orgkey, -1, '新建菜单', 0, 0, 0, 0, 'SELECT');
+        }
 
-            //$scope.dhxTree.editItem(d.valueOf());
+        $scope.remove = function (orgkey) {
+            
+            $scope.dhxTree.deleteItem(orgkey);
+        }
+
+        $scope.save = function () {
+            pagemenuService.updateMenu($scope.currentMenu).then(function () {
+                dhtmlx.message({
+                    text: "保存成功！"
+                })
+            });
         }
 
         $scope.contextMenuExcute = function (id) {
@@ -73,7 +107,22 @@
 
     })
 
-    app.controller("pageMaintainController", function ($scope, info) {
-        $scope.currentMenu = info;
+    app.controller("pageButtonCtrl", function ($scope, menuID) {
+        $scope.menuID = menuID;
+
+        $scope.grid = {};
+
+        $scope.toolMenus = [
+            { id: "addBtnID", type: "button", img: "fa fa-save", text: "添加", title: "Tooltip here", action: "addBtn" },
+        ];
+
+        $scope.addBtn = function () {
+            var id = new Date().valueOf();
+            var index = $scope.grid.obj.getRowsNum();
+
+            $scope.grid.obj.addRow(id,
+                [0, '分组名称', '按钮名称', 'button', 'Action','fa fa-file-o'],
+                index);
+        }
     })
 });
