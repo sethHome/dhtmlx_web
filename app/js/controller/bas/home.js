@@ -215,13 +215,10 @@ define(['app'], function (app) {
         $scope.go = function (id) {
             $page.go({
                 id: id,
-                text: "123123",
-                ctrl: "user/origanation",
-                resolve: {
-                    justSrv: {
-                        aa: 11
-                    }
-                }
+                text: "菜单页面",
+                ViewUrl: 'system/page/page',
+                ControllerUrl: 'system/page/page',
+                Controller: 'pageController'
             });
         }
 

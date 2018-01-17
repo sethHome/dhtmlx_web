@@ -47,15 +47,9 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
 
             // load menu
             myApi.getMenus().then(function (data) {
-
                 $scope.menus = convertMenu(data);
-
                 $scope.creator.loadNavigationData($scope.menus);
-
                 $scope.creator.layout.cells("a").progressOff();
-
-                //$scope.menus = myApi.getMenus();
-                //$scope.creator.loadNavigationData($scope.menus);
             });
 
             app.buttons = {};
@@ -74,11 +68,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
                         app.buttons[btn.MenuID][btn.GroupName].push(item);
                     }
                 });
-            });
-
-            $scope.$watch('menus', function (newValue, oldValue) {
-                $scope.creator.layout.cells("a").progressOff();
-                $scope.creator.loadNavigationData(newValue);
             });
 
             //open the chat box
@@ -141,7 +130,7 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
             //create navigation
             self.accordion = layout.cells("a").attachAccordion({ iconset: "awesome" });
             //self.accordion.setIconset("awesome");
-            //layout.cells("a").progressOn();
+            layout.cells("a").progressOn();
 
             //create tabs
             var tabs = self.tabs = layout.cells("b").attachTabbar({
@@ -1281,6 +1270,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTYzNjU0NTIsIm5iZiI6MTUxNTc2MDY1Mn0.PVkOIEhKoEFrnG1Te86-UdnlRaKhlFjCobp8D3LuYkU';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTY3ODU5OTYsIm5iZiI6MTUxNjE4MTE5Nn0.lOiHVio5qvJNanM3vF4EJUr6_p0MAV1eM1nM_KSRCJ4';
     }
 });

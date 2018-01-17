@@ -85,34 +85,39 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
                     params: { filter: $scope.filter }
                 });
             }
-
-            $scope.addClick = function (rowid) {
+            $scope.pageWins = [];
+            $scope.addUser = function (rowid) {
                 // need version 5.1
-                var data = $scope.grid.obj.getRowData(rowid);
-
-                $page.open({config: {
-                    height: 500,
-                    width: 500,
-                    text: '新增用户',
-                    },
-                    view: 'user/user_maintain.html',
-                    controller: 'user/user_maintainCtrl',
-                    resolve: {
-                        params: {
-                            rowid: rowid
-                        }
-                    }
-                });
-                //$page.open2({
-                //    title:'新增用户',
-                //    url: "user/user_maintain.html",
+                //var data = $scope.grid.obj.getRowData(rowid);
+            
+                //$page.open({config: {
+                //    height: 500,
+                //    width: 500,
+                //    text: '新增用户',
+                //    },
+                //    view: 'user/user_maintain.html',
                 //    controller: 'user/user_maintainCtrl',
-                //    resolve:{
-                //        params:{
+                //    resolve: {
+                //        params: {
                 //            rowid: rowid
                 //        }
                 //    }
                 //});
+
+                $scope.$apply(function () {
+                    $scope.pageWins.push({
+                        config: {
+                            height: 600,
+                            width: 800,
+                            text: '新增用户',
+                        },
+                        view: 'user/user_maintain.html',
+                        controller: 'user/user_maintainCtrl',
+                        resolve: {
+                            rowid: rowid
+                        }
+                    })
+                })
             };
 
             $scope.modify = function () {
@@ -222,7 +227,7 @@ define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app
             $scope.contextMenu2 = {};
         }]);
 
-    app.controller("user/user_maintainCtrl", function ($scope,params) {
+    app.controller("user/user_maintainCtrl", function ($scope) {
         //if (params.rowid > 0) {
         //    $scope.title = "更新用户";
         //} else {
