@@ -16,28 +16,12 @@
                   dhx-json-data="treeData"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
-                  dhx-context-menu="contextMenu1"></dhx-tree>
-
-        <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="treeHand"
-                  dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu1">
-            <menu>
-                <item id="addChildOrg" text="添加子部门">
-                </item>
-                <item id="addNextOrg" text="添加部门">
-                </item>
-                <item id="rename" text="重命名">
-                </item>
-                <item id="ms1" type="separator" />
-                <item id="deleteOrg" text="删除部门">
-                </item>
-            </menu>
-        </dhx-menu>
-
+                  dhx-context-menu-id="menuId"
+                  dhx-context-menu-name="contextmenu_tree"
+                  dhx-context-menu-action="treeContextAction"></dhx-tree>
 
     </dhx-layout-cell>
-    <dhx-layout-cell dhx-text="员工列表">
+    <dhx-layout-cell dhx-text="员工列表" dhx-wins="true">
 
         <dhx-toolbar dhx-name="tools" dhx-menu="menuId">
         </dhx-toolbar>
@@ -48,36 +32,18 @@
                   dhx-col-sorting="'ro,ro,ed,ro'"
                   dhx-header="'编号,姓名,账号,头像'"
                   dhx-fields="ID|ID,Name,Account,PhotoImg"
-                  dhx-context-menu="contextMenu2"
+                  dhx-context-menu-id="menuId"
+                  dhx-context-menu-name="contextmenu_grid"
+                  dhx-context-menu-action="gridContextAction"
                   dhx-handlers="grid.handlers"
                   dhx-paging="true">
 
         </dhx-grid>
 
 
-        <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="contextAction"
-                  dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu2">
-            <menu>
-                <item id="update" text="更新用户信息" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
-                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
-                </item>
-                <item id="ms1" type="separator"></item>
-                <item id="remove" text="删除用户">
-                    <userdata name="align">left</userdata> // userdata
-                </item>
-                <item id="refreshsize" text="刷新">
-                    <userdata name="align">left</userdata> // userdata
-                </item>
-            </menu>
-        </dhx-menu>
+        <dhx-window dhx-win-option="win"
+                    ng-repeat="win in pageWins">
+        </dhx-window>
 
-
-        <div class="dhx-windowsc">
-            <dhx-window dhx-win-option="win"
-                        ng-repeat="win in pageWins">
-            </dhx-window>
-        </div>
     </dhx-layout-cell>
 </dhx-layout>
