@@ -1,42 +1,27 @@
-﻿<dhx-layout dhx-layout-code="3L">
+﻿<dhx-layout dhx-layout-code="3L" dhx-when-done="loaded">
     <dhx-layout-cell dhx-text="字典分类"
                      dhx-status="'共3个数据'"
                      dhx-width="300"
                      dhx-collapsed-text="字典分类">
 
-        <dhx-toolbar dhx-items="treeToolMenus">
+        <dhx-toolbar dhx-name="data_tools" dhx-menu="menuId">
         </dhx-toolbar>
 
         <dhx-tree dhx-tree="dhxTree"
                   dhx-enable-tree-images="true"
                   dhx-enable-highlighting="true"
                   dhx-json-data="treeData"
-                  dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
-                  dhx-context-menu="contextMenu1"></dhx-tree>
-
-        <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="alert"
-                  dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu1">
-            <menu>
-                <item id="new" text="New" img="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new.gif" imgdis="http://dhtmlx.com/docs/products/dhtmlxMenu/samples/common/imgs/new_dis.gif">
-                    <hotkey>Ctrl+N</hotkey> // a hotkey (just a text) to a menu item
-                </item>
-                <item id="ms1" type="separator" />
-                <item id="udf" text="UDF">
-                    <userdata name="align">left</userdata> // userdata
-                </item>
-            </menu>
-        </dhx-menu>
-
+                  dhx-context-menu-id="menuId"
+                  dhx-context-menu-name="context"
+                  dhx-context-menu-action="treeContextAction">
+        </dhx-tree>
 
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="字典数据">
 
-        <dhx-toolbar dhx-items="itemToolMenus">
+        <dhx-toolbar dhx-name="item_tools" dhx-menu="menuId">
         </dhx-toolbar>
-
 
         <dhx-grid dhx-obj="grid.obj"
                   dhx-data="enumItems"
@@ -50,7 +35,7 @@
 
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="字典属性">
-        <dhx-toolbar dhx-items="attrToolMenus">
+        <dhx-toolbar dhx-name="attr_tools" dhx-menu="menuId">
         </dhx-toolbar>
         
         <dhx-grid dhx-obj="grid2.obj"

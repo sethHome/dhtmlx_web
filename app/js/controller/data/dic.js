@@ -1,69 +1,46 @@
-﻿/**
- * Created by liuhuisheng on 2015/2/28.
- */
-define(['app', 'service/data'], function (app) {
+﻿define(['app', 'service/data'], function (app) {
 
     app.controller("data/dicCtrl", function ($scope, $page, dataService) {
 
-        $scope.treeToolMenus = [
-           {
-               id: "queryType", type: "buttonSelect", img: "fa fa-folder",text: "Select", mode: "select", selected: "edit_cut0",
-               options: [
-                   { type: "button", id: "edit_cut0", text: "全部", img: "fa fa-globe" },
-                   { type: "button", id: "edit_cut1", text: "System2", img: "fa fa-globe" },
-                   { type: "button", id: "edit_copy2", text: "System3", img: "fa fa-globe" },
-                   { type: "button", id: "edit_copy3", text: "System4", img: "fa fa-globe" },
-               ]
-           },
-            { id: "querytext", type: "buttonInput", width: 120 },
-            { id: "query", type: "button", img: "fa fa-query", text: "查询" }];
+        $scope.loaded = function (layout) {
 
-        $scope.itemToolMenus = [
-            { id: "new", type: "button", img: "fa fa-plus", text: "添加", title: "Tooltip here", action: "addItem" },
-            { id: "del", type: "button", img: "fa fa-trash", imgdis: "cross.png", text: "删除", action: "removeItem"},
-            ];
-        $scope.attrToolMenus = [
-            { id: "new", type: "button", img: "fa fa-plus", text: "添加", title: "Tooltip here", action: "addAttr" },
-            { id: "del", type: "button", img: "fa fa-trash", imgdis: "cross.png", text: "删除", action: "removeAttr" },
-        ];
-        dataService.all().then(function (data) {
-            var items = paraseTreeData(data);
-            $scope.treeData = {
-                "id": 0,
-                "item": items
-            };
+            layout.cells("a").progressOn();
 
-        })
-
-        var paraseTreeData = function (nodes) {
-            var newNodes = [];
-            angular.forEach(nodes, function (sysNode) {
-                var treeNode = {
-                    id: sysNode.Key,
-                    text: sysNode.Key,
-                    open : true,
-                    userdata: {
-                        name1: "value1", name2: "value2"
-                    },
-                    item:[]
-                };
-                angular.forEach(sysNode.Enums, function (enumNode) {
-                    treeNode.item.push({
-                        id: enumNode.Key,
-                        text: enumNode.Text,
+            var paraseTreeData = function (nodes) {
+                var newNodes = [];
+                angular.forEach(nodes, function (sysNode) {
+                    var treeNode = {
+                        id: sysNode.Key,
+                        text: sysNode.Key,
+                        open: true,
                         userdata: {
                             name1: "value1", name2: "value2"
-                        }
+                        },
+                        item: []
+                    };
+                    angular.forEach(sysNode.Enums, function (enumNode) {
+                        treeNode.item.push({
+                            id: enumNode.Key,
+                            text: enumNode.Text,
+                            userdata: {
+                                name1: "value1", name2: "value2"
+                            }
+                        });
                     });
+                    newNodes.push(treeNode);
                 });
-                newNodes.push(treeNode);
-            });
-            return newNodes;
-        }
+                return newNodes;
+            }
 
-        $scope.treeDataLoaded = function (tree) {
-            console.log('Data has been loaded!');
-        };
+            dataService.all().then(function (data) {
+                var items = paraseTreeData(data);
+                $scope.treeData = {
+                    "id": 0,
+                    "item": items
+                };
+                layout.cells("a").progressOff();
+            })
+        }
 
         $scope.treeHandlers = [
             {
@@ -72,8 +49,6 @@ define(['app', 'service/data'], function (app) {
                    
                     var tree = $scope.dhxTree;
                     var pid = tree.getParentId(id);
-                    console.log(pid);
-
 
                     dataService.getEnumItem(pid, id).then(function (data) {
                       
@@ -87,51 +62,35 @@ define(['app', 'service/data'], function (app) {
             }
         ];
 
-        $scope.query = function () {
+        $scope.treeContextAction = {
 
-            $page.open({
-                url: "user/user_filter.html",
-                controller: "user/user_filterCtrl",
-                params: { filter: $scope.filter }
-            });
+            "AddData": function () {
+
+            },
+            "RemoveData": function () {
+
+            }
+        };
+
+        $scope.Query = function () {
+
         }
 
-        $scope.addItem = function () {
+        $scope.AddItem = function () {
             $scope.grid.obj.addRow($scope.grid.obj.uid(), ["*", "New Value","0"], 99);
         };
-        $scope.addAttr = function () {
+        $scope.AddAttr = function () {
             $scope.grid2.obj.addRow($scope.grid2.obj.uid(), ["*", "New Value"], 99);
         };
 
-        $scope.removeItem = function () {
+        $scope.RemoveItem = function () {
             
             $scope.grid.obj.deleteSelectedItem()
         };
-        $scope.removeAttr = function () {
+        $scope.RemoveAttr = function () {
             $scope.grid2.obj.deleteSelectedItem()
         };
-
-        $scope.modify = function () {
-            $page.open({
-                url: "chat/chat.html",
-                controllerUrl: 'chat/chat',
-                controller: 'chatController',
-            });
-        };
-
-        $scope.searchClick = function () {
-            $scope.grid.query($scope.form);
-        };
-
-        $scope.clearClick = function () {
-            for (var i in $scope.form)
-                $scope.form[i] = null;
-
-            $scope.grid.query($scope.form);
-        };
-
-        //$scope.grid.enableSmartRendering(true);
-
+        
         $scope.grid = {
             obj: {
                 unload: function () {
@@ -159,6 +118,8 @@ define(['app', 'service/data'], function (app) {
             ]
         };
 
+        //$scope.grid.enableSmartRendering(true);
+
         $scope.grid2 = {
             obj: {
                 unload: function () {
@@ -174,27 +135,5 @@ define(['app', 'service/data'], function (app) {
                 }
             ]
         };
-
-        $scope.contextAction = function (event_name) {
-            var rowId = $scope.grid.obj.contextID.split("_")[0]; //rowId_colInd
-
-            switch (event_name) {
-                case "update": {
-                    $scope.addClick(rowId);
-                    break;
-                }
-                case "refreshsize": {
-                    $scope.grid.obj.query();
-                    break;
-                    //$scope.grid.obj.setSizes();
-                }
-                case "remove": {
-                    $scope.grid.obj.deleteRow(rowId);
-                    break;
-                }
-            }
-        };
-        $scope.contextMenu1 = {};
-        $scope.contextMenu2 = {};
     })
 });

@@ -1,4 +1,4 @@
-﻿<dhx-layout dhx-layout-code="2U" dhx-win="$win">
+﻿<dhx-layout dhx-layout-code="2U" dhx-when-done="loaded">
     <dhx-layout-cell dhx-text="菜单"
                      dhx-width="200"
                      dhx-collapsed-text="菜单">
@@ -9,26 +9,15 @@
                   dhx-processor-url="v2/menu"
                   dhx-on-data-loaded="treeDataLoaded"
                   dhx-handlers="treeHandlers"
-                  dhx-context-menu="contextMenu"></dhx-tree>
+                  dhx-context-menu-id="menuId"
+                  dhx-context-menu-name="treecontext"
+                  dhx-context-menu-action="treeContextAction">
+        </dhx-tree>
 
-        <dhx-menu dhx-load-xml-from-dom="true"
-                  dhx-on-click="contextMenuExcute"
-                  dhx-context-menu-mode="true"
-                  dhx-menu="contextMenu">
-            <menu>
-                <item id="add" text="添加页面" >
-                </item>
-                <item id="addSub" text="添加子页面" >
-                </item>
-                <item id="ms1" type="separator" />
-                <item id="ms2" type="separator" />
-                <item id="remove" text="删除">
-                </item>
-            </menu>
-        </dhx-menu>
+        
     </dhx-layout-cell>
     <dhx-layout-cell dhx-hide-header="true" dhx-wins="true">
-        <dhx-toolbar dhx-items="toolMenus">
+        <dhx-toolbar dhx-name="tools" dhx-menu="menuId">
         </dhx-toolbar>
         <dhx-cell-html>
             <form class="form-horizontal mauto pt20" style="width:90%;" role="form">

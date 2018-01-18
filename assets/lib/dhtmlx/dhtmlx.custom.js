@@ -650,6 +650,23 @@ dhtmlXGridObject.prototype.setRowData = function ( /*string*/ rowId, /*json*/ ro
         }
     }
 };
+
+dhtmlXGridObject.prototype.setFilters = function (filters) {
+    this.colFilters = filters.split(',');
+}
+dhtmlXGridObject.prototype.setFilterFunc = function (func) {
+    dhtmlXGridObject.prototype.getFilterValue = function (name, value) {
+        return func(name, value);
+    };
+}
+
+dhtmlXGridObject.prototype.cells4 = function (cell) {
+    var type = window["eXcell_" + (cell._cellType || this.cellType[cell._cellIndex])];
+    
+    if (type)
+        return new type(cell, this.colFilters[cell._cellIndex]);
+}
+
 //============================================================================================
 
 //function eXcell_roch(cell) {
@@ -683,16 +700,18 @@ dhtmlXGridObject.prototype.setRowData = function ( /*string*/ rowId, /*json*/ ro
 //    this.setCValue("<img src='" + this.grid.imgURL + "item_chk" + val + ".gif'>",this.cell.chstate);
 //}
 
-//function eXcell_filter(cell) { //the eXcell name is defined here
-//    if (cell) {                // the default pattern, just copy it
-//        this.cell = cell;
-//        this.grid = this.cell.parentNode.grid;
-//    }
-//    this.edit = function () { }  //read-only cell doesn't have edit method
-//    // the cell is read-only, so it's always in the disabled state
-//    this.isDisabled = function () { return true; }
-//    this.setValue = function (val) {
-//        this.setCValue(val + ":{{1+1}}", val);
-//    }
-//}
-//eXcell_filter.prototype = new eXcell;// nests all other methods from the base class
+function eXcell_filter(cell,filter) { //the eXcell name is defined here
+    if (cell) {                // the default pattern, just copy it
+        
+        this.cell = cell;
+        this.grid = this.cell.parentNode.grid;
+    }
+    this.edit = function () { }  //read-only cell doesn't have edit method
+    // the cell is read-only, so it's always in the disabled state
+    this.isDisabled = function () { return true; }
+    this.setValue = function (val) {
+
+        this.setCValue(this.grid.getFilterValue(filter, val), val);
+    }
+}
+eXcell_filter.prototype = new eXcell;// nests all other methods from the base class

@@ -18,7 +18,9 @@
                   dhx-handlers="treeHandlers"
                   dhx-context-menu-id="menuId"
                   dhx-context-menu-name="contextmenu_tree"
-                  dhx-context-menu-action="treeContextAction"></dhx-tree>
+                  dhx-context-menu-action="treeContextAction">
+
+        </dhx-tree>
 
     </dhx-layout-cell>
     <dhx-layout-cell dhx-text="员工列表" dhx-wins="true">
@@ -30,6 +32,8 @@
                   dhx-url="user"
                   dhx-params="form"
                   dhx-col-sorting="'ro,ro,ed,ro'"
+                  dhx-col-types="'ed,filter,ed,ed'"
+                  dhx-col-filters=",EngineeringType,,"
                   dhx-header="'编号,姓名,账号,头像'"
                   dhx-fields="ID|ID,Name,Account,PhotoImg"
                   dhx-context-menu-id="menuId"

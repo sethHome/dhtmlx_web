@@ -132,6 +132,7 @@
                 /** Optional! Recommended! http://docs.dhtmlx.com/api__dhtmlxgrid_setheader.html */
                 dhxHeader: '=',
                 dhxFields: '@',
+                dhxColFilters: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setcoltypes.html */
                 dhxColTypes: '=',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setcolsorting.html */
@@ -249,6 +250,11 @@
                 var setGrid = function (grid, cell) {
                     scope.dhxObj = grid;
 
+                    grid.setFilterFunc(function (name, value) {
+                        // todo
+                        return name + value;
+                    });
+                   
                     grid.setImagePath(DhxUtils.getImagePath());
                     grid.enableAutoHeight(!!scope.dhxMaxHeight, scope.dhxMaxHeight, true);
                     grid.enableAutoWidth(!!scope.dhxMaxWidth, scope.dhxMaxWidth, true);
@@ -259,6 +265,7 @@
                     scope.dhxInitWidths ? grid.setInitWidths(scope.dhxInitWidths) : '';
                     scope.dhxInitWidthsP ? grid.setInitWidthsP(scope.dhxInitWidthsP) : '';
                     scope.dhxFields && grid.setFields(scope.dhxFields);
+                    scope.dhxColFilters && grid.setFilters(scope.dhxColFilters);
 
                     if (scope.dhxContextMenuId && scope.dhxContextMenuName) {
 
