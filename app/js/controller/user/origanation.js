@@ -20,7 +20,7 @@
                     var newNodes = [];
                     angular.forEach(nodes, function (node) {
                         var newNode = {
-                            id: node.Key,
+                            id: node.ID,
                             text: node.Name,
                             open:1
                         };
@@ -81,32 +81,39 @@
                 ]
             };
 
+            $scope.afterUpdate = function (data) {
+
+                $scope.dhxTree.editItem(data.response);
+            }
+
             $scope.treeContextAction = {
 
-                "AddSubDept": function (contextId) {
-                    var d = new Date();
+                "AddSubDept": function (orgkey) {
+
                     if (orgkey == undefined) {
                         orgkey = $scope.dhxTree.getSelectedItemId()
                     }
 
-                    $scope.dhxTree.insertNewItem(orgkey, d.valueOf(), '新建部门', 0, 0, 0, 0, 'SELECT');
-
-                    $scope.dhxTree.editItem(d.valueOf());
+                    $scope.dhxTree.insertNewItem(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
                 },
-                "AddNextDept": function (contextId) {
-                    var d = new Date();
+                "AddNextDept": function (orgkey) {
+                    
                     if (orgkey == undefined) {
                         orgkey = $scope.dhxTree.getSelectedItemId()
                     }
-                    $scope.dhxTree.insertNewNext(orgkey, d.valueOf(), '新建部门', 0, 0, 0, 0, 'SELECT');
 
-                    $scope.dhxTree.editItem(d.valueOf());
+                    $scope.dhxTree.insertNewNext(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
+                },
+                "AddUser": function (deptId) {
+                    $scope.addUser(deptId);
                 },
                 "Rename": function (contextId) {
                     $scope.dhxTree.editItem(contextId);
                 },
                 "Delete": function (contextId) {
                     $scope.dhxTree.deleteItem(contextId);
+
+                    // deleteChildItems
                 }
             }
 
@@ -128,12 +135,29 @@
 
         }]);
 
-    app.controller("user/user_maintainCtrl", function ($scope) {
+    app.controller("user/user_maintainCtrl", function ($scope, orgService) {
         //if (params.rowid > 0) {
         //    $scope.title = "更新用户";
         //} else {
         //    $scope.title = "新增用户";
         //}
+
+        orgService.getRole().then(function (data) {
+            $scope.roles = data.map(function (item) {
+                return {
+                    ID: item.Key,
+                    Text: item.Name
+                }
+            });
+        });
+        orgService.getBusiness().then(function (data) {
+            $scope.allBusiness = data.map(function (item) {
+                return {
+                    ID: item.Key,
+                    Text: item.Name
+                }
+            });
+        });
 
         $scope.toolMenus = [
              { id: "new", type: "button", img: "fa fa-save", text: "保存", title: "Tooltip here", action: "saveUser" },

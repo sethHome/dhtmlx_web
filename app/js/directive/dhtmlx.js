@@ -252,7 +252,7 @@
 
                     grid.setFilterFunc(function (name, value) {
                         // todo
-                        return name + value;
+                        return value;
                     });
                    
                     grid.setImagePath(DhxUtils.getImagePath());
@@ -1095,7 +1095,8 @@
                 dhxContextMenuId: '=',
                 dhxContextMenuName: '@',
                 dhxContextMenuAction:'=',
-                dhxProcessorUrl: '@'
+                dhxProcessorUrl: '@',
+                dhxAfterUpdate:'&'
             },
             link: function (scope, element, attrs, ctls) {
 
@@ -1192,9 +1193,21 @@
                             }
                         }, false);
                         myDataProcessor.attachEvent("onAfterUpdate", function (id, action, tid, response) {
+                            
                             if (action == "inserted") {
                                 tree.changeItemId(id, response);
+                            } else if (action = "deleted") {
+                                tree.deleteChildItems(id);
                             }
+
+                            scope.dhxAfterUpdate({
+                                data: {
+                                    "id": id,
+                                    "action": action,
+                                    "tid": tid,
+                                    "response": response
+                                }
+                            });
                         });
                     }
 
