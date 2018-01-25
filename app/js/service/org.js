@@ -42,9 +42,11 @@
             changeRolePermission: function (roleKey, permissions) {
                 return restSrv.one("role", roleKey).customPUT(permissions, $rootScope.currentBusiness.Key + "/permission");
             },
-
             getBusiness: function (option) {
                 return restSrv.all("business").getList(option);
+            },
+            getDeptName: function (deptId) {
+                return restSrv.one("department", deptId).customGET("Name");
             },
         }
     });

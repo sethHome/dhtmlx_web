@@ -8,7 +8,7 @@
                 姓名
             </div>
             <div class="col-xs-10 control-value">
-                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="$params.rowid">
+                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="userInfo.Name">
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
                 账号
             </div>
             <div class="col-xs-10 control-value">
-                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="form.tenant_id">
+                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="userInfo.Account">
             </div>
         </div>
     </div>
@@ -28,7 +28,9 @@
                 部门
             </div>
             <div class="col-xs-10 control-value">
-                <input type="text" id="InputText" placeholder="" class="form-control input-sm" ng-model="form.tenant_id">
+                <input type="text" placeholder="" class="form-control input-sm"
+                       readonly="readonly"
+                       ng-model="userInfo.Dept.Text">
             </div>
         </div>
     </div>

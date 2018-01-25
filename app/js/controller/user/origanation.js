@@ -33,10 +33,10 @@
 
             $scope.pageWins = [];
 
-            $scope.addUser = function (rowid) {
+            $scope.addUser = function (deptId) {
                 // need version 5.1
                 //var data = $scope.grid.obj.getRowData(rowid);
-            
+
                 $scope.$apply(function () {
                     $scope.pageWins.push({
                         config: {
@@ -47,7 +47,9 @@
                         view: 'user/user_maintain.html',
                         controller: 'user/user_maintainCtrl',
                         resolve: {
-                            rowid: rowid
+                            "params": {
+                                "deptId": deptId
+                            }
                         }
                     })
                 })
@@ -82,7 +84,6 @@
             };
 
             $scope.afterUpdate = function (data) {
-
                 $scope.dhxTree.editItem(data.response);
             }
 
@@ -135,12 +136,16 @@
 
         }]);
 
-    app.controller("user/user_maintainCtrl", function ($scope, orgService) {
-        //if (params.rowid > 0) {
-        //    $scope.title = "更新用户";
-        //} else {
-        //    $scope.title = "新增用户";
-        //}
+    app.controller("user/user_maintainCtrl", function ($scope, orgService,userService, params) {
+
+        $scope.userInfo = {};
+        
+        if (params.deptId) {
+            $scope.userInfo.Dept = { "ID": params.deptId };
+            orgService.getDeptName(params.deptId).then(function(name){
+                $scope.userInfo.Dept.Text = name;
+            })
+        }
 
         orgService.getRole().then(function (data) {
             $scope.roles = data.map(function (item) {
@@ -163,20 +168,15 @@
              { id: "new", type: "button", img: "fa fa-save", text: "保存", title: "Tooltip here", action: "saveUser" },
         ];
 
-        $scope.saveUser = function () {
+        $scope.save = function () {
             $scope.$win.progressOn();
+
+            userService.create($scope.userInfo).then(function (user) {
+                dhtmlx.message({
+                    text: "用户创建成功！"
+                });
+                $scope.$win.progressOff();
+            })
         }
     })
-
-    app.controller("user/user_filterCtrl", function ($scope) {
-        $scope.tools = [
-           { id: "new", type: "button", img: "fa fa-query", text: "查询", title: "Tooltip here", action: "query" },
-        ];
-
-        $scope.saveUser = function () {
-            $scope.$win.progressOn();
-        }
-    })
-
-
 });
