@@ -62,16 +62,76 @@
     });
 
     app.run(function ($rootScope, $http, $compile, $controller, Restangular) {
-
-        
+        $rootScope.currentBusiness = { Key: "System3" };
 
         app.getRestSrv = function (version) {
-            
             return Restangular.withConfig(function (configSetter) {
                 configSetter.setBaseUrl(config.webapi + "/" +(version ? version : "v1"));
             });
         }
-       
+
+        var restSrv = app.getRestSrv();
+
+        var setBaseData = function (result) {
+
+            var baseItem = {};
+            var baseSource = {};
+            $rootScope.baseEnum = {};
+
+            angular.forEach(result, function (sys) {
+
+                $rootScope.baseEnum[sys.Key] = {
+                    "Dept": $rootScope.enum_depts_map,
+                    "User": $rootScope.enum_users_map
+                };
+                baseItem[sys.Key] = {
+                    "Dept": $rootScope.enum_depts,
+                    "User": $rootScope.enum_users
+                };
+                baseSource[sys.Key] = [{ "Key": "Dept", "Name": " 部门" }, { "Key": "User", "Name": "用户" }];
+
+                angular.forEach(sys.Enums, function (data) {
+
+                    var itemHash = {};
+                    if (data.Name == "Object") {
+                        angular.forEach(data.Items, function (item) {
+                            itemHash[item.Tags["name"]] = item.Text;
+                        });
+                    } else {
+                        angular.forEach(data.Items, function (item) {
+
+                            itemHash[item.Value] = item.Text;
+
+                            item.Value = parseInt(item.Value);
+                            item.Key = parseInt(item.Key);
+                        });
+                    }
+
+                    $rootScope.baseEnum[sys.Key][data.Name] = itemHash;
+                    baseItem[sys.Key][data.Name] = data.Items;
+                    baseSource[sys.Key].push({
+                        Key: data.Name,
+                        Name: data.Text
+                    });
+                });
+            });
+
+            $rootScope.getBaseData = function (name) {
+                return baseItem[$rootScope.currentBusiness.Key][name];
+            }
+
+            $rootScope.getBaseEnum = function (name) {
+                return $rootScope.baseEnum[$rootScope.currentBusiness.Key][name];
+            }
+
+            $rootScope.getBaseSource = function () {
+                return baseSource[$rootScope.currentBusiness.Key];
+            }
+        }
+
+        restSrv.all("enum").getList().then(function (data) {
+            setBaseData(data);
+        });
     });
 
     return app;

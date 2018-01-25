@@ -663,8 +663,13 @@ dhtmlXGridObject.prototype.setFilterFunc = function (func) {
 dhtmlXGridObject.prototype.cells4 = function (cell) {
     var type = window["eXcell_" + (cell._cellType || this.cellType[cell._cellIndex])];
     
-    if (type)
-        return new type(cell, this.colFilters[cell._cellIndex]);
+    if (type) {
+        if (this.colFilters) {
+            return new type(cell, this.colFilters[cell._cellIndex]);
+        } else {
+            return new type(cell);
+        }
+    }
 }
 
 //============================================================================================

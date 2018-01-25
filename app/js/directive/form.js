@@ -27,5 +27,29 @@ define(['app'], function (app) {
         }
     });
 
+    app.directive('fmCheckbox', function () {
+        return {
+            restrict: 'E',
+            template: '<div class="selectbox" ng-repeat="item in items track by $index" ng-class="{\'selectbox-choose\' : item.checked}" ng-click="check(item)">{{item.Text}}</div >',
+            scope: {
+                items: '=',
+                model:'@'
+            },
+            link: function (scope, element, attrs) {
+                scope.check = function (checkitem) {
+                    checkitem.checked = !checkitem.checked;
+
+                    if (scope.model == 'single' && checkitem.checked) {
+                        scope.items.map(function (item) {
+                            if (checkitem != item) {
+                                item.checked = false;
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+
     //todo more controls
 });

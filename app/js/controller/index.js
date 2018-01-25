@@ -1,7 +1,7 @@
 ﻿/**
  * Created by liuhuisheng on 2015/2/28.
  */
-define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, config) {
+define(['app', 'config', 'directive/dhtmlx', 'constant/index', 'directive/form'], function (app, config) {
     app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', 'Restangular',
         function ($scope, $rootScope, $compile, $controller, myApi, $timeout, Restangular) {
 
@@ -1270,6 +1270,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index'], function (app, c
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTY3ODU5OTYsIm5iZiI6MTUxNjE4MTE5Nn0.lOiHVio5qvJNanM3vF4EJUr6_p0MAV1eM1nM_KSRCJ4';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTc0MDA0MzQsIm5iZiI6MTUxNjc5NTYzNH0.vAQN6kDlaoBhPmVnYPnjZhKXAHWj0sXGlNPEVWtsv-o';
     }
 });

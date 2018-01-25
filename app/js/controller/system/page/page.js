@@ -51,7 +51,7 @@
 
         $scope.treeContextAction = {
 
-            "Add": function (contextId) {
+            "Add": function (orgkey) {
                 $scope.dhxTree.insertNewItem(orgkey, -1, '新建菜单', 0, 0, 0, 0, 'SELECT');
             },
             "AddNext": function (contextId) {
