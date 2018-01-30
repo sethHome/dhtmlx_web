@@ -2,6 +2,9 @@
     app.service("userService", function ($rootScope) {
         var restSrv = app.getRestSrv();
         return {
+            getUserInfo: function (userId) {
+                return restSrv.one("user", userId).get();
+            },
             getUsers: function () {
                 return restSrv.all("user").getList();
             },

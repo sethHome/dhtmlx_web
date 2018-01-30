@@ -203,8 +203,8 @@
                                 type: 'onClick',
                                 handler: function (id) {
                                     var action = eventMap[id];
-
-                                    scope.dhxContextMenuAction[action](scope.dhxObj.contextID);
+                                    var params = scope.dhxObj.contextID.split('_');
+                                    scope.dhxContextMenuAction[action](params[0], params[1]);
                                 }
                             }
                         ]);

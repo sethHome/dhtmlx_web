@@ -36,6 +36,7 @@ dhtmlXTreeObject.prototype.getUserData = function (itemId, name) {
         if (!sNode) return;
 
         var data = {};
+        
         for (var i in sNode.userData)
             if (typeof (sNode.userData[i]) != "function")
                 data[i.replace("t_", "")] = sNode.userData[i];

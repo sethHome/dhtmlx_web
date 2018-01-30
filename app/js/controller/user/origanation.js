@@ -1,9 +1,9 @@
 ﻿define(['app', 'directive/dhtmlx', 'service/user', 'service/org'], function (app) {
-    app.controller('user/origanationCtrl', ['$scope', '$page','userService','orgService',
+    app.controller('user/origanationCtrl', ['$scope', '$page', 'userService', 'orgService',
         function ($scope, $page, userService, orgService) {
-            
-            $scope.loaded = function(layout) {
-                
+
+            $scope.loaded = function (layout) {
+
                 layout.cells("a").progressOn();
 
                 orgService.getDepartment().then(function (data) {
@@ -22,7 +22,7 @@
                         var newNode = {
                             id: node.ID,
                             text: node.Name,
-                            open:1
+                            open: 1
                         };
                         newNode.item = paraseTreeData(node.SubDepartments);
                         newNodes.push(newNode);
@@ -36,6 +36,10 @@
             $scope.addUser = function (deptId) {
                 // need version 5.1
                 //var data = $scope.grid.obj.getRowData(rowid);
+
+                if (deptId == undefined) {
+                    deptId = $scope.dhxTree.getSelectedItemId()
+                }
 
                 $scope.$apply(function () {
                     $scope.pageWins.push({
@@ -54,7 +58,25 @@
                     })
                 })
             };
-           
+            $scope.updateUser = function (userId) {
+                $scope.$apply(function () {
+                    $scope.pageWins.push({
+                        config: {
+                            height: 600,
+                            width: 800,
+                            text: '用户信息',
+                        },
+                        view: 'user/user_maintain.html',
+                        controller: 'user/user_maintainCtrl',
+                        resolve: {
+                            "params": {
+                                "userId": userId
+                            }
+                        }
+                    })
+                })
+            };
+
             $scope.searchClick = function () {
                 $scope.grid.query($scope.form);
             };
@@ -98,7 +120,7 @@
                     $scope.dhxTree.insertNewItem(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
                 },
                 "AddNextDept": function (orgkey) {
-                    
+
                     if (orgkey == undefined) {
                         orgkey = $scope.dhxTree.getSelectedItemId()
                     }
@@ -119,32 +141,39 @@
             }
 
             $scope.gridContextAction = {
-
-                "Maintain": function (contextId) {
+                "Maintain": function (userId) {
+                    $scope.updateUser(userId);
+                },
+                "SetPermission": function (userId) {
 
                 },
-                "SetPermission": function (contextId) {
-
+                "DisableUser": function (userId) {
+                    $scope.grid.obj.deleteRow(userId);
                 },
-                "DisableUser": function (contextId) {
-                    $scope.grid.obj.deleteRow(rowId);
-                },
-                "refreshsize": function (contextId) {
+                "refreshsize": function (userId) {
                     $scope.grid.obj.query();
                 }
             }
 
         }]);
 
-    app.controller("user/user_maintainCtrl", function ($scope, orgService,userService, params) {
+    app.controller("user/user_maintainCtrl", function ($scope, orgService, userService, params) {
 
         $scope.userInfo = {};
-        
-        if (params.deptId) {
+
+        var loadDeptInfo = function (deptId) {
             $scope.userInfo.Dept = { "ID": params.deptId };
-            orgService.getDeptName(params.deptId).then(function(name){
-                $scope.userInfo.Dept.Text = name;
+            orgService.getDeptName(params.deptId).then(function (name) {
+                $scope.userInfo.Dept.Name = name;
             })
+        }
+
+        if (params.userId) {
+            userService.getUserInfo(params.userId).then(function (userInfo) {
+                $scope.userInfo = userInfo;
+            })
+        } else if (params.deptId) {
+            loadDeptInfo(params.deptId);
         }
 
         orgService.getRole().then(function (data) {
