@@ -33,34 +33,52 @@ define(['app'], function (app) {
             template: '<div class="selectbox" ng-repeat="item in items track by $index" ng-class="{\'selectbox-choose\' : checked(item)}" ng-click="check(item)">{{item.Text}}</div >',
             scope: {
                 items: '=',
-                selected:'=',
+                selected: '=',
+                readonly:'=',
                 model:'@'
             },
             controller: function ($scope) {
                 if ($scope.selected == undefined || $scope.selected == null) {
-                    $scope.selected = [];
+                    if ($scope.model == 'single') {
+                        $scope.selected = null;
+                    } else {
+                        $scope.selected = [];
+                    }
                 }
-                // todo
+                
                 $scope.checked = function (item) {
-                    for (var i = 0; i < $scope.selected.length; i++) {
-                        if ($scope.selected[i].ID == item.ID) {
-                            return true;
+                    
+                    if ($scope.model == 'single') {
+                        return item.ID == $scope.selected.ID;
+                    } else {
+                        for (var i = 0; i < $scope.selected.length; i++) {
+                            if ($scope.selected[i].ID == item.ID) {
+                                return true;
+                            }
                         }
                     }
-
                     return false;
                 }
 
-                $scope.check = function (checkitem) {
-                    
-                    checkitem.checked = !checkitem.checked;
+                $scope.check = function (item) {
+                    if ($scope.readonly) {
+                        return;
+                    }
 
-                    if ($scope.model == 'single' && checkitem.checked) {
-                        $scope.items.map(function (item) {
-                            if (checkitem != item) {
-                                item.checked = false;
-                            }
-                        });
+                    if ($scope.checked(item)) {
+                        // remove
+
+                        if ($scope.model == 'single') {
+                            $scope.selected = null;
+                        } else {
+                            $scope.selected.splice($scope.selected.indexOf(item), 1);
+                        }
+                    } else {
+                        if ($scope.model == 'single') {
+                            $scope.selected = item;
+                        } else {
+                            $scope.selected.push(item);
+                        }
                     }
                 }
             },

@@ -179,7 +179,7 @@
         orgService.getRole().then(function (data) {
             $scope.roles = data.map(function (item) {
                 return {
-                    ID: item.Key,
+                    ID: item.ID,
                     Text: item.Name
                 }
             });
@@ -187,7 +187,7 @@
         orgService.getBusiness().then(function (data) {
             $scope.allBusiness = data.map(function (item) {
                 return {
-                    ID: item.Key,
+                    ID: item.ID,
                     Text: item.Name
                 }
             });
@@ -199,13 +199,24 @@
 
         $scope.save = function () {
             $scope.$win.progressOn();
-
-            userService.create($scope.userInfo).then(function (user) {
-                dhtmlx.message({
-                    text: "用户创建成功！"
-                });
-                $scope.$win.progressOff();
-            })
+            if (params.userId > 0) {
+                userService.update($scope.userInfo).then(function (user) {
+                    dhtmlx.message({
+                        type: 'success',
+                        text: "用户更新成功！"
+                    });
+                    $scope.$win.progressOff();
+                })
+            } else {
+                userService.create($scope.userInfo).then(function (user) {
+                    dhtmlx.message({
+                        type: 'success',
+                        text: "用户创建成功！"
+                    });
+                    $scope.$win.progressOff();
+                })
+            }
+            
         }
     })
 });
