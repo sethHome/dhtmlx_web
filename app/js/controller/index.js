@@ -1270,6 +1270,6 @@ define(['app', 'config', 'directive/dhtmlx', 'constant/index', 'directive/form']
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTc0MDA0MzQsIm5iZiI6MTUxNjc5NTYzNH0.vAQN6kDlaoBhPmVnYPnjZhKXAHWj0sXGlNPEVWtsv-o';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTgwNjAyOTcsIm5iZiI6MTUxNzQ1NTQ5N30.ARta7bAI6CJofX29avMGZCu__xfFE5EHFPQwAFvxjmA';
     }
 });

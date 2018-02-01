@@ -688,7 +688,14 @@
                             //conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
 
                             var init = function (html) {
-                                var newScope = $rootScope.$new();
+                                
+                                var newScope = null;
+                                if (windowInfo.scope) {
+                                    newScope = windowInfo.scope.$new();
+                                } else {
+                                    newScope = $rootScope.$new();
+                                }
+                                
                                 newScope.$win = win;
                                 newScope.menuId = $scope.menuId;
                                 var injectors = {
@@ -1339,7 +1346,14 @@
                     //conf.showInnerScroll !== undefined ? (conf.showInnerScroll ? win.showInnerScroll() : '') : '';
 
                     var init = function (html) {
-                        var newScope = $rootScope.$new();
+
+                        var newScope = null;
+                        if (windowInfo.scope) {
+                            newScope = windowInfo.scope.$new();
+                        } else {
+                            newScope = $rootScope.$new();
+                        }
+
                         newScope.$win = win;
 
                         var injectors = {

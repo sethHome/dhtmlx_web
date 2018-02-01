@@ -38,19 +38,22 @@ define(['app'], function (app) {
                 model:'@'
             },
             controller: function ($scope) {
-                if ($scope.selected == undefined || $scope.selected == null) {
-                    if ($scope.model == 'single') {
-                        $scope.selected = null;
-                    } else {
-                        $scope.selected = [];
+                
+                var setSelected = function () {
+                    if ($scope.selected == undefined || $scope.selected == null) {
+                        if ($scope.model == 'single') {
+                            $scope.selected = null;
+                        } else {
+                            $scope.selected = [];
+                        }
                     }
                 }
-                
+
                 $scope.checked = function (item) {
                     
                     if ($scope.model == 'single') {
                         return item.ID == $scope.selected.ID;
-                    } else {
+                    } else if($scope.selected) {
                         for (var i = 0; i < $scope.selected.length; i++) {
                             if ($scope.selected[i].ID == item.ID) {
                                 return true;
@@ -65,9 +68,12 @@ define(['app'], function (app) {
                         return;
                     }
 
+                    if ($scope.selected == undefined) {
+                        setSelected();
+                    }
+
                     if ($scope.checked(item)) {
                         // remove
-
                         if ($scope.model == 'single') {
                             $scope.selected = null;
                         } else {

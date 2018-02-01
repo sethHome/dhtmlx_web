@@ -48,6 +48,7 @@
                             width: 800,
                             text: '新增用户',
                         },
+                        scope: $scope,
                         view: 'user/user_maintain.html',
                         controller: 'user/user_maintainCtrl',
                         resolve: {
@@ -58,6 +59,7 @@
                     })
                 })
             };
+
             $scope.updateUser = function (userId) {
                 $scope.$apply(function () {
                     $scope.pageWins.push({
@@ -66,6 +68,7 @@
                             width: 800,
                             text: '用户信息',
                         },
+                        scope: $scope,
                         view: 'user/user_maintain.html',
                         controller: 'user/user_maintainCtrl',
                         resolve: {
@@ -77,15 +80,15 @@
                 })
             };
 
-            $scope.searchClick = function () {
-                $scope.grid.query($scope.form);
+            $scope.search = function () {
+                $scope.grid.obj.query($scope.form);
             };
 
             $scope.clearClick = function () {
                 for (var i in $scope.form)
                     $scope.form[i] = null;
 
-                $scope.grid.query($scope.form);
+                $scope.grid.obj.query($scope.form);
             };
 
             //$scope.grid.enableSmartRendering(true);
@@ -158,7 +161,7 @@
         }]);
 
     app.controller("user/user_maintainCtrl", function ($scope, orgService, userService, params) {
-
+        
         $scope.userInfo = {};
 
         var loadDeptInfo = function (deptId) {
@@ -193,10 +196,6 @@
             });
         });
 
-        $scope.toolMenus = [
-             { id: "new", type: "button", img: "fa fa-save", text: "保存", title: "Tooltip here", action: "saveUser" },
-        ];
-
         $scope.save = function () {
             $scope.$win.progressOn();
             if (params.userId > 0) {
@@ -205,6 +204,9 @@
                         type: 'success',
                         text: "用户更新成功！"
                     });
+
+                    $scope.searchClick();
+
                     $scope.$win.progressOff();
                 })
             } else {
@@ -213,10 +215,11 @@
                         type: 'success',
                         text: "用户创建成功！"
                     });
+                    $scope.searchClick();
+
                     $scope.$win.progressOff();
                 })
             }
-            
         }
     })
 });
