@@ -293,7 +293,7 @@ dhtmlXGridObject.prototype.setQuery = function () {
 };
 
 dhtmlXGridObject.prototype.convertSource = function (data) {
-    if (data.TotalCount) {
+    if (data.TotalCount != undefined) {
         return {
             pageCount: data.PageCount,
             rows: data.Source,
@@ -653,10 +653,12 @@ dhtmlXGridObject.prototype.setRowData = function ( /*string*/ rowId, /*json*/ ro
 };
 
 dhtmlXGridObject.prototype.setFilters = function (filters) {
+    
     this.colFilters = filters.split(',');
 }
 dhtmlXGridObject.prototype.setFilterFunc = function (func) {
     dhtmlXGridObject.prototype.getFilterValue = function (name, value) {
+
         return func(name, value);
     };
 }
@@ -665,7 +667,7 @@ dhtmlXGridObject.prototype.cells4 = function (cell) {
     var type = window["eXcell_" + (cell._cellType || this.cellType[cell._cellIndex])];
     
     if (type) {
-        if (this.colFilters) {
+        if (this.colFilters && this.colFilters[cell._cellIndex].length != "") {
             return new type(cell, this.colFilters[cell._cellIndex]);
         } else {
             return new type(cell);
@@ -716,8 +718,12 @@ function eXcell_filter(cell,filter) { //the eXcell name is defined here
     // the cell is read-only, so it's always in the disabled state
     this.isDisabled = function () { return true; }
     this.setValue = function (val) {
-
-        this.setCValue(this.grid.getFilterValue(filter, val), val);
+        if (filter) {
+            this.setCValue(this.grid.getFilterValue(filter, val), val);
+        } else {
+            this.setCValue(val, val);
+        }
+        
     }
 }
 eXcell_filter.prototype = new eXcell;// nests all other methods from the base class

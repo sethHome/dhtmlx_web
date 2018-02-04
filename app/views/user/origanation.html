@@ -1,6 +1,6 @@
 ﻿<dhx-layout dhx-layout-code="2U" dhx-when-done="loaded">
     <dhx-layout-cell dhx-text="组织架构"
-                     dhx-status="'共3个部门'"
+                     
                      dhx-width="300"
                      dhx-cell="cell1"
                      dhx-collapsed-text="组织架构">
@@ -24,23 +24,21 @@
         </dhx-tree>
 
     </dhx-layout-cell>
-    <dhx-layout-cell dhx-text="员工列表" dhx-wins="true">
+    <dhx-layout-cell dhx-text="用户列表" dhx-wins="true">
 
         <dhx-toolbar dhx-name="tools" dhx-menu="menuId">
         </dhx-toolbar>
 
         <dhx-grid dhx-obj="grid.obj"
+                  dhx-columns="grid.columns"
+                  dhx-handlers="grid.handlers"
+                  dhx-rowid="grid.rowid"
                   dhx-url="user"
-                  dhx-params="form"
-                  dhx-col-sorting="'ro,ro,ed,ro'"
-                  dhx-col-types="'ed,filter,ed,ed'"
-                  dhx-col-filters=",EngineeringType,,"
-                  dhx-header="'编号,姓名,账号,头像'"
-                  dhx-fields="ID|ID,Name,Account,PhotoImg"
+                  dhx-processor-url="v1/user"
+                  dhx-params="filter"
                   dhx-context-menu-id="menuId"
                   dhx-context-menu-name="contextmenu_grid"
                   dhx-context-menu-action="gridContextAction"
-                  dhx-handlers="grid.handlers"
                   dhx-paging="true">
 
         </dhx-grid>

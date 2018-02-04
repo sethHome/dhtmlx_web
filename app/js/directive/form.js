@@ -1,7 +1,4 @@
-﻿/**
- * Created by liuhuisheng on 2015/2/28.
- */
-define(['app'], function (app) {
+﻿define(['app'], function (app) {
     app.directive('myCheckbox', function () {
         return {
             restrict: 'A',

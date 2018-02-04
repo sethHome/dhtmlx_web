@@ -42,8 +42,10 @@
             },
             checkAccount: function (account) {
                 return restSrv.one("user", account).customGET("check");
+            },
+            changeDept: function (userid,newdeptid) {
+                return restSrv.one("user", userid).customPUT({}, "changedept/" + newdeptid);
             }
-
         }
     });
 

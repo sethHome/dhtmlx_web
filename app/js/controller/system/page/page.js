@@ -110,5 +110,9 @@
                 [0, '分组名称', '按钮名称', 'button', 'Action','fa fa-file-o'],
                 index);
         }
+
+        $scope.RemoveMenu = function () {
+            $scope.grid.obj.deleteSelectedRows();
+        }
     })
 });

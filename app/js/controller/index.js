@@ -1,7 +1,9 @@
-﻿/**
- * Created by liuhuisheng on 2015/2/28.
- */
-define(['app', 'config', 'directive/dhtmlx', 'constant/index', 'directive/form'], function (app, config) {
+﻿define(['app', 'config',
+    'directive/dhtmlx',
+    'constant/index',
+    'directive/form',
+    'filter/basedata'], function (app, config) {
+
     app.controller('myController', ['$scope', '$rootScope', '$compile', '$controller', 'myApi', '$timeout', 'Restangular',
         function ($scope, $rootScope, $compile, $controller, myApi, $timeout, Restangular) {
 

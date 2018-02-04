@@ -74,20 +74,14 @@
 
         var setBaseData = function (result) {
 
-            var baseItem = {};
             var baseSource = {};
+            $rootScope.baseItem = {};
             $rootScope.baseEnum = {};
 
             angular.forEach(result, function (sys) {
 
-                $rootScope.baseEnum[sys.Key] = {
-                    "Dept": $rootScope.enum_depts_map,
-                    "User": $rootScope.enum_users_map
-                };
-                baseItem[sys.Key] = {
-                    "Dept": $rootScope.enum_depts,
-                    "User": $rootScope.enum_users
-                };
+                $rootScope.baseEnum[sys.Key] = {};
+                $rootScope.baseItem[sys.Key] = {};
                 baseSource[sys.Key] = [{ "Key": "Dept", "Name": " 部门" }, { "Key": "User", "Name": "用户" }];
 
                 angular.forEach(sys.Enums, function (data) {
@@ -108,7 +102,7 @@
                     }
 
                     $rootScope.baseEnum[sys.Key][data.Name] = itemHash;
-                    baseItem[sys.Key][data.Name] = data.Items;
+                    $rootScope.baseItem[sys.Key][data.Name] = data.Items;
                     baseSource[sys.Key].push({
                         Key: data.Name,
                         Name: data.Text
@@ -117,7 +111,7 @@
             });
 
             $rootScope.getBaseData = function (name) {
-                return baseItem[$rootScope.currentBusiness.Key][name];
+                return $rootScope.baseItem[$rootScope.currentBusiness.Key][name];
             }
 
             $rootScope.getBaseEnum = function (name) {
@@ -131,6 +125,10 @@
 
         restSrv.all("enum").getList().then(function (data) {
             setBaseData(data);
+        });
+
+        restSrv.one("department/name").get().then(function (deptNames) {
+            $rootScope.deptNames = deptNames;
         });
     });
 

@@ -2,6 +2,8 @@
     app.controller('user/origanationCtrl', ['$scope', '$page', 'userService', 'orgService',
         function ($scope, $page, userService, orgService) {
 
+            $scope.filter = {};
+
             $scope.loaded = function (layout) {
 
                 layout.cells("a").progressOn();
@@ -61,6 +63,20 @@
             };
 
             $scope.updateUser = function (userId) {
+                
+                if (userId == undefined) {
+                    userId = $scope.grid.obj.getSelectedRowId();
+                }
+
+                if (userId == null || userId == undefined) {
+                    dhtmlx.message({
+                        type: 'warning',
+                        text: "请选择用户！"
+                    });
+
+                    return;
+                }
+
                 $scope.$apply(function () {
                     $scope.pageWins.push({
                         config: {
@@ -80,8 +96,68 @@
                 })
             };
 
+            $scope.changeDept = function (userId) {
+
+                $scope.$apply(function () {
+                    $scope.pageWins.push({
+                        config: {
+                            height: 450,
+                            width: 250,
+                            text: '选择部门',
+                        },
+                        scope: $scope,
+                        view: 'user/choose_dept.html',
+                        controller: 'choose_dept_controller',
+                        resolve: {
+                            "deptHandler": {
+                                "choose": function (deptid) {
+
+                                    userService.changeDept(userId, deptid).then(function () {
+
+                                        dhtmlx.message({
+                                            type: 'success',
+                                            text: "部门变更成功！"
+                                        });
+
+                                        $scope.search();
+                                    })
+                                }
+                            }
+                        }
+                    })
+                })
+            };
+
+            $scope.addDept = function (orgkey) {
+                if (orgkey == undefined) {
+                    orgkey = $scope.dhxTree.getSelectedItemId()
+                }
+
+                $scope.dhxTree.insertNewItem(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
+            };
+
+            $scope.deleteDept = function (orgkey) {
+                if (orgkey == undefined) {
+                    orgkey = $scope.dhxTree.getSelectedItemId()
+                }
+                dhtmlx.confirm({
+                    type: "confirm-warning",
+                    text: "确认删除部门？删除部门后，部门内的用户将转移到公司目录下！",
+                    callback: function (result) {
+                        if (result) {
+                            $scope.dhxTree.deleteItem(orgkey);
+                        }
+                    }
+                });
+            };
+
             $scope.search = function () {
-                $scope.grid.obj.query($scope.form);
+                $scope.grid.obj.query($scope.filter);
+            };
+
+            $scope.search_disable = function (id,state) {
+                $scope.filter.visiable = state;
+                $scope.grid.obj.query($scope.filter);
             };
 
             $scope.clearClick = function () {
@@ -94,19 +170,37 @@
             //$scope.grid.enableSmartRendering(true);
 
             $scope.grid = {
-                obj: {
-                    unload: function () {
-                        //...
-                    }
-                },
+                obj: {},
+                rowid: 'ID',
+                columns: [
+                    { "header": "编号", "field": "ID","width":"80","align":"center" },
+                    { "header": "部门", "field": "DeptID", "width": "200", "type": "filter", "filter": "Dept" },
+                    { "header": "姓名", "field": "Name", "width": "120" },
+                    { "header": "账号", "field": "Account", "width": "120" }
+                ],
                 handlers: [
                   {
                       type: "onRowSelect", handler: function (id) {
                           //$scope.grid.obj.deleteRow(id);
-                      }
+                      },
+                      type: "onRowDblClicked", handler: function (id) {
+                          $scope.updateUser(id);
+                      },
                   }
                 ]
             };
+
+            $scope.treeHandlers = [
+               {
+                   type: "onClick",
+                   handler: function (id) {
+                       $scope.$apply(function () {
+                           $scope.filter.deptId = id;
+                           $scope.grid.obj.query($scope.filter);
+                       });
+                   }
+               }
+            ];
 
             $scope.afterUpdate = function (data) {
                 $scope.dhxTree.editItem(data.response);
@@ -115,15 +209,9 @@
             $scope.treeContextAction = {
 
                 "AddSubDept": function (orgkey) {
-
-                    if (orgkey == undefined) {
-                        orgkey = $scope.dhxTree.getSelectedItemId()
-                    }
-
-                    $scope.dhxTree.insertNewItem(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
+                    $scope.addDept(orgkey);
                 },
                 "AddNextDept": function (orgkey) {
-
                     if (orgkey == undefined) {
                         orgkey = $scope.dhxTree.getSelectedItemId()
                     }
@@ -137,8 +225,7 @@
                     $scope.dhxTree.editItem(contextId);
                 },
                 "Delete": function (contextId) {
-                    $scope.dhxTree.deleteItem(contextId);
-
+                    $scope.deleteDept(contextId);
                     // deleteChildItems
                 }
             }
@@ -146,6 +233,9 @@
             $scope.gridContextAction = {
                 "Maintain": function (userId) {
                     $scope.updateUser(userId);
+                },
+                "ChangeDept": function (userId) {
+                    $scope.changeDept(userId);
                 },
                 "SetPermission": function (userId) {
 
@@ -161,7 +251,7 @@
         }]);
 
     app.controller("user/user_maintainCtrl", function ($scope, orgService, userService, params) {
-        
+
         $scope.userInfo = {};
 
         var loadDeptInfo = function (deptId) {
@@ -220,6 +310,46 @@
                     $scope.$win.progressOff();
                 })
             }
+        }
+    })
+
+    app.controller("choose_dept_controller", function ($scope, orgService, deptHandler) {
+
+        $scope.tools = [
+            { id: "choose", type: "button", img: "fa fa-save", text: "选择", action: "choose" }];
+
+        orgService.getDepartment().then(function (data) {
+            var orgs = paraseTreeData(data);
+            $scope.treeData = {
+                "id": 0,
+                "item": orgs
+            };
+
+            layout.cells("a").progressOff();
+        });
+
+        var paraseTreeData = function (nodes) {
+            var newNodes = [];
+            angular.forEach(nodes, function (node) {
+                var newNode = {
+                    id: node.ID,
+                    text: node.Name,
+                    open: 1
+                };
+                newNode.item = paraseTreeData(node.SubDepartments);
+                newNodes.push(newNode);
+            });
+            return newNodes;
+        }
+
+        $scope.choose = function () {
+            $scope.$apply(function () {
+
+                var deptIds = $scope.dhxTree.getAllChecked();
+                deptHandler.choose(deptIds);
+
+                $scope.$win.close();
+            });
         }
     })
 });

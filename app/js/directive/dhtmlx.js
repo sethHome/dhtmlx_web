@@ -94,7 +94,7 @@
         };
     }]);
 
-    app.directive('dhxGrid', function factory(DhxUtils, $resource) {
+    app.directive('dhxGrid', function factory(DhxUtils, $resource,$filter) {
         return {
             restrict: 'E',
             require: ['?^^dhxLayoutCell','?^^dhxWindow'],
@@ -129,20 +129,23 @@
                  * ['Basic JSON', 'Native JSON'] // 'Basic JSON' is default value
                  */
                 dhxDataFormat: '=',
+                dhxColumns: '=',
+                dhxRowid: '=',
+
                 /** Optional! Recommended! http://docs.dhtmlx.com/api__dhtmlxgrid_setheader.html */
-                dhxHeader: '=',
+                dhxHeader: '@',
                 dhxFields: '@',
                 dhxColFilters: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setcoltypes.html */
-                dhxColTypes: '=',
+                dhxColTypes: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setcolsorting.html */
-                dhxColSorting: '=',
+                dhxColSorting: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setcolalign.html */
-                dhxColAlign: '=',
+                dhxColAlign: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setinitwidthsp.html */
-                dhxInitWidths: '=',
+                dhxInitWidths: '@',
                 /** Optional! http://docs.dhtmlx.com/api__dhtmlxgrid_setinitwidths.html */
-                dhxInitWidthsP: '=',
+                dhxInitWidthsP: '@',
                 /**
                  * preLoad and postLoad callbacks to controller for additional
                  * customization power.
@@ -250,15 +253,63 @@
                 var setGrid = function (grid, cell) {
                     scope.dhxObj = grid;
 
+                    var textFilter = $filter("text");
+                    
                     grid.setFilterFunc(function (name, value) {
-                        // todo
-                        return value;
+                        return textFilter(name, value);
                     });
                    
                     grid.setImagePath(DhxUtils.getImagePath());
                     grid.enableAutoHeight(!!scope.dhxMaxHeight, scope.dhxMaxHeight, true);
                     grid.enableAutoWidth(!!scope.dhxMaxWidth, scope.dhxMaxWidth, true);
-                    scope.dhxHeader ? grid.setHeader(scope.dhxHeader) : '';
+
+                    if (scope.dhxColumns) {
+                        scope.dhxFields = scope.dhxRowid + "|" + scope.dhxColumns.map(function (col) {
+                            return col.field;
+                        }).join(',');
+                        scope.dhxColFilters = scope.dhxColumns.map(function (col) {
+                            return col.filter ? col.filter : '';
+                        }).join(',');
+                        scope.dhxHeader = scope.dhxColumns.map(function (col) {
+                            return col.header ? col.header : col.field;
+                        }).join(',');
+                        scope.dhxColTypes = scope.dhxColumns.map(function (col) {
+                            return col.type ? col.type : 'ro';
+                        }).join(',');
+                        scope.dhxInitWidths = scope.dhxColumns.map(function (col) {
+                            if (col.width == undefined) {
+                                return '';
+                            }
+                            if (col.width.indexOf('%') < 0) {
+                                return col.width;
+                            } else {
+                                return '';
+                            }
+                        }).join(',');
+                        scope.dhxInitWidthP = scope.dhxColumns.map(function (col) {
+                            if (col.width == undefined) {
+                                return '';
+                            }
+                            if (col.width.indexOf('%') > 0) {
+                                return col.width.replace('%', '');
+                            } else {
+                                return ''
+                            }
+                        }).join(',');
+                        scope.dhxColSorting = scope.dhxColumns.map(function (col) {
+                            return col.sort ? col.sort : '';
+                        }).join(',');
+
+                        scope.dhxColAlign = scope.dhxColumns.map(function (col) {
+                            return col.align ? col.align : '';
+                        }).join(',');
+
+                        scope.dhxHeadAlign = scope.dhxColumns.map(function (col) {
+                            return col.align ? "text-align:" + col.align+";" : 'text-align:left;';
+                        });
+                    }
+                    
+                    scope.dhxHeader ? grid.setHeader(scope.dhxHeader, null, scope.dhxHeadAlign) : '';
                     scope.dhxColTypes ? grid.setColTypes(scope.dhxColTypes) : '';
                     scope.dhxColSorting ? grid.setColSorting(scope.dhxColSorting) : '';
                     scope.dhxColAlign ? grid.setColAlign(scope.dhxColAlign) : '';
@@ -287,6 +338,7 @@
                         scope.dhxConfigureFunc(grid);
                     }
                     grid.init();
+                    grid.enableHeaderMenu();
                     if (scope.dhxPaging) {
 
                         var pageSize = 20;
@@ -810,10 +862,14 @@
                     //toolbar.setIconsPath(app.getProjectRoot("assets/img/btn/"));
                     toolbar.loadStruct(source);
                     toolbar.attachEvent("onclick", function (id) {
-
                         var name = eventmap[id];
                         if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
                             scope.$parent[name].call(this);
+                    });
+                    toolbar.attachEvent("onStateChange", function (id, state) {
+                        var name = eventmap[id];
+                        if (name && scope.$parent[name] && angular.isFunction(scope.$parent[name]))
+                            scope.$parent[name].call(this,id,state);
                     });
                 }
 
