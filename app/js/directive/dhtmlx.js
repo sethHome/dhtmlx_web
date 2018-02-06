@@ -196,7 +196,9 @@
                         return {
                             id: item.id,
                             text: item.text,
-                            img: item.img,
+                           
+                            title: item.title,
+                            img: item.img
                         };
                     });
 

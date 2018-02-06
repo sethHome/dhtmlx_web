@@ -639,6 +639,8 @@ dhtmlXGridObject.prototype.getRowData = function ( /*string*/ rowId) {
             result[colId] = this.cells(rowId, index).getValue();
         }
     }
+    // todo
+    result.ID = rowId;
     return result;
 };
 

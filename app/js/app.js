@@ -130,6 +130,35 @@
         restSrv.one("department/name").get().then(function (deptNames) {
             $rootScope.deptNames = deptNames;
         });
+
+        app.buttons = {};
+
+        restSrv.all("pagebutton").getList().then(function (data) {
+            angular.forEach(data, function (btn) {
+
+                var item = {
+                    id: btn.ID,
+                    type: btn.BtnType,
+                    img: btn.BtnIcon,
+                    text: btn.BtnText,
+                    title: btn.BtnTitle,
+                    action: btn.BtnAction,
+                    userdata: {
+                        key : btn.Key
+                    }
+                };
+
+                if (!app.buttons[btn.MenuID]) {
+                    app.buttons[btn.MenuID] = {};
+                }
+
+                if (!app.buttons[btn.MenuID][btn.GroupName]) {
+                    app.buttons[btn.MenuID][btn.GroupName] = [item];
+                } else {
+                    app.buttons[btn.MenuID][btn.GroupName].push(item);
+                }
+            });
+        });
     });
 
     return app;

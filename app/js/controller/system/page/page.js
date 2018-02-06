@@ -99,8 +99,22 @@
 
     app.controller("pageButtonCtrl", function ($scope, menuID) {
         $scope.menuID = menuID;
-
-        $scope.grid = {};
+        //ID,Group,Text,Type,Action,Icon,Title
+        //ID,GroupName,BtnText,BtnType,BtnAction,BtnIcon,BtnTitle
+        $scope.grid = {
+            rowid: 'ID',
+            columns: [
+                { "header": "Order", "field": "OrderIndex", "width": "60", "type": "edn" },
+                { "header": "Key", "field": "Key", "width": "100", "type": "edtxt" },
+                { "header": "Group", "field": "GroupName", "width": "120", "type": "edtxt" },
+                { "header": "Text", "field": "BtnText", "width": "120", "type": "ed" },
+                { "header": "Type", "field": "BtnType", "width": "100", "type": "edtxt" },
+                { "header": "Action", "field": "BtnAction", "width": "100", "type": "edtxt" },
+                { "header": "Icon", "field": "BtnIcon", "width": "120", "type": "ed" },
+                { "header": "Title", "field": "BtnTitle", "width": "120", "type": "ed" },
+                { "header": "Options", "field": "OptionEx", "width": "200", "type": "ed" }
+            ]
+        };
 
         $scope.AddMenu = function () {
             var id = new Date().valueOf();
@@ -113,6 +127,10 @@
 
         $scope.RemoveMenu = function () {
             $scope.grid.obj.deleteSelectedRows();
+        }
+
+        $scope.Reflesh = function () {
+            $scope.grid.obj.query();
         }
     })
 });

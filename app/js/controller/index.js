@@ -54,23 +54,7 @@
                 $scope.creator.layout.cells("a").progressOff();
             });
 
-            app.buttons = {};
-            myApi.getPageButton().then(function (data) {
-                angular.forEach(data, function (btn) {
-
-                    var item = { id: btn.ID, type: btn.BtnType, img: btn.BtnIcon, text: btn.BtnText, title: btn.BtnTitle, action: btn.BtnAction};
-
-                    if (!app.buttons[btn.MenuID]) {
-                        app.buttons[btn.MenuID] = {};
-                    }
-
-                    if (!app.buttons[btn.MenuID][btn.GroupName]) {
-                        app.buttons[btn.MenuID][btn.GroupName] = [item];
-                    } else {
-                        app.buttons[btn.MenuID][btn.GroupName].push(item);
-                    }
-                });
-            });
+            
 
             //open the chat box
             $scope.openChat = function (e, f) {
