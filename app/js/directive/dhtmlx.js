@@ -181,7 +181,7 @@
                     menu.renderAsContextMenu();
 
                     var menuData = app.buttons[scope.dhxContextMenuId][scope.dhxContextMenuName];
-
+                    
                     var eventMap = {};
                     var items = menuData.map(function (item) {
                         if (item.type == "separator") {
@@ -192,14 +192,12 @@
                         }
 
                         eventMap[item.id] = item.action;
-
                         return {
                             id: item.id,
                             text: item.text,
-                           
-                            title: item.title,
-                            img: item.img
+                            img: item.img,
                         };
+                        
                     });
 
                     if (scope.dhxContextMenuAction) {

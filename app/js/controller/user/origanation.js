@@ -35,6 +35,7 @@
 
             $scope.pageWins = [];
 
+            // 创建用户
             $scope.addUser = function (deptId) {
                 // need version 5.1
                 //var data = $scope.grid.obj.getRowData(rowid);
@@ -62,6 +63,7 @@
                 })
             };
 
+            // 更新用户
             $scope.updateUser = function (userId) {
                 
                 if (userId == undefined) {
@@ -96,6 +98,36 @@
                 })
             };
 
+            // 初始化密码
+            $scope.initPassword = function (userId) {
+                if (userId == undefined) {
+                    userId = $scope.grid.obj.getSelectedRowId();
+                }
+                if (userId == null || userId == undefined) {
+                    dhtmlx.message({
+                        type: 'warning',
+                        text: "请选择用户！"
+                    });
+
+                    return;
+                }
+                dhtmlx.confirm({
+                    type: "confirm-warning",
+                    text: "确认初始化密码？",
+                    callback: function (result) {
+                        if (result) {
+                            userService.resetPsw(userId).then(function () {
+                                dhtmlx.message({
+                                    type: 'success',
+                                    text: "密码初始化成功！"
+                                });
+                            })
+                        }
+                    }
+                });
+            }
+
+            // 更新部门
             $scope.changeDept = function (userId) {
 
                 $scope.$apply(function () {
@@ -128,6 +160,7 @@
                 })
             };
 
+            // 创建部门
             $scope.addDept = function (orgkey) {
                 if (orgkey == undefined) {
                     orgkey = $scope.dhxTree.getSelectedItemId()
@@ -136,10 +169,12 @@
                 $scope.dhxTree.insertNewItem(orgkey, -1, '新建部门', 0, 0, 0, 0, 'SELECT');
             };
 
+            // 删除部门
             $scope.deleteDept = function (orgkey) {
                 if (orgkey == undefined) {
                     orgkey = $scope.dhxTree.getSelectedItemId()
                 }
+
                 dhtmlx.confirm({
                     type: "confirm-warning",
                     text: "确认删除部门？删除部门后，部门内的用户将转移到公司目录下！",
@@ -151,24 +186,18 @@
                 });
             };
 
+            // 搜索
             $scope.search = function () {
                 $scope.grid.obj.query($scope.filter);
             };
 
+            // 回收站
             $scope.search_disable = function (id,state) {
                 $scope.filter.visiable = state;
                 $scope.grid.obj.query($scope.filter);
             };
 
-            $scope.clearClick = function () {
-                for (var i in $scope.form)
-                    $scope.form[i] = null;
-
-                $scope.grid.obj.query($scope.form);
-            };
-
-            //$scope.grid.enableSmartRendering(true);
-
+            // grid config
             $scope.grid = {
                 obj: {},
                 rowid: 'ID',
@@ -190,6 +219,7 @@
                 ]
             };
 
+            // dept tree config
             $scope.treeHandlers = [
                {
                    type: "onClick",
@@ -226,7 +256,6 @@
                 },
                 "Delete": function (contextId) {
                     $scope.deleteDept(contextId);
-                    // deleteChildItems
                 }
             }
 
@@ -261,9 +290,11 @@
             })
         }
 
+        $scope.$win.progressOn();
         if (params.userId) {
             userService.getUserInfo(params.userId).then(function (userInfo) {
                 $scope.userInfo = userInfo;
+                $scope.$win.progressOff();
             })
         } else if (params.deptId) {
             loadDeptInfo(params.deptId);
