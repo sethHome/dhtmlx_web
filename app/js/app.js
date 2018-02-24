@@ -161,5 +161,7 @@
         });
     });
 
+    app.business = "System5";
+
     return app;
 });

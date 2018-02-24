@@ -121,7 +121,7 @@
             var index = $scope.grid.obj.getRowsNum();
 
             $scope.grid.obj.addRow(id,
-                [0, '分组名称', '按钮名称', 'button', 'Action','fa fa-file-o'],
+                [0,'', '分组名称', '按钮名称', 'button', 'Action','fa fa-file-o'],
                 index);
         }
 

@@ -180,6 +180,7 @@
                     menu.setIconset("awesome");
                     menu.renderAsContextMenu();
 
+                    
                     var menuData = app.buttons[scope.dhxContextMenuId][scope.dhxContextMenuName];
                     
                     var eventMap = {};
@@ -322,6 +323,20 @@
 
                         var menu = getContextMenu();
                         grid.enableContextMenu(menu);
+
+                        grid.setContextMenuText = function (key, newText) {
+                            
+                            var menuData = app.buttons[scope.dhxContextMenuId][scope.dhxContextMenuName];
+
+                            for (var i in menuData) {
+                                if (menuData[i].userdata.key == key) {
+                                    menu.setItemText(menuData[i].id, newText);
+                                    grid.enableContextMenu(menu);
+                                    break;
+                                }
+                            }
+                            
+                        }
 
                         scope.$watch(
                             "dhxContextMenu",
@@ -834,10 +849,12 @@
             },
             link: function (scope, element, attrs, ctrls) {
 
-                var source = scope.dhxItems;
+                var source = [];
 
-                if (scope.dhxMenu > 0) {
+                if (scope.dhxMenu > 0 && app.buttons[scope.dhxMenu]) {
                     source = app.buttons[scope.dhxMenu][scope.dhxName];
+                } else if (scope.dhxItems) {
+                    source = scope.dhxItems;
                 }
 
                 var eventmap = {};

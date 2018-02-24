@@ -1256,6 +1256,6 @@
     };
 
     app.getAuthorization = function () {
-        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTg3NzEwNDksIm5iZiI6MTUxODE2NjI0OX0.qhbG4CfQdLnVjRvMLPLbqKXZOpTYstZw2_qfoPZwkBs';
+        return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJyb2xlIjoidXNlcnMiLCJpc3MiOiJHb2xkU29mdCIsImF1ZCI6Imh0dHA6Ly93d3cuamlucXUuY24iLCJleHAiOjE1MTk5MTg1MDcsIm5iZiI6MTUxOTMxMzcwN30.yc-eMeX64TYtSK_WKx7jRU3TeOo6u2Vcjb1mmykgWj4';
     }
 });

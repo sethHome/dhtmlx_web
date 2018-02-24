@@ -3,7 +3,7 @@
         var restSrv = app.getRestSrv();
         return {
             getMenus: function () {
-                return restSrv.all("menu").getList({ business:  "System3" });
+                return restSrv.all("menu").getList({ business:  "System5" });
             },
 
             addMenu: function (module, parentKey) {

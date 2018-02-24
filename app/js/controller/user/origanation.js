@@ -65,7 +65,7 @@
 
             // 更新用户
             $scope.updateUser = function (userId) {
-                
+
                 if (userId == undefined) {
                     userId = $scope.grid.obj.getSelectedRowId();
                 }
@@ -192,9 +192,16 @@
             };
 
             // 回收站
-            $scope.search_disable = function (id,state) {
+            $scope.search_disable = function (id, state) {
+
                 $scope.filter.visiable = state;
                 $scope.grid.obj.query($scope.filter);
+
+                if (state) {
+                    $scope.grid.obj.setContextMenuText("DisableUser", "启用用户");
+                } else {
+                    $scope.grid.obj.setContextMenuText("DisableUser", "禁用用户");
+                }
             };
 
             // grid config
@@ -202,34 +209,34 @@
                 obj: {},
                 rowid: 'ID',
                 columns: [
-                    { "header": "编号", "field": "ID","width":"80","align":"center" },
+                    { "header": "编号", "field": "ID", "width": "80", "align": "center" },
                     { "header": "部门", "field": "DeptID", "width": "200", "type": "filter", "filter": "Dept" },
                     { "header": "姓名", "field": "Name", "width": "120" },
                     { "header": "账号", "field": "Account", "width": "120" }
                 ],
                 handlers: [
-                  {
-                      type: "onRowSelect", handler: function (id) {
-                          //$scope.grid.obj.deleteRow(id);
-                      },
-                      type: "onRowDblClicked", handler: function (id) {
-                          $scope.updateUser(id);
-                      },
-                  }
+                    {
+                        type: "onRowSelect", handler: function (id) {
+                            //$scope.grid.obj.deleteRow(id);
+                        },
+                        type: "onRowDblClicked", handler: function (id) {
+                            $scope.updateUser(id);
+                        },
+                    }
                 ]
             };
 
             // dept tree config
             $scope.treeHandlers = [
-               {
-                   type: "onClick",
-                   handler: function (id) {
-                       $scope.$apply(function () {
-                           $scope.filter.deptId = id;
-                           $scope.grid.obj.query($scope.filter);
-                       });
-                   }
-               }
+                {
+                    type: "onClick",
+                    handler: function (id) {
+                        $scope.$apply(function () {
+                            $scope.filter.deptId = id;
+                            $scope.grid.obj.query($scope.filter);
+                        });
+                    }
+                }
             ];
 
             $scope.afterUpdate = function (data) {
@@ -307,6 +314,7 @@
                     Text: item.Name
                 }
             });
+            $scope.$win.progressOff();
         });
         orgService.getBusiness().then(function (data) {
             $scope.allBusiness = data.map(function (item) {
@@ -315,6 +323,7 @@
                     Text: item.Name
                 }
             });
+            $scope.$win.progressOff();
         });
 
         $scope.save = function () {
@@ -326,7 +335,7 @@
                         text: "用户更新成功！"
                     });
 
-                    $scope.searchClick();
+                    $scope.search();
 
                     $scope.$win.progressOff();
                 })
@@ -336,7 +345,7 @@
                         type: 'success',
                         text: "用户创建成功！"
                     });
-                    $scope.searchClick();
+                    $scope.search();
 
                     $scope.$win.progressOff();
                 })

@@ -11,7 +11,7 @@ define(['app'], function (app) {
         this.getMenus = function (flage) {
 
             if (true) {
-                return restSrv.all("menu").getList({ business: "System3" });
+                return restSrv.all("menu").getList({ business: app.business });
             }
 
             var menusData = [
