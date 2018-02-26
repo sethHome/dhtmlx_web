@@ -165,6 +165,8 @@
                 dhxContextMenuName: '@',
                 dhxContextMenuAction: '=',
 
+                dhxEnableTreeGridLines : '=',
+
                 dhxAutoHeight: '@',
                 dhxPaging: '=',
                 dhxProcessorUrl: '@',
@@ -263,6 +265,10 @@
                     grid.setImagePath(DhxUtils.getImagePath());
                     grid.enableAutoHeight(!!scope.dhxMaxHeight, scope.dhxMaxHeight, true);
                     grid.enableAutoWidth(!!scope.dhxMaxWidth, scope.dhxMaxWidth, true);
+
+                    if (scope.dhxEnableTreeGridLines != undefined) {
+                        grid.enableTreeGridLines(scope.dhxEnableTreeGridLines);
+                    }
 
                     if (scope.dhxColumns) {
                         scope.dhxFields = scope.dhxRowid + "|" + scope.dhxColumns.map(function (col) {

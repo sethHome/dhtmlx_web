@@ -312,6 +312,8 @@ dhtmlXGridObject.prototype.convertSource = function (data) {
     }
 };
 
+
+
 dhtmlXGridObject.prototype.setFields = function () {
     var filedText=arguments[0]||'|';
     if (filedText.indexOf('|') == -1)
